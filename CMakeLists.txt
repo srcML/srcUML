@@ -1,7 +1,7 @@
 ##
 #  CMakeLists.txt
 #
-#  Copyright (C) 2014 SDML (www.sdml.info)
+#  Copyright (C) 2015 SDML (www.sdml.info)
 #
 #  This file is part of the srcYUML.
 #
@@ -25,8 +25,7 @@ project(srcYUML)
 enable_testing()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
-include(srcyuml)
 
-include_directories(${LIBXML2_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/srcSAX/src/srcsax ${CMAKE_SOURCE_DIR}/srcSAX/src/cpp src/headers src/cpp)
+include_directories(src ${LIBXML2_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/srcSAX/src/srcsax ${CMAKE_SOURCE_DIR}/srcSAX/src/cpp src/headers src/cpp)
 
 add_subdirectory(src)
