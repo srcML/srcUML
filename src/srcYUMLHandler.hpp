@@ -1,7 +1,7 @@
 /**
  * @file srcYUMLHandler.hpp
  *
- * @copyright Copyright (C) 2014 srcML, LLC. (www.srcML.org)
+ * @copyright Copyright (C) 2015 srcML, LLC. (www.srcML.org)
  *
  * srcYUML is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
