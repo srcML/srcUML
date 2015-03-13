@@ -32,7 +32,6 @@ class srcYUMLHandler : public srcSAXHandler {
 
 private:
 
-
 protected:
 
 public:
