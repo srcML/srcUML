@@ -30,26 +30,12 @@
  */
 class srcYUMLHandler : public srcSAXHandler {
 
-private :
+private:
 
-    /** Controller for parser */
-    srcSAXController * controller;
 
 protected:
 
-    /** is the document an archive */
-    bool is_archive;
-
-    /** the current unit count */
-    int unit_count;
-
-    /** open srcML element stack */
-    std::vector<std::string> srcml_element_stack;
-
-    /** the xml documents encoding */
-    const char * encoding;
-
-public :
+public:
 
     /**
      * srcYUMLHandler
