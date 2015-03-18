@@ -47,15 +47,15 @@ public:
 
     
     // Keys can be public, private, or protected
-    std::map<std::string, std::list<struct attributeDeclaration> > classAttributes;
-    std::map<std::string, std::list<std::string> > classFunctions;
+    std::map<std::string, std::list<struct attributeDeclaration> > class_data_members_;
+    std::map<std::string, std::list<std::string> > class_functions_;
     
     srcYUMLClass()
     {}
     
-    void PrintData()
+    void printData()
     {
-        for(const auto& itr : classAttributes)
+        for(const auto& itr : class_data_members_)
         {
             std::cout << itr.first << "\n";
         }
@@ -79,34 +79,34 @@ class srcYUMLHandler : public srcSAXHandler {
 private:
     
     // Map representing <className, dataInsideClass>
-    std::map<std::string, srcYUMLClass> classesInSource;
+    std::map<std::string, srcYUMLClass> classes_in_source_;
     
     // bool variables to determine program states
-    bool consumingClass,
-         consumingAttribute,
-         consumingFunction,
-         inPublic,
-         inPrivate,
-         inProtected,
-         inInheritanceList,
-         classNameConsumed;
+    bool consuming_class_,
+         consuming_data_member_,
+         consuming_function_,
+         in_public_,
+         in_private_,
+         in_protected_,
+         in_inheritance_list_,
+         class_name_consumed_;
     
     
     
     // This could be a function or an attribute
-    std::string currentRecordedDataInClass;
-    std::string currentAttributeType;
+    std::string current_recorded_data_in_class_;
+    std::string current_data_member_type_;
     /*
      This is to be used to store class name until we hit the end tag
      so that we know what class key to map the data to.
      */
-    std::string currentClass;
+    std::string current_class_;
     
     /* 
        This holds what visibility layer we are in for the class
        so that we can properly map where we got data from in our class
      */
-    std::string currentClassVisibility;
+    std::string current_class_visibility_;
 protected:
 
 public:
@@ -116,18 +116,8 @@ public:
      *
      * Default constructor default values to everything
      */
-    srcYUMLHandler()
-    {
-        consumingClass = false;
-        consumingAttribute = false;
-        consumingFunction = false;
-        inPublic = false;
-        inPrivate = false;
-        inProtected = false;
-        inInheritanceList = false;
-        classNameConsumed = false;
-        
-    }
+    srcYUMLHandler() : consuming_class_(false), consuming_data_member_(false), consuming_function_(false), in_public_(false), in_private_(false), in_protected_(false), in_inheritance_list_(false), class_name_consumed_(false) {;};
+
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -221,44 +211,44 @@ public:
         // We have started reading a class
         if(lname == "class")
         {
-            consumingClass = true;
+            consuming_class_ = true;
         }
         // We are now in the public part of the class
-        else if(lname == "public" && consumingClass)
+        else if(lname == "public" && consuming_class_)
         {
-            inPublic = true;
-            currentClassVisibility = "public";
+            in_public_ = true;
+            current_class_visibility_ = "public";
         }
         // We are now in the private part of the class
-        else if(lname == "private" && consumingClass)
+        else if(lname == "private" && consuming_class_)
         {
-            inPrivate = true;
-            currentClassVisibility = "private";
+            in_private_ = true;
+            current_class_visibility_ = "private";
         }
         // We are now in the protected part of the class
-        else if(lname == "protected" && consumingClass)
+        else if(lname == "protected" && consuming_class_)
         {
-            inProtected = true;
-            currentClassVisibility = "protected";
+            in_protected_ = true;
+            current_class_visibility_ = "protected";
         }
         // We are at a class attribute
-        else if(lname == "decl_stmt" && consumingClass)
+        else if(lname == "decl_stmt" && consuming_class_)
         {
-            consumingAttribute = true;
-            currentRecordedDataInClass = "";
+            consuming_data_member_ = true;
+            current_recorded_data_in_class_ = "";
         }
         // We are at one of the classes functions
-        else if(lname == "function" && consumingClass)
+        else if(lname == "function" && consuming_class_)
         {
-            consumingFunction = true;
-            currentRecordedDataInClass = "";
+            consuming_function_ = true;
+            current_recorded_data_in_class_ = "";
         }
         // if we hit the block of a function and its parent is a function we have consumed all needed data to record
-        else if(lname == "block" && consumingFunction && srcml_element_stack[srcml_element_stack.size() - 2] == "function")
+        else if(lname == "block" && consuming_function_ && srcml_element_stack[srcml_element_stack.size() - 2] == "function")
         {
-            classesInSource[currentClass].classFunctions[currentClassVisibility].push_back(currentRecordedDataInClass);
-            currentRecordedDataInClass = "";
-            consumingFunction = false;
+            classes_in_source_[current_class_].class_functions_[current_class_visibility_].push_back(current_recorded_data_in_class_);
+            current_recorded_data_in_class_ = "";
+            consuming_function_ = false;
         }
     }
 
@@ -305,40 +295,40 @@ public:
     {
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
-        if(consumingClass && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class" && !classNameConsumed)
+        if(consuming_class_ && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class" && !class_name_consumed_)
         {
-            classesInSource[currentClass];
-            classNameConsumed = true;
+            classes_in_source_[current_class_];
+            class_name_consumed_ = true;
         }
         // If we hit this we have consumed the WHOLE type, even nested types
-        else if(consumingClass && consumingAttribute && lname == "type" && srcml_element_stack[srcml_element_stack.size() - 2] == "decl")
+        else if(consuming_class_ && consuming_data_member_ && lname == "type" && srcml_element_stack[srcml_element_stack.size() - 2] == "decl")
         {
-            currentAttributeType = currentRecordedDataInClass;
-            currentRecordedDataInClass = "";
+            current_data_member_type_ = current_recorded_data_in_class_;
+            current_recorded_data_in_class_ = "";
         }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
-        else if(consumingClass && lname == "decl_stmt" && consumingAttribute)
+        else if(consuming_class_ && lname == "decl_stmt" && consuming_data_member_)
         {
-            struct attributeDeclaration temp(currentAttributeType, currentRecordedDataInClass);
+            struct attributeDeclaration temp(current_data_member_type_, current_recorded_data_in_class_);
             
-            classesInSource[currentClass].classAttributes[currentClassVisibility].push_back(temp);
+            classes_in_source_[current_class_].class_data_members_[current_class_visibility_].push_back(temp);
             // attribute has been fully consumed
-            consumingAttribute = false;
+            consuming_data_member_ = false;
         }
         // We are no longer in public visibility
-        else if(consumingClass && lname == "public")
+        else if(consuming_class_ && lname == "public")
         {
-            inPublic = false;
+            in_public_ = false;
         }
         // We are no longer in private visibility
-        else if(consumingClass && lname == "private")
+        else if(consuming_class_ && lname == "private")
         {
-            inPrivate = false;
+            in_private_ = false;
         }
         // We are no longer in protected visibility
-        else if(consumingClass && lname == "protected")
+        else if(consuming_class_ && lname == "protected")
         {
-            inProtected = false;
+            in_protected_ = false;
         }
         else
         {
@@ -367,9 +357,9 @@ public:
      */
     virtual void charactersUnit(const char * ch, int len)
     {
-        if(consumingClass)
+        if(consuming_class_)
         {
-            currentRecordedDataInClass.append(ch, len);
+            current_recorded_data_in_class_.append(ch, len);
         }
         
     }
