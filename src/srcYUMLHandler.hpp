@@ -22,6 +22,52 @@
 #define INCLUDED_SRCYUML_HANDLER_HPP
 
 #include <srcSAXHandler.hpp>
+#include <map>
+#include <string>
+#include <list>
+#include <iostream>
+
+struct attributeDeclaration {
+    std::string type;
+    std::string name;
+    attributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
+};
+
+class srcYUMLClass {
+public:
+    // attributes
+    // functions
+    // inheritance list
+    // Inside a class
+    // Inside public
+    // inside private
+    // inside protected
+    // inside inheritance list
+    // public, private, protected
+
+    
+    // Keys can be public, private, or protected
+    std::map<std::string, std::list<struct attributeDeclaration> > classAttributes;
+    std::map<std::string, std::list<std::string> > classFunctions;
+    
+    srcYUMLClass()
+    {}
+    
+    void PrintData()
+    {
+        for(const auto& itr : classAttributes)
+        {
+            std::cout << itr.first << "\n";
+        }
+    }
+    
+private:
+
+    
+
+    
+};
+
 
 /**
  * srcYUMLHandler
@@ -31,7 +77,36 @@
 class srcYUMLHandler : public srcSAXHandler {
 
 private:
-
+    
+    // Map representing <className, dataInsideClass>
+    std::map<std::string, srcYUMLClass> classesInSource;
+    
+    // bool variables to determine program states
+    bool consumingClass,
+         consumingAttribute,
+         consumingFunction,
+         inPublic,
+         inPrivate,
+         inProtected,
+         inInheritanceList,
+         classNameConsumed;
+    
+    
+    
+    // This could be a function or an attribute
+    std::string currentRecordedDataInClass;
+    std::string currentAttributeType;
+    /*
+     This is to be used to store class name until we hit the end tag
+     so that we know what class key to map the data to.
+     */
+    std::string currentClass;
+    
+    /* 
+       This holds what visibility layer we are in for the class
+       so that we can properly map where we got data from in our class
+     */
+    std::string currentClassVisibility;
 protected:
 
 public:
@@ -41,11 +116,23 @@ public:
      *
      * Default constructor default values to everything
      */
-    srcYUMLHandler() {}
+    srcYUMLHandler()
+    {
+        consumingClass = false;
+        consumingAttribute = false;
+        consumingFunction = false;
+        inPublic = false;
+        inPrivate = false;
+        inProtected = false;
+        inInheritanceList = false;
+        classNameConsumed = false;
+        
+    }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
+    
     /**
      * startDocument
      *
@@ -108,7 +195,10 @@ public:
      *
      * Overide for desired behaviour.
      */
-    virtual void startFunction(const std::string & name, const std::string & return_type, const std::vector<declaration> & parameter_list, bool is_decl) {}
+    virtual void startFunction(const std::string & name, const std::string & return_type, const std::vector<declaration> & parameter_list, bool is_decl)
+    {
+        
+    }
 #endif
     /**
      * startElement
@@ -125,7 +215,52 @@ public:
      */
     virtual void startElement(const char * localname, const char * prefix, const char * URI,
                                 int num_namespaces, const struct srcsax_namespace * namespaces, int num_attributes,
-                                const struct srcsax_attribute * attributes) {}
+                                const struct srcsax_attribute * attributes)
+    {
+        std::string lname = localname;
+        // We have started reading a class
+        if(lname == "class")
+        {
+            consumingClass = true;
+        }
+        // We are now in the public part of the class
+        else if(lname == "public" && consumingClass)
+        {
+            inPublic = true;
+            currentClassVisibility = "public";
+        }
+        // We are now in the private part of the class
+        else if(lname == "private" && consumingClass)
+        {
+            inPrivate = true;
+            currentClassVisibility = "private";
+        }
+        // We are now in the protected part of the class
+        else if(lname == "protected" && consumingClass)
+        {
+            inProtected = true;
+            currentClassVisibility = "protected";
+        }
+        // We are at a class attribute
+        else if(lname == "decl_stmt" && consumingClass)
+        {
+            consumingAttribute = true;
+            currentRecordedDataInClass = "";
+        }
+        // We are at one of the classes functions
+        else if(lname == "function" && consumingClass)
+        {
+            consumingFunction = true;
+            currentRecordedDataInClass = "";
+        }
+        // if we hit the block of a function and its parent is a function we have consumed all needed data to record
+        else if(lname == "block" && consumingFunction && srcml_element_stack[srcml_element_stack.size() - 2] == "function")
+        {
+            classesInSource[currentClass].classFunctions[currentClassVisibility].push_back(currentRecordedDataInClass);
+            currentRecordedDataInClass = "";
+            consumingFunction = false;
+        }
+    }
 
     /**
      * endRoot
@@ -166,8 +301,52 @@ public:
      * SAX handler function for end of an element.
      * Overide for desired behaviour.
      */
-    virtual void endElement(const char * localname, const char * prefix, const char * URI) {}
-
+    virtual void endElement(const char * localname, const char * prefix, const char * URI)
+    {
+        std::string lname = localname;
+        // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
+        if(consumingClass && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class" && !classNameConsumed)
+        {
+            classesInSource[currentClass];
+            classNameConsumed = true;
+        }
+        // If we hit this we have consumed the WHOLE type, even nested types
+        else if(consumingClass && consumingAttribute && lname == "type" && srcml_element_stack[srcml_element_stack.size() - 2] == "decl")
+        {
+            currentAttributeType = currentRecordedDataInClass;
+            currentRecordedDataInClass = "";
+        }
+        // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
+        else if(consumingClass && lname == "decl_stmt" && consumingAttribute)
+        {
+            struct attributeDeclaration temp(currentAttributeType, currentRecordedDataInClass);
+            
+            classesInSource[currentClass].classAttributes[currentClassVisibility].push_back(temp);
+            // attribute has been fully consumed
+            consumingAttribute = false;
+        }
+        // We are no longer in public visibility
+        else if(consumingClass && lname == "public")
+        {
+            inPublic = false;
+        }
+        // We are no longer in private visibility
+        else if(consumingClass && lname == "private")
+        {
+            inPrivate = false;
+        }
+        // We are no longer in protected visibility
+        else if(consumingClass && lname == "protected")
+        {
+            inProtected = false;
+        }
+        else
+        {
+            // Do nothing
+        }
+    }
+    
+    
     /**
      * charactersRoot
      * @param ch the characers
@@ -186,7 +365,14 @@ public:
      * SAX handler function for character handling within a unit.
      * Overide for desired behaviour.
      */
-    virtual void charactersUnit(const char * ch, int len) {}
+    virtual void charactersUnit(const char * ch, int len)
+    {
+        if(consumingClass)
+        {
+            currentRecordedDataInClass.append(ch, len);
+        }
+        
+    }
 
     /**
      * metaTag
