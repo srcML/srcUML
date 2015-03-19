@@ -26,11 +26,14 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <vector>
 
-struct attributeDeclaration {
+struct AttributeDeclaration {
+    
     std::string type;
     std::string name;
-    attributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
+    
+    AttributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
 };
 
 class srcYUMLClass {
@@ -47,13 +50,13 @@ public:
 
     
     // Keys can be public, private, or protected
-    std::map<std::string, std::list<struct attributeDeclaration> > class_data_members_;
+    std::map<std::string, std::list<struct AttributeDeclaration> > class_data_members_;
     std::map<std::string, std::list<std::string> > class_functions_;
     
     srcYUMLClass()
     {}
     
-    void printData()
+    void printData() const
     {
         for(const auto& itr : class_data_members_)
         {
@@ -91,11 +94,13 @@ private:
          in_inheritance_list_,
          class_name_consumed_;
     
+    int multiple_class_in_class_count_;
     
     
     // This could be a function or an attribute
     std::string current_recorded_data_in_class_;
     std::string current_data_member_type_;
+    
     /*
      This is to be used to store class name until we hit the end tag
      so that we know what class key to map the data to.
@@ -107,6 +112,7 @@ private:
        so that we can properly map where we got data from in our class
      */
     std::string current_class_visibility_;
+    
 protected:
 
 public:
@@ -116,7 +122,15 @@ public:
      *
      * Default constructor default values to everything
      */
-    srcYUMLHandler() : consuming_class_(false), consuming_data_member_(false), consuming_function_(false), in_public_(false), in_private_(false), in_protected_(false), in_inheritance_list_(false), class_name_consumed_(false) {;};
+    srcYUMLHandler() :  consuming_class_(false),
+                        consuming_data_member_(false),
+                        consuming_function_(false),
+                        in_public_(false),
+                        in_private_(false),
+                        in_protected_(false),
+                        in_inheritance_list_(false),
+                        class_name_consumed_(false),
+                        multiple_class_in_class_count_(0){};
 
 
 #pragma GCC diagnostic push
@@ -300,8 +314,8 @@ public:
             classes_in_source_[current_class_];
             class_name_consumed_ = true;
         }
-        // If we hit this we have consumed the WHOLE type, even nested types
-        else if(consuming_class_ && consuming_data_member_ && lname == "type" && srcml_element_stack[srcml_element_stack.size() - 2] == "decl")
+        // If we hit this we have consumed the WHOLE type
+        else if(consuming_class_ && consuming_data_member_ && lname == "type")
         {
             current_data_member_type_ = current_recorded_data_in_class_;
             current_recorded_data_in_class_ = "";
@@ -309,7 +323,7 @@ public:
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
         else if(consuming_class_ && lname == "decl_stmt" && consuming_data_member_)
         {
-            struct attributeDeclaration temp(current_data_member_type_, current_recorded_data_in_class_);
+            struct AttributeDeclaration temp(current_data_member_type_, current_recorded_data_in_class_);
             
             classes_in_source_[current_class_].class_data_members_[current_class_visibility_].push_back(temp);
             // attribute has been fully consumed
@@ -357,9 +371,18 @@ public:
      */
     virtual void charactersUnit(const char * ch, int len)
     {
+        std::string text_parsed(ch, len);
         if(consuming_class_)
         {
-            current_recorded_data_in_class_.append(ch, len);
+            if(text_parsed == ";gt")
+            {
+                text_parsed = ">";
+            }
+            else if(text_parsed == ";lt")
+            {
+                text_parsed = "<";
+            }
+            current_recorded_data_in_class_.append(text_parsed);
         }
         
     }
