@@ -50,28 +50,22 @@ public:
 
     
     // Keys can be public, private, or protected
-    std::map<std::string, std::list<struct AttributeDeclaration> > class_data_members_;
-    std::map<std::string, std::list<std::string> > class_functions_;
+    std::map<std::string, std::list<struct AttributeDeclaration> > class_data_members;
+    std::map<std::string, std::list<std::string> > class_functions;
     
-    srcYUMLClass()
-    {}
+    srcYUMLClass() {}
     
-    void printData() const
-    {
-        for(const auto& itr : class_data_members_)
-        {
+    void printData() const {
+        for(const auto& itr : class_data_members) {
             std::cout << "\t" << itr.first << ":" << "\n";
-            for(const auto& inner_itr : itr.second)
-            {
+            for(const auto& inner_itr : itr.second) {
                 std::cout << "\t\t" << inner_itr.type << " " << inner_itr.name << "\n";
             }
         }
         
-        for(const auto& itr : class_functions_)
-        {
+        for(const auto& itr : class_functions) {
             std::cout << "\t" << itr.first << ":" << "\n";
-            for(const auto& inner_itr : itr.second)
-            {
+            for(const auto& inner_itr : itr.second) {
                 std::cout << "\t\t" << inner_itr << "\n";
             }
         }
@@ -95,37 +89,37 @@ class srcYUMLHandler : public srcSAXHandler {
 private:
     
     // Map representing <className, dataInsideClass>
-    std::map<std::string, srcYUMLClass> classes_in_source_;
+    std::map<std::string, srcYUMLClass> classes_in_source;
     
     // bool variables to determine program states
-    bool consuming_class_,
-         consuming_data_member_,
-         consuming_function_,
-         data_member_type_consumed_,
-         in_public_,
-         in_private_,
-         in_protected_,
-         in_inheritance_list_,
-         class_name_consumed_;
+    bool consuming_class,
+         consuming_data_member,
+         consuming_function,
+         data_member_type_consumed,
+         in_public,
+         in_private,
+         in_protected,
+         in_inheritance_list,
+         class_name_consumed;
     
-    int multiple_class_in_class_count_;
+    int multiple_class_in_class_count;
     
     
     // This could be a function or an attribute
-    std::string current_recorded_data_in_class_;
-    std::string current_data_member_type_;
+    std::string current_recorded_data_in_class;
+    std::string current_data_member_type;
     
     /*
      This is to be used to store class name until we hit the end tag
      so that we know what class key to map the data to.
      */
-    std::string current_class_;
+    std::string current_class;
     
     /* 
        This holds what visibility layer we are in for the class
        so that we can properly map where we got data from in our class
      */
-    std::string current_class_visibility_;
+    std::string current_class_visibility;
     
 
     
@@ -133,10 +127,8 @@ protected:
 
 public:
     
-    void printClassesInSource() const
-    {
-        for(const auto& itr : classes_in_source_)
-        {
+    void printClassesInSource() const {
+        for(const auto& itr : classes_in_source) {
             std::cout << itr.first << "\n";
             itr.second.printData();
         }
@@ -146,16 +138,16 @@ public:
      *
      * Default constructor default values to everything
      */
-    srcYUMLHandler() :  consuming_class_(false),
-                        consuming_data_member_(false),
-                        consuming_function_(false),
-                        data_member_type_consumed_(false),
-                        in_public_(false),
-                        in_private_(false),
-                        in_protected_(false),
-                        in_inheritance_list_(false),
-                        class_name_consumed_(false),
-                        multiple_class_in_class_count_(0){};
+    srcYUMLHandler() :  consuming_class(false),
+                        consuming_data_member(false),
+                        consuming_function(false),
+                        data_member_type_consumed(false),
+                        in_public(false),
+                        in_private(false),
+                        in_protected(false),
+                        in_inheritance_list(false),
+                        class_name_consumed(false),
+                        multiple_class_in_class_count(0) {};
 
 
 #pragma GCC diagnostic push
@@ -211,24 +203,7 @@ public:
     virtual void startUnit(const char * localname, const char * prefix, const char * URI,
                            int num_namespaces, const struct srcsax_namespace * namespaces, int num_attributes,
                            const struct srcsax_attribute * attributes) {}
-#if 0
-    /**
-     * startFunction
-     * @param name the function's name
-     * @param return_type the function return type
-     * @param parameter_list a list of the function parameters in struct containing (declaration.type/declaration.name)
-     * @param is_decl indicates if the call is a function declaration (true) or definition (false)
-     *
-     * SAX handler function for start of function with prototype.
-     * Accessing references after callback termination is undefined.
-     *
-     * Overide for desired behaviour.
-     */
-    virtual void startFunction(const std::string & name, const std::string & return_type, const std::vector<declaration> & parameter_list, bool is_decl)
-    {
-        
-    }
-#endif
+
     /**
      * startElement
      * @param localname the name of the element tag
@@ -244,54 +219,45 @@ public:
      */
     virtual void startElement(const char * localname, const char * prefix, const char * URI,
                                 int num_namespaces, const struct srcsax_namespace * namespaces, int num_attributes,
-                                const struct srcsax_attribute * attributes)
-    {
+                                const struct srcsax_attribute * attributes) {
         std::string lname = localname;
         // We have started reading a class
-        if(lname == "class")
-        {
-            consuming_class_ = true;
+        if(lname == "class") {
+            consuming_class = true;
         }
-        else if(consuming_class_ && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class")
-        {
-            current_recorded_data_in_class_ = "";
+        else if(consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class") {
+            current_recorded_data_in_class = "";
         }
         // We are now in the public part of the class
-        else if(lname == "public" && consuming_class_)
-        {
-            in_public_ = true;
-            current_class_visibility_ = "public";
+        else if(lname == "public" && consuming_class) {
+            in_public = true;
+            current_class_visibility = "public";
         }
         // We are now in the private part of the class
-        else if(lname == "private" && consuming_class_)
-        {
-            in_private_ = true;
-            current_class_visibility_ = "private";
+        else if(lname == "private" && consuming_class) {
+            in_private = true;
+            current_class_visibility = "private";
         }
         // We are now in the protected part of the class
-        else if(lname == "protected" && consuming_class_)
-        {
-            in_protected_ = true;
-            current_class_visibility_ = "protected";
+        else if(lname == "protected" && consuming_class) {
+            in_protected = true;
+            current_class_visibility = "protected";
         }
         // We are at a class attribute
-        else if(lname == "decl_stmt" && consuming_class_)
-        {
-            consuming_data_member_ = true;
-            current_recorded_data_in_class_ = "";
+        else if(lname == "decl_stmt" && consuming_class) {
+            consuming_data_member = true;
+            current_recorded_data_in_class = "";
         }
         // We are at one of the classes functions
-        else if(lname == "function" && consuming_class_)
-        {
-            consuming_function_ = true;
-            current_recorded_data_in_class_ = "";
+        else if(lname == "function" && consuming_class) {
+            consuming_function = true;
+            current_recorded_data_in_class = "";
         }
         // if we hit the block of a function and its parent is a function we have consumed all needed data to record
-        else if(lname == "block" && consuming_function_ && srcml_element_stack[srcml_element_stack.size() - 2] == "function")
-        {
-            classes_in_source_[current_class_].class_functions_[current_class_visibility_].push_back(current_recorded_data_in_class_);
-            current_recorded_data_in_class_ = "";
-            consuming_function_ = false;
+        else if(lname == "block" && consuming_function && srcml_element_stack[srcml_element_stack.size() - 2] == "function") {
+            classes_in_source[current_class].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
+            current_recorded_data_in_class = "";
+            consuming_function = false;
         }
     }
 
@@ -316,15 +282,7 @@ public:
      * Overide for desired behaviour.
      */
     virtual void endUnit(const char * localname, const char * prefix, const char * URI) {}
-#if 0
-    /**
-     * endFunction
-     *
-     * SAX handler function for end of a function.
-     * Overide for desired behaviour.
-     */
-    virtual void endFunction() {}
-#endif
+
     /**
      * endElement
      * @param localname the name of the element tag
@@ -334,61 +292,51 @@ public:
      * SAX handler function for end of an element.
      * Overide for desired behaviour.
      */
-    virtual void endElement(const char * localname, const char * prefix, const char * URI)
-    {
+    virtual void endElement(const char * localname, const char * prefix, const char * URI) {
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
-        if(consuming_class_ && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed_)
-        {
-            current_class_ = current_recorded_data_in_class_;
-            classes_in_source_[current_class_];
-            class_name_consumed_ = true;
+        if(consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed) {
+            current_class = current_recorded_data_in_class;
+            classes_in_source[current_class];
+            class_name_consumed = true;
         }
         // If we hit this we have consumed the WHOLE type
-        else if(consuming_class_ && consuming_data_member_ && lname == "type" && !data_member_type_consumed_)
-        {
-            current_data_member_type_ = current_recorded_data_in_class_;
-            current_recorded_data_in_class_ = "";
-            data_member_type_consumed_ = true;
+        else if(consuming_class && consuming_data_member && lname == "type" && !data_member_type_consumed) {
+            current_data_member_type = current_recorded_data_in_class;
+            current_recorded_data_in_class = "";
+            data_member_type_consumed = true;
         }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
-        else if(consuming_class_ && lname == "decl_stmt" && consuming_data_member_ && data_member_type_consumed_)
-        {
-            struct AttributeDeclaration temp(current_data_member_type_, current_recorded_data_in_class_);
+        else if(consuming_class && lname == "decl_stmt" && consuming_data_member && data_member_type_consumed) {
+            struct AttributeDeclaration temp(current_data_member_type, current_recorded_data_in_class);
             
-            classes_in_source_[current_class_].class_data_members_[current_class_visibility_].push_back(temp);
+            classes_in_source[current_class].class_data_members[current_class_visibility].push_back(temp);
             // attribute has been fully consumed
         
-            consuming_data_member_ = false;
-            data_member_type_consumed_ = false;
+            consuming_data_member = false;
+            data_member_type_consumed = false;
             
         }
         // We are no longer in public visibility
-        else if(consuming_class_ && lname == "public")
-        {
-            in_public_ = false;
+        else if(consuming_class && lname == "public") {
+            in_public = false;
         }
         // We are no longer in private visibility
-        else if(consuming_class_ && lname == "private")
-        {
-            in_private_ = false;
+        else if(consuming_class && lname == "private") {
+            in_private = false;
         }
         // We are no longer in protected visibility
-        else if(consuming_class_ && lname == "protected")
-        {
-            in_protected_ = false;
+        else if(consuming_class && lname == "protected") {
+            in_protected = false;
         }
-        else if(consuming_class_ && lname == "class")
-        {
-            consuming_class_ = false;
-            class_name_consumed_ = false;
+        else if(consuming_class && lname == "class") {
+            consuming_class = false;
+            class_name_consumed = false;
         }
-        else
-        {
+        else {
             // Do nothing
         }
     }
-    
     
     /**
      * charactersRoot
@@ -408,24 +356,19 @@ public:
      * SAX handler function for character handling within a unit.
      * Overide for desired behaviour.
      */
-    virtual void charactersUnit(const char * ch, int len)
-    {
+    virtual void charactersUnit(const char * ch, int len) {
         std::string text_parsed(ch, len);
-        if(consuming_class_)
-        {
-            if(text_parsed == ";gt")
-            {
+        if(consuming_class) {
+            if(text_parsed == ";gt") {
                 text_parsed = ">";
             }
-            else if(text_parsed == ";lt")
-            {
+            else if(text_parsed == ";lt") {
                 text_parsed = "<";
             }
-            else
-            {
+            else {
                 
             }
-            current_recorded_data_in_class_.append(text_parsed);
+            current_recorded_data_in_class.append(text_parsed);
         }
         
     }
