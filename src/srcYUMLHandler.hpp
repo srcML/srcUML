@@ -60,7 +60,20 @@ public:
     {
         for(const auto& itr : class_data_members_)
         {
-            std::cout << itr.first << "\n";
+            std::cout << "\t" << itr.first << ":" << "\n";
+            for(const auto& inner_itr : itr.second)
+            {
+                std::cout << "\t\t" << inner_itr.type << " " << inner_itr.name << "\n";
+            }
+        }
+        
+        for(const auto& itr : class_functions_)
+        {
+            std::cout << "\t" << itr.first << ":" << "\n";
+            for(const auto& inner_itr : itr.second)
+            {
+                std::cout << "\t\t" << inner_itr << "\n";
+            }
         }
     }
     
@@ -88,6 +101,7 @@ private:
     bool consuming_class_,
          consuming_data_member_,
          consuming_function_,
+         data_member_type_consumed_,
          in_public_,
          in_private_,
          in_protected_,
@@ -113,10 +127,20 @@ private:
      */
     std::string current_class_visibility_;
     
+
+    
 protected:
 
 public:
-
+    
+    void printClassesInSource() const
+    {
+        for(const auto& itr : classes_in_source_)
+        {
+            std::cout << itr.first << "\n";
+            itr.second.printData();
+        }
+    }
     /**
      * srcYUMLHandler
      *
@@ -125,6 +149,7 @@ public:
     srcYUMLHandler() :  consuming_class_(false),
                         consuming_data_member_(false),
                         consuming_function_(false),
+                        data_member_type_consumed_(false),
                         in_public_(false),
                         in_private_(false),
                         in_protected_(false),
@@ -227,6 +252,10 @@ public:
         {
             consuming_class_ = true;
         }
+        else if(consuming_class_ && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class")
+        {
+            current_recorded_data_in_class_ = "";
+        }
         // We are now in the public part of the class
         else if(lname == "public" && consuming_class_)
         {
@@ -309,25 +338,30 @@ public:
     {
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
-        if(consuming_class_ && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class" && !class_name_consumed_)
+        if(consuming_class_ && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed_)
         {
+            current_class_ = current_recorded_data_in_class_;
             classes_in_source_[current_class_];
             class_name_consumed_ = true;
         }
         // If we hit this we have consumed the WHOLE type
-        else if(consuming_class_ && consuming_data_member_ && lname == "type")
+        else if(consuming_class_ && consuming_data_member_ && lname == "type" && !data_member_type_consumed_)
         {
             current_data_member_type_ = current_recorded_data_in_class_;
             current_recorded_data_in_class_ = "";
+            data_member_type_consumed_ = true;
         }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
-        else if(consuming_class_ && lname == "decl_stmt" && consuming_data_member_)
+        else if(consuming_class_ && lname == "decl_stmt" && consuming_data_member_ && data_member_type_consumed_)
         {
             struct AttributeDeclaration temp(current_data_member_type_, current_recorded_data_in_class_);
             
             classes_in_source_[current_class_].class_data_members_[current_class_visibility_].push_back(temp);
             // attribute has been fully consumed
+        
             consuming_data_member_ = false;
+            data_member_type_consumed_ = false;
+            
         }
         // We are no longer in public visibility
         else if(consuming_class_ && lname == "public")
@@ -343,6 +377,11 @@ public:
         else if(consuming_class_ && lname == "protected")
         {
             in_protected_ = false;
+        }
+        else if(consuming_class_ && lname == "class")
+        {
+            consuming_class_ = false;
+            class_name_consumed_ = false;
         }
         else
         {
@@ -381,6 +420,10 @@ public:
             else if(text_parsed == ";lt")
             {
                 text_parsed = "<";
+            }
+            else
+            {
+                
             }
             current_recorded_data_in_class_.append(text_parsed);
         }
