@@ -52,6 +52,7 @@ int main(int argc, char * argv[]) {
   srcSAXController control(argv[1]);
   srcYUMLHandler handler;
   control.parse(&handler);
-    handler.printClassesInSource();
+  handler.printClassesInSource();
+
   return 0;
 }
