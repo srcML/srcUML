@@ -42,7 +42,7 @@
  */
 int main(int argc, char * argv[]) {
 
-  if(argc < 2) {
+  if(argc < 3) {
 
     std::cerr << "Useage: srcyuml input_file.xml\n";
     exit(1);
@@ -50,9 +50,9 @@ int main(int argc, char * argv[]) {
   }
 
   srcSAXController control(argv[1]);
-  srcYUMLHandler handler;
+  srcYUMLHandler handler(argv[2]);
   control.parse(&handler);
-  handler.printClassesInSource();
+  handler.processClassesInSource();
 
   return 0;
 }

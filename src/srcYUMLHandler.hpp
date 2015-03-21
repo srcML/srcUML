@@ -22,11 +22,12 @@
 #define INCLUDED_SRCYUML_HANDLER_HPP
 
 #include <srcSAXHandler.hpp>
-#include <map>
 #include <string>
+#include <map>
 #include <list>
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 struct AttributeDeclaration {
     
@@ -35,6 +36,7 @@ struct AttributeDeclaration {
     
     AttributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
 };
+
 
 class srcYUMLClass {
 public:
@@ -55,20 +57,73 @@ public:
     
     srcYUMLClass() {}
     
-    void printData() const {
-        for(const auto& itr : class_data_members) {
-            std::cout << "\t" << itr.first << ":" << "\n";
-            for(const auto& inner_itr : itr.second) {
-                std::cout << "\t\t" << inner_itr.type << " " << inner_itr.name << "\n";
+    std::string convertToYuml(std::string class_name) const{
+        
+        std::string yuml_format;
+        bool public_data, public_functions, private_data, private_functions, protected_data, protected_functions;
+        
+        public_data = public_functions = private_data = private_functions = protected_data = protected_functions = false;
+        
+        // Check to see if we have any data in each visibility for class_data_members
+        if(class_data_members.find("public") != class_data_members.end()) public_data = true;
+        if(class_data_members.find("private") != class_data_members.end()) private_data = true;
+        if(class_data_members.find("protected") != class_data_members.end()) protected_data = true;
+        
+        // Check to see if we have any functions in each visibility for class_functions
+        if(class_functions.find("public") != class_functions.end()) public_functions = true;
+        if(class_functions.find("private") != class_functions.end()) private_functions = true;
+        if(class_functions.find("protected") != class_functions.end()) protected_functions = true;
+        
+        
+        yuml_format = "[" + class_name;
+        
+        if(public_data || private_data || protected_data) {
+            yuml_format += "|";
+        }
+        
+        if(public_data) {
+            
+            for(const auto& itr : class_data_members.at("public")) {
+                yuml_format += itr.type + itr.name;
+            }
+        }
+        if(private_data) {
+            for(const auto& itr : class_data_members.at("private")) {
+                yuml_format += itr.type + itr.name;
+            }
+        }
+        if(protected_data) {
+            for(const auto& itr : class_data_members.at("protected")) {
+                yuml_format += itr.type + itr.name;
+            }
+        }
+
+        
+        
+        if(public_functions || private_functions || protected_functions)
+        {
+            yuml_format += "|";
+        }
+        if(public_functions) {
+            for(const auto& itr : class_functions.at("public")) {
+                yuml_format +=  itr + ";";
+            }
+        }
+        if(private_functions) {
+            for(const auto& itr : class_functions.at("private")) {
+                yuml_format +=  itr + ";";
+            }
+        }
+        if(protected_functions) {
+            for(const auto& itr : class_functions.at("protected")) {
+                yuml_format +=  itr + ";";
             }
         }
         
-        for(const auto& itr : class_functions) {
-            std::cout << "\t" << itr.first << ":" << "\n";
-            for(const auto& inner_itr : itr.second) {
-                std::cout << "\t\t" << inner_itr << "\n";
-            }
-        }
+        // End class
+        yuml_format += "]";
+        
+        return yuml_format;
     }
     
 private:
@@ -91,6 +146,11 @@ private:
     // Map representing <className, dataInsideClass>
     std::map<std::string, srcYUMLClass> classes_in_source;
     
+    // Map for classes AFTER they have been converted to yuml
+    // The key is class name, and the string contained is the yuml string for that class
+    // This will be used to build relationships in the yuml
+    std::map<std::string, std::string> converted_classes;
+    
     // bool variables to determine program states
     bool consuming_class,
          consuming_data_member,
@@ -109,17 +169,18 @@ private:
     std::string current_recorded_data_in_class;
     std::string current_data_member_type;
     
-    /*
-     This is to be used to store class name until we hit the end tag
-     so that we know what class key to map the data to.
-     */
+    
+     // This is to be used to store class name until we hit the end tag
+     // so that we know what class key to map the data to.
+    
     std::string current_class;
     
-    /* 
-       This holds what visibility layer we are in for the class
-       so that we can properly map where we got data from in our class
-     */
+    
+     // This holds what visibility layer we are in for the class
+     // so that we can properly map where we got data from in our class
     std::string current_class_visibility;
+    
+    std::string output_file;
     
 
     
@@ -127,18 +188,26 @@ protected:
 
 public:
     
-    void printClassesInSource() const {
+    void processClassesInSource() {
+        std::ofstream file;
+        
+        
         for(const auto& itr : classes_in_source) {
-            std::cout << itr.first << "\n";
-            itr.second.printData();
+            converted_classes[itr.first] = itr.second.convertToYuml(itr.first);
         }
+        file.open(output_file);
+        for(const auto& itr : converted_classes) {
+            file << itr.second;
+        }
+        file.close();
+        
     }
     /**
      * srcYUMLHandler
      *
      * Default constructor default values to everything
      */
-    srcYUMLHandler() :  consuming_class(false),
+    srcYUMLHandler(std::string output_file) :  consuming_class(false),
                         consuming_data_member(false),
                         consuming_function(false),
                         data_member_type_consumed(false),
@@ -147,7 +216,8 @@ public:
                         in_protected(false),
                         in_inheritance_list(false),
                         class_name_consumed(false),
-                        multiple_class_in_class_count(0) {};
+                        multiple_class_in_class_count(0),
+                        output_file(output_file) {};
 
 
 #pragma GCC diagnostic push
@@ -359,11 +429,11 @@ public:
     virtual void charactersUnit(const char * ch, int len) {
         std::string text_parsed(ch, len);
         if(consuming_class) {
-            if(text_parsed == ";gt") {
-                text_parsed = ">";
+            if(text_parsed == ">") {
+                text_parsed = "＞";
             }
-            else if(text_parsed == ";lt") {
-                text_parsed = "<";
+            else if(text_parsed == "<") {
+                text_parsed = "＜";
             }
             else {
                 
