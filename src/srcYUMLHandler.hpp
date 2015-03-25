@@ -54,7 +54,7 @@ public:
     // Keys can be public, private, or protected
     std::map<std::string, std::list<struct AttributeDeclaration> > class_data_members;
     std::map<std::string, std::list<std::string> > class_functions;
-    
+    std::list<std::string> inheritance_list;
     srcYUMLClass() {}
     
     std::string convertToYuml(std::string class_name) const{
@@ -298,6 +298,12 @@ public:
         else if(consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class") {
             current_recorded_data_in_class = "";
         }
+        else if(consuming_class && lname == "super" && srcml_element_stack[srcml_element_stack.size() - 2] == "class"){
+            in_inheritance_list = true;
+        }
+        else if(consuming_class && in_inheritance_list && lname == "name"){
+            current_recorded_data_in_class = "";
+        }
         // We are now in the public part of the class
         else if(lname == "public" && consuming_class) {
             in_public = true;
@@ -387,6 +393,9 @@ public:
             data_member_type_consumed = false;
             
         }
+        else if(consuming_class && in_inheritance_list && lname == "name"){
+            classes_in_source[current_class].inheritance_list.push_back(current_recorded_data_in_class);
+        }
         // We are no longer in public visibility
         else if(consuming_class && lname == "public") {
             in_public = false;
@@ -399,11 +408,14 @@ public:
         else if(consuming_class && lname == "protected") {
             in_protected = false;
         }
-        else if(consuming_class && lname == "class") {
+        else if(consuming_class && lname == "class" && multiple_class_in_class_count == 0) {
             consuming_class = false;
             class_name_consumed = false;
         }
-        else {
+        else if(consuming_class && lname == "super"){
+            in_inheritance_list = false;
+        }
+        else{
             // Do nothing
         }
     }
