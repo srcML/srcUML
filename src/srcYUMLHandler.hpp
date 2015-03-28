@@ -37,6 +37,12 @@ struct AttributeDeclaration {
     AttributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
 };
 
+struct StructureDeclaration {
+    std::string name;
+    std::map<std::string, std::string> structure_member_attributes;
+    std::map<std::string, std::string> structure_member_functions;
+};
+
 
 class srcYUMLClass {
 public:
@@ -50,12 +56,16 @@ public:
     // inside inheritance list
     // public, private, protected
 
+    bool is_abstract;
     
     // Keys can be public, private, or protected
     std::map<std::string, std::list<struct AttributeDeclaration> > class_data_members;
     std::map<std::string, std::list<std::string> > class_functions;
     std::list<std::string> inheritance_list;
-    srcYUMLClass() {}
+    std::list<struct StructureDeclaration> structures_in_class;
+    std::map<std::string, srcYUMLClass> classes_in_class;
+    
+    srcYUMLClass() : is_abstract(false) {} ;
     
     std::string convertToYuml(std::string class_name) const{
         
@@ -145,24 +155,28 @@ private:
     
     // Map representing <className, dataInsideClass>
     std::map<std::string, srcYUMLClass> classes_in_source;
+    std::list<struct StructureDeclaration> structures_in_source;
     
     // Map for classes AFTER they have been converted to yuml
     // The key is class name, and the string contained is the yuml string for that class
     // This will be used to build relationships in the yuml
     std::map<std::string, std::string> converted_classes;
     
+    
     // bool variables to determine program states
     bool consuming_class,
          consuming_data_member,
          consuming_function,
          data_member_type_consumed,
+         class_in_class,
+         class_in_class_name_consumed,
+         consuming_structure_out_of_class,
+         consuming_structure_in_class,
          in_public,
          in_private,
          in_protected,
          in_inheritance_list,
          class_name_consumed;
-    
-    int multiple_class_in_class_count;
     
     
     // This could be a function or an attribute
@@ -172,9 +186,10 @@ private:
     
      // This is to be used to store class name until we hit the end tag
      // so that we know what class key to map the data to.
-    
     std::string current_class;
     
+    // Vector for holding the names of any classes contained in the current class
+    std::vector<std::string> class_names_in_class_stack;
     
      // This holds what visibility layer we are in for the class
      // so that we can properly map where we got data from in our class
@@ -190,7 +205,6 @@ public:
     
     void processClassesInSource() {
         std::ofstream file;
-        
         
         for(const auto& itr : classes_in_source) {
             converted_classes[itr.first] = itr.second.convertToYuml(itr.first);
@@ -211,12 +225,13 @@ public:
                         consuming_data_member(false),
                         consuming_function(false),
                         data_member_type_consumed(false),
+                        class_in_class(false),
+                        class_in_class_name_consumed(false),
                         in_public(false),
                         in_private(false),
                         in_protected(false),
                         in_inheritance_list(false),
                         class_name_consumed(false),
-                        multiple_class_in_class_count(0),
                         output_file(output_file) {};
 
 
@@ -295,14 +310,23 @@ public:
         if(lname == "class") {
             consuming_class = true;
         }
+        // We are about to read the class name
         else if(consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class") {
             current_recorded_data_in_class = "";
         }
+        // We are about to start reading the inheritance list
         else if(consuming_class && lname == "super" && srcml_element_stack[srcml_element_stack.size() - 2] == "class"){
             in_inheritance_list = true;
         }
+        // We have found the names in the inheritance list
         else if(consuming_class && in_inheritance_list && lname == "name"){
             current_recorded_data_in_class = "";
+        }
+        else if(consuming_class && lname == "class")
+        {
+            current_recorded_data_in_class = "";
+            class_in_class = true;
+            class_in_class_name_consumed = false;
         }
         // We are now in the public part of the class
         else if(lname == "public" && consuming_class) {
@@ -331,7 +355,12 @@ public:
         }
         // if we hit the block of a function and its parent is a function we have consumed all needed data to record
         else if(lname == "block" && consuming_function && srcml_element_stack[srcml_element_stack.size() - 2] == "function") {
-            classes_in_source[current_class].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
+            if(!class_in_class) {
+                classes_in_source[current_class].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
+            }
+            else if(class_in_class) {
+                classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
+            }
             current_recorded_data_in_class = "";
             consuming_function = false;
         }
@@ -372,29 +401,62 @@ public:
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
         if(consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed) {
-            current_class = current_recorded_data_in_class;
-            classes_in_source[current_class];
-            class_name_consumed = true;
+            if(!class_in_class) {
+                current_class = current_recorded_data_in_class;
+                classes_in_source[current_class];
+                class_name_consumed = true;
+            }
+            else if(class_in_class)
+            {
+                // add the name to the stack so we can modify it, then add the key to the map
+                class_names_in_class_stack.push_back(current_recorded_data_in_class);
+                classes_in_source[current_class].classes_in_class[current_recorded_data_in_class];
+                class_in_class_name_consumed = true;
+            }
+            
         }
         // If we hit this we have consumed the WHOLE type
         else if(consuming_class && consuming_data_member && lname == "type" && !data_member_type_consumed) {
-            current_data_member_type = current_recorded_data_in_class;
-            current_recorded_data_in_class = "";
+            if(!class_in_class) {
+                current_data_member_type = current_recorded_data_in_class;
+                current_recorded_data_in_class = "";
+            }
+            else if(class_in_class) {
+                current_data_member_type = current_recorded_data_in_class;
+                current_recorded_data_in_class = "";
+            }
             data_member_type_consumed = true;
         }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
         else if(consuming_class && lname == "decl_stmt" && consuming_data_member && data_member_type_consumed) {
             struct AttributeDeclaration temp(current_data_member_type, current_recorded_data_in_class);
             
-            classes_in_source[current_class].class_data_members[current_class_visibility].push_back(temp);
-            // attribute has been fully consumed
-        
+            if(!class_in_class) {
+                classes_in_source[current_class].class_data_members[current_class_visibility].push_back(temp);
+                // attribute has been fully consumed
+            }
+            else if(class_in_class) {
+                // Class in class data member has been fully consumed
+                classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_data_members[current_class_visibility].push_back(temp);
+            }
             consuming_data_member = false;
             data_member_type_consumed = false;
             
         }
-        else if(consuming_class && in_inheritance_list && lname == "name"){
-            classes_in_source[current_class].inheritance_list.push_back(current_recorded_data_in_class);
+        // This will keep track of classes in the class
+        else if(consuming_class && class_in_class && !class_in_class_name_consumed && lname == "name")
+        {
+            class_names_in_class_stack.push_back(current_recorded_data_in_class);
+            class_in_class_name_consumed = true;
+        }
+        // We have consumed the whole inheritance list
+        else if(consuming_class && in_inheritance_list && lname == "name") {
+            if(!class_in_class) {
+                classes_in_source[current_class].inheritance_list.push_back(current_recorded_data_in_class);
+            }
+            else if(class_in_class) {
+                classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].inheritance_list.push_back(current_recorded_data_in_class);
+            }
         }
         // We are no longer in public visibility
         else if(consuming_class && lname == "public") {
@@ -408,15 +470,21 @@ public:
         else if(consuming_class && lname == "protected") {
             in_protected = false;
         }
-        else if(consuming_class && lname == "class" && multiple_class_in_class_count == 0) {
+        // We have ended the class
+        else if(consuming_class && lname == "class" && !class_in_class) {
             consuming_class = false;
             class_name_consumed = false;
         }
-        else if(consuming_class && lname == "super"){
-            in_inheritance_list = false;
+        // not sure here yet
+        else if(consuming_class && lname == "class" && class_in_class) {
+            // we have consumed the top of the stack class completely
+            class_names_in_class_stack.pop_back();
+            if(class_names_in_class_stack.empty()) {
+                class_in_class = false;
+            }
         }
-        else{
-            // Do nothing
+        else if(consuming_class && lname == "super") {
+            in_inheritance_list = false;
         }
     }
     
