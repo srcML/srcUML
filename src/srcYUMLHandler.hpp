@@ -39,8 +39,8 @@ struct AttributeDeclaration {
 
 struct StructureDeclaration {
     std::string name;
-    std::map<std::string, std::string> structure_member_attributes;
-    std::map<std::string, std::string> structure_member_functions;
+    std::map<std::string, struct AttributeDeclaration> structure_member_attributes;
+    std::list<std::string> structure_member_functions;
 };
 
 
