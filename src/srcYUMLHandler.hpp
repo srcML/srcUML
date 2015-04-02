@@ -195,7 +195,7 @@ private:
      // so that we can properly map where we got data from in our class
     std::string current_class_visibility;
     
-    std::string output_file;
+    std::ostream & output;
     
 
     
@@ -204,16 +204,14 @@ protected:
 public:
     
     void processClassesInSource() {
-        std::ofstream file;
         
         for(const auto& itr : classes_in_source) {
             converted_classes[itr.first] = itr.second.convertToYuml(itr.first);
         }
-        file.open(output_file);
+
         for(const auto& itr : converted_classes) {
-            file << itr.second;
+            output << itr.second;
         }
-        file.close();
         
     }
     /**
@@ -221,7 +219,7 @@ public:
      *
      * Default constructor default values to everything
      */
-    srcYUMLHandler(std::string output_file) :  consuming_class(false),
+    srcYUMLHandler(std::ostream & output) :  consuming_class(false),
                         consuming_data_member(false),
                         consuming_function(false),
                         data_member_type_consumed(false),
@@ -232,7 +230,7 @@ public:
                         in_protected(false),
                         in_inheritance_list(false),
                         class_name_consumed(false),
-                        output_file(output_file) {};
+                        output(output) {};
 
 
 #pragma GCC diagnostic push
