@@ -50,22 +50,16 @@ int main(int argc, char * argv[]) {
   }
 
   srcSAXController control(argv[1]);
+  std::ostream * output = &std::cout;
+  if(argc == 3)
+    output = new std::ofstream(argv[2]);
 
-  if(argc == 2) {
+  srcYUMLHandler handler(*output);
+  control.parse(&handler);
+  handler.processClassesInSource();
 
-    srcYUMLHandler handler(std::cout);
-    control.parse(&handler);
-    handler.processClassesInSource();
-
-  } else {
-
-    std::ofstream output(argv[2]);
-
-    srcYUMLHandler handler(output);
-    control.parse(&handler);
-    handler.processClassesInSource(); 
-
-  }
+  if(argc == 3)
+    delete output;
 
   return 0;
 }
