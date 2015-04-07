@@ -88,23 +88,23 @@ public:
         yuml_format = "[" + class_name;
         
         if(public_data || private_data || protected_data) {
-            yuml_format += "|";
+            yuml_format += "|\n";
         }
         
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += itr.type + itr.name;
+                yuml_format += itr.type + itr.name + "\n";
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += itr.type + itr.name;
+                yuml_format += itr.type + itr.name + "\n";
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += itr.type + itr.name;
+                yuml_format += itr.type + itr.name + "\n";
             }
         }
 
@@ -112,26 +112,26 @@ public:
         
         if(public_functions || private_functions || protected_functions)
         {
-            yuml_format += "|";
+            yuml_format += "\n|";
         }
         if(public_functions) {
             for(const auto& itr : class_functions.at("public")) {
-                yuml_format +=  itr + ";";
+                yuml_format +=  itr + ";\n";
             }
         }
         if(private_functions) {
             for(const auto& itr : class_functions.at("private")) {
-                yuml_format +=  itr + ";";
+                yuml_format +=  itr + ";\n";
             }
         }
         if(protected_functions) {
             for(const auto& itr : class_functions.at("protected")) {
-                yuml_format +=  itr + ";";
+                yuml_format +=  itr + ";\n";
             }
         }
         
         // End class
-        yuml_format += "]";
+        yuml_format += "]\n\n";
         
         return yuml_format;
     }
@@ -305,11 +305,11 @@ public:
                                 const struct srcsax_attribute * attributes) {
         std::string lname = localname;
         // We have started reading a class
-        if(lname == "class") {
+        if(lname == "class" || lname == "struct") {
             consuming_class = true;
         }
         // We are about to read the class name
-        else if(consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class") {
+        else if((consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "class") || (consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 2] == "struct")) {
             current_recorded_data_in_class = "";
         }
         // We are about to start reading the inheritance list
@@ -320,7 +320,7 @@ public:
         else if(consuming_class && in_inheritance_list && lname == "name"){
             current_recorded_data_in_class = "";
         }
-        else if(consuming_class && lname == "class")
+        else if((consuming_class && lname == "class") || (consuming_class && lname == "struct"))
         {
             current_recorded_data_in_class = "";
             class_in_class = true;
@@ -354,10 +354,22 @@ public:
         // if we hit the block of a function and its parent is a function we have consumed all needed data to record
         else if(lname == "block" && consuming_function && srcml_element_stack[srcml_element_stack.size() - 2] == "function") {
             if(!class_in_class) {
-                classes_in_source[current_class].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
+                if(in_public || in_private || in_protected) {
+                    classes_in_source[current_class].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
+                }
+                // in-case we are in a struct default the visibility option to public
+                else {
+                    classes_in_source[current_class].class_functions["public"].push_back(current_recorded_data_in_class);
+                }
             }
             else if(class_in_class) {
-                classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
+                if( in_public || in_private || in_protected) {
+                    classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
+                }
+                // in-case we are in a struct, once again default the visibility option to public
+                else {
+                    classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions["public"].push_back(current_recorded_data_in_class);
+                }
             }
             current_recorded_data_in_class = "";
             consuming_function = false;
@@ -398,7 +410,7 @@ public:
     virtual void endElement(const char * localname, const char * prefix, const char * URI) {
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
-        if(consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed) {
+        if((consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed) || (consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "struct" && !class_name_consumed)) {
             if(!class_in_class) {
                 current_class = current_recorded_data_in_class;
                 classes_in_source[current_class];
@@ -430,8 +442,15 @@ public:
             struct AttributeDeclaration temp(current_data_member_type, current_recorded_data_in_class);
             
             if(!class_in_class) {
-                classes_in_source[current_class].class_data_members[current_class_visibility].push_back(temp);
-                // attribute has been fully consumed
+                if(in_public || in_private || in_protected) {
+                    classes_in_source[current_class].class_data_members[current_class_visibility].push_back(temp);
+                    // attribute has been fully consumed
+                }
+                // Default the visibility to public
+                else {
+                    classes_in_source[current_class].class_data_members["public"].push_back(temp);
+                    // attribute has been fully consumed
+                }
             }
             else if(class_in_class) {
                 // Class in class data member has been fully consumed
@@ -457,24 +476,28 @@ public:
             }
         }
         // We are no longer in public visibility
+        // and we must reset the visibility string
         else if(consuming_class && lname == "public") {
             in_public = false;
+            current_class_visibility = "";
         }
         // We are no longer in private visibility
         else if(consuming_class && lname == "private") {
             in_private = false;
+            current_class_visibility = "";
         }
         // We are no longer in protected visibility
         else if(consuming_class && lname == "protected") {
             in_protected = false;
+            current_class_visibility = "";
         }
         // We have ended the class
-        else if(consuming_class && lname == "class" && !class_in_class) {
+        else if((consuming_class && lname == "class" && !class_in_class) || (consuming_class && lname == "struct" && !class_in_class)) {
             consuming_class = false;
             class_name_consumed = false;
         }
         // not sure here yet
-        else if(consuming_class && lname == "class" && class_in_class) {
+        else if((consuming_class && lname == "class" && class_in_class) || (consuming_class && lname == "struct" && class_in_class)) {
             // we have consumed the top of the stack class completely
             class_names_in_class_stack.pop_back();
             if(class_names_in_class_stack.empty()) {
