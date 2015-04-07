@@ -29,6 +29,9 @@
 #include <vector>
 #include <fstream>
 
+std::string removePortionOfString(std::string, std::string);
+std::string replaceCommas(std::string);
+
 struct AttributeDeclaration {
     
     std::string type;
@@ -88,23 +91,23 @@ public:
         yuml_format = "[" + class_name;
         
         if(public_data || private_data || protected_data) {
-            yuml_format += "|\n";
+            yuml_format += "|";
         }
         
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += itr.type + itr.name + "\n";
+                yuml_format += itr.type + itr.name + "";
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += itr.type + itr.name + "\n";
+                yuml_format += itr.type + itr.name + "";
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += itr.type + itr.name + "\n";
+                yuml_format += itr.type + itr.name + "";
             }
         }
 
@@ -112,26 +115,26 @@ public:
         
         if(public_functions || private_functions || protected_functions)
         {
-            yuml_format += "\n|";
+            yuml_format += "|";
         }
         if(public_functions) {
             for(const auto& itr : class_functions.at("public")) {
-                yuml_format +=  itr + ";\n";
+                yuml_format +=  itr + ";";
             }
         }
         if(private_functions) {
             for(const auto& itr : class_functions.at("private")) {
-                yuml_format +=  itr + ";\n";
+                yuml_format +=  itr + ";";
             }
         }
         if(protected_functions) {
             for(const auto& itr : class_functions.at("protected")) {
-                yuml_format +=  itr + ";\n";
+                yuml_format +=  itr + ";";
             }
         }
         
         // End class
-        yuml_format += "]\n\n";
+        yuml_format += "]\n";
         
         return yuml_format;
     }
@@ -353,6 +356,9 @@ public:
         }
         // if we hit the block of a function and its parent is a function we have consumed all needed data to record
         else if(lname == "block" && consuming_function && srcml_element_stack[srcml_element_stack.size() - 2] == "function") {
+            
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
             if(!class_in_class) {
                 if(in_public || in_private || in_protected) {
                     classes_in_source[current_class].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
@@ -368,6 +374,7 @@ public:
                 }
                 // in-case we are in a struct, once again default the visibility option to public
                 else {
+                    
                     classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions["public"].push_back(current_recorded_data_in_class);
                 }
             }
@@ -411,6 +418,10 @@ public:
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
         if((consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed) || (consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "struct" && !class_name_consumed)) {
+            
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+            
             if(!class_in_class) {
                 current_class = current_recorded_data_in_class;
                 classes_in_source[current_class];
@@ -427,6 +438,9 @@ public:
         }
         // If we hit this we have consumed the WHOLE type
         else if(consuming_class && consuming_data_member && lname == "type" && !data_member_type_consumed) {
+            
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
             if(!class_in_class) {
                 current_data_member_type = current_recorded_data_in_class;
                 current_recorded_data_in_class = "";
@@ -439,6 +453,10 @@ public:
         }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
         else if(consuming_class && lname == "decl_stmt" && consuming_data_member && data_member_type_consumed) {
+            
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+            
             struct AttributeDeclaration temp(current_data_member_type, current_recorded_data_in_class);
             
             if(!class_in_class) {
@@ -468,6 +486,9 @@ public:
         }
         // We have consumed the whole inheritance list
         else if(consuming_class && in_inheritance_list && lname == "name") {
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+            
             if(!class_in_class) {
                 classes_in_source[current_class].inheritance_list.push_back(current_recorded_data_in_class);
             }
@@ -593,5 +614,38 @@ public:
 #pragma GCC diagnostic pop
 
 };
+
+std::string removePortionOfString(std::string stringToFix, std::string sequenceToRemove) {
+    if(stringToFix == "" || sequenceToRemove == "")
+    {
+        return "";
+    }
+    size_t pos;
+    size_t lengthOfSequence = sequenceToRemove.length();
+    pos = stringToFix.find(sequenceToRemove);
+    while(pos != std::string::npos) {
+        stringToFix = stringToFix.substr(0, pos) + stringToFix.substr(pos + lengthOfSequence, stringToFix.length());
+        pos = stringToFix.find(sequenceToRemove);
+    }
+    
+    
+    return stringToFix;
+    
+}
+
+std::string replaceCommas(std::string stringToFix) {
+    if(stringToFix == "")
+        return "";
+    
+    std::string temp = "";
+    size_t pos;
+    pos = stringToFix.find(",");
+    while(pos != std::string::npos) {
+        stringToFix = stringToFix.substr(0, pos) + "،" + stringToFix.substr(pos + 1, stringToFix.length());
+        pos = stringToFix.find(",");
+    }
+    return stringToFix;
+}
+
 
 #endif
