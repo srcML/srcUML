@@ -97,17 +97,17 @@ public:
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += itr.type + itr.name + "";
+                yuml_format += itr.type + itr.name;
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += itr.type + itr.name + "";
+                yuml_format += itr.type + itr.name;
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += itr.type + itr.name + "";
+                yuml_format += itr.type + itr.name;
             }
         }
 
