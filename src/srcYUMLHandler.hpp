@@ -31,6 +31,7 @@
 
 std::string removePortionOfString(std::string, std::string);
 std::string replaceCommas(std::string);
+std::string removeSemiColons(std::string);
 
 struct AttributeDeclaration {
     
@@ -40,10 +41,12 @@ struct AttributeDeclaration {
     AttributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
 };
 
-struct StructureDeclaration {
-    std::string name;
-    std::map<std::string, struct AttributeDeclaration> structure_member_attributes;
-    std::list<std::string> structure_member_functions;
+struct FunctionDeclaration {
+    std::string returnType;
+    std::string function_name;
+    std::list<struct AttributeDeclaration> function_parameters;
+    
+    FunctionDeclaration(std::string rType, std::string fName, std::list<struct AttributeDeclaration> params) : returnType(rType), function_name(fName), function_parameters(params) {};
 };
 
 
@@ -63,9 +66,9 @@ public:
     
     // Keys can be public, private, or protected
     std::map<std::string, std::list<struct AttributeDeclaration> > class_data_members;
-    std::map<std::string, std::list<std::string> > class_functions;
+    //std::map<std::string, std::list<std::string> > class_functions;
     std::list<std::string> inheritance_list;
-    std::list<struct StructureDeclaration> structures_in_class;
+    std::map<std::string, std::list<struct FunctionDeclaration>> class_functions;
     std::map<std::string, srcYUMLClass> classes_in_class;
     
     srcYUMLClass() : is_abstract(false) {} ;
@@ -97,17 +100,17 @@ public:
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += itr.type + itr.name;
+                yuml_format += "+" + itr.name + ":" + itr.type + ";";
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += itr.type + itr.name;
+                yuml_format += "+" + itr.name + ":" + itr.type + ";";
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += itr.type + itr.name;
+                yuml_format += "+" + itr.name + ":" + itr.type + ";";
             }
         }
 
@@ -119,17 +122,47 @@ public:
         }
         if(public_functions) {
             for(const auto& itr : class_functions.at("public")) {
-                yuml_format +=  itr + ";";
+                yuml_format += "+" + itr.function_name + "( ";
+                size_t numberOfFunctionParameters = 0;
+                for(const auto& funcParamItr : itr.function_parameters) {
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.type;
+                    ++numberOfFunctionParameters;
+                    if(numberOfFunctionParameters < itr.function_parameters.size() - 1) {
+                        yuml_format += "،";
+                    }
+                }
+                yuml_format += " ):" + itr.returnType + ";";
+                
             }
         }
         if(private_functions) {
-            for(const auto& itr : class_functions.at("private")) {
-                yuml_format +=  itr + ";";
+            for(const auto& itr : class_functions.at("public")) {
+                yuml_format += "+" + itr.function_name + "( ";
+                size_t numberOfFunctionParameters = 0;
+                for(const auto& funcParamItr : itr.function_parameters) {
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.type;
+                    ++numberOfFunctionParameters;
+                    if(numberOfFunctionParameters < itr.function_parameters.size() - 1) {
+                        yuml_format += "،";
+                    }
+                }
+                yuml_format += " ):" + itr.returnType + ";";
+                
             }
         }
         if(protected_functions) {
-            for(const auto& itr : class_functions.at("protected")) {
-                yuml_format +=  itr + ";";
+            for(const auto& itr : class_functions.at("public")) {
+                yuml_format += "+" + itr.function_name + "( ";
+                size_t numberOfFunctionParameters = 0;
+                for(const auto& funcParamItr : itr.function_parameters) {
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.type;
+                    ++numberOfFunctionParameters;
+                    if(numberOfFunctionParameters < itr.function_parameters.size() - 1) {
+                        yuml_format += "،";
+                    }
+                }
+                yuml_format += " ): " + itr.returnType + ";";
+                
             }
         }
         
@@ -158,8 +191,7 @@ private:
     
     // Map representing <className, dataInsideClass>
     std::map<std::string, srcYUMLClass> classes_in_source;
-    std::list<struct StructureDeclaration> structures_in_source;
-    
+    std::list<struct AttributeDeclaration> function_parameters;
     // Map for classes AFTER they have been converted to yuml
     // The key is class name, and the string contained is the yuml string for that class
     // This will be used to build relationships in the yuml
@@ -168,13 +200,13 @@ private:
     
     // bool variables to determine program states
     bool consuming_class,
-         consuming_data_member,
+         consuming_data_declaration,
          consuming_function,
+         in_function_param_list,
+         function_return_type_consumed,
          data_member_type_consumed,
          class_in_class,
          class_in_class_name_consumed,
-         consuming_structure_out_of_class,
-         consuming_structure_in_class,
          in_public,
          in_private,
          in_protected,
@@ -184,8 +216,10 @@ private:
     
     // This could be a function or an attribute
     std::string current_recorded_data_in_class;
-    std::string current_data_member_type;
-    
+    std::string consuming_data_declaration_type;
+    std::string current_data_declaration_names;
+    std::string current_function_return_type;
+    std::string current_function_name;
     
      // This is to be used to store class name until we hit the end tag
      // so that we know what class key to map the data to.
@@ -223,8 +257,10 @@ public:
      * Default constructor default values to everything
      */
     srcYUMLHandler(std::ostream & output) :  consuming_class(false),
-                        consuming_data_member(false),
+                        consuming_data_declaration(false),
                         consuming_function(false),
+                        in_function_param_list(false),
+                        function_return_type_consumed(false),
                         data_member_type_consumed(false),
                         class_in_class(false),
                         class_in_class_name_consumed(false),
@@ -345,8 +381,15 @@ public:
             current_class_visibility = "protected";
         }
         // We are at a class attribute
-        else if(lname == "decl_stmt" && consuming_class) {
-            consuming_data_member = true;
+        else if(lname == "decl_stmt" && consuming_class && !consuming_function && !(srcml_element_stack[srcml_element_stack.size() - 2] == "block")) {
+            consuming_data_declaration = true;
+            current_recorded_data_in_class = "";
+        }
+        else if(lname == "decl" && consuming_class && consuming_function && in_function_param_list) {
+            consuming_data_declaration = true;
+            current_recorded_data_in_class = "";
+        }
+        else if(lname == "decl" && consuming_class && !consuming_function && consuming_data_declaration) {
             current_recorded_data_in_class = "";
         }
         // We are at one of the classes functions
@@ -354,33 +397,15 @@ public:
             consuming_function = true;
             current_recorded_data_in_class = "";
         }
-        // if we hit the block of a function and its parent is a function we have consumed all needed data to record
-        else if(lname == "block" && consuming_function && srcml_element_stack[srcml_element_stack.size() - 2] == "function") {
-            
-            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-            if(!class_in_class) {
-                if(in_public || in_private || in_protected) {
-                    classes_in_source[current_class].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
-                }
-                // in-case we are in a struct default the visibility option to public
-                else {
-                    classes_in_source[current_class].class_functions["public"].push_back(current_recorded_data_in_class);
-                }
-            }
-            else if(class_in_class) {
-                if( in_public || in_private || in_protected) {
-                    classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(current_recorded_data_in_class);
-                }
-                // in-case we are in a struct, once again default the visibility option to public
-                else {
-                    
-                    classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions["public"].push_back(current_recorded_data_in_class);
-                }
-            }
+        else if(lname == "type" && consuming_class && consuming_function && !in_function_param_list) {
             current_recorded_data_in_class = "";
-            consuming_function = false;
         }
+        else if(lname == "parameter_list" && consuming_class && consuming_function && !in_function_param_list) {
+            in_function_param_list = true;
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_function_name = current_recorded_data_in_class;
+        }
+
     }
 
     /**
@@ -417,7 +442,7 @@ public:
     virtual void endElement(const char * localname, const char * prefix, const char * URI) {
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
-        if((consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed) || (consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "struct" && !class_name_consumed)) {
+        if((consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed && !consuming_function) || (consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "struct" && !class_name_consumed && !consuming_function)) {
             
             current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
             current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
@@ -437,27 +462,28 @@ public:
             
         }
         // If we hit this we have consumed the WHOLE type
-        else if(consuming_class && consuming_data_member && lname == "type" && !data_member_type_consumed) {
+        else if(consuming_class && consuming_data_declaration && lname == "type" && !data_member_type_consumed && !consuming_function && !consuming_function) {
             
             current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
             current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-            if(!class_in_class) {
-                current_data_member_type = current_recorded_data_in_class;
-                current_recorded_data_in_class = "";
-            }
-            else if(class_in_class) {
-                current_data_member_type = current_recorded_data_in_class;
-                current_recorded_data_in_class = "";
-            }
+            
+
+            consuming_data_declaration_type = current_recorded_data_in_class;
+            current_recorded_data_in_class = "";
+            
             data_member_type_consumed = true;
         }
+        else if(consuming_class && lname == "decl" && consuming_data_declaration && data_member_type_consumed && !consuming_function) {
+            current_data_declaration_names += current_recorded_data_in_class + ", ";
+        }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
-        else if(consuming_class && lname == "decl_stmt" && consuming_data_member && data_member_type_consumed) {
+        else if(consuming_class && lname == "decl_stmt" && consuming_data_declaration && data_member_type_consumed && !consuming_function) {
+            current_data_declaration_names = current_data_declaration_names.substr(0, current_data_declaration_names.length() - 2);
+            current_data_declaration_names = removePortionOfString(current_data_declaration_names, "std::");
+            current_data_declaration_names = replaceCommas(current_data_declaration_names);
+            current_data_declaration_names = removeSemiColons(current_data_declaration_names);
             
-            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-            
-            struct AttributeDeclaration temp(current_data_member_type, current_recorded_data_in_class);
+            struct AttributeDeclaration temp(consuming_data_declaration_type, current_data_declaration_names);
             
             if(!class_in_class) {
                 if(in_public || in_private || in_protected) {
@@ -474,8 +500,9 @@ public:
                 // Class in class data member has been fully consumed
                 classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_data_members[current_class_visibility].push_back(temp);
             }
-            consuming_data_member = false;
+            consuming_data_declaration = false;
             data_member_type_consumed = false;
+            current_data_declaration_names = "";
             
         }
         // This will keep track of classes in the class
@@ -528,6 +555,69 @@ public:
         else if(consuming_class && lname == "super") {
             in_inheritance_list = false;
         }
+        else if(consuming_class && consuming_function && lname == "function") {
+            consuming_function = false;
+        }
+        else if(lname == "type" && consuming_class && consuming_function && !in_function_param_list && !function_return_type_consumed) {
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_function_return_type = current_recorded_data_in_class;
+            current_recorded_data_in_class = "";
+            function_return_type_consumed = true;
+        }
+        else if(lname == "type" && consuming_class && consuming_function && in_function_param_list && consuming_data_declaration && function_return_type_consumed) {
+            
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+            
+            
+            consuming_data_declaration_type = current_recorded_data_in_class;
+            current_recorded_data_in_class = "";
+            
+            data_member_type_consumed = true;
+        }
+        else if(lname == "name" && consuming_class && consuming_function && in_function_param_list && consuming_data_declaration && data_member_type_consumed) {
+
+            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+            current_recorded_data_in_class = removeSemiColons(current_recorded_data_in_class);
+            
+            struct AttributeDeclaration temp(consuming_data_declaration_type, current_recorded_data_in_class);
+            
+            function_parameters.push_back(temp);
+            consuming_data_declaration = false;
+            data_member_type_consumed = false;
+        }
+        else if(lname == "parameter_list" && consuming_class && consuming_function && in_function_param_list) {
+            // build a FunctionDeclaration
+            struct FunctionDeclaration temp(current_function_return_type, current_function_name, function_parameters);
+            
+            if(!class_in_class) {
+                if(in_public || in_private || in_protected) {
+                    classes_in_source[current_class].class_functions[current_class_visibility].push_back(temp);
+                }
+                // in-case we are in a struct default the visibility option to public
+                else {
+                    classes_in_source[current_class].class_functions["public"].push_back(temp);
+                }
+            }
+            else if(class_in_class) {
+                if( in_public || in_private || in_protected) {
+                    classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(temp);
+                }
+                // in-case we are in a struct, once again default the visibility option to public
+                else {
+                    
+                    classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions["public"].push_back(temp);
+                }
+            }
+            current_recorded_data_in_class = "";
+            current_function_return_type = "";
+            consuming_function = false;
+            in_function_param_list = false;
+            function_return_type_consumed = false;
+            function_parameters.clear();
+
+        }
     }
     
     /**
@@ -557,7 +647,7 @@ public:
             else if(text_parsed == "<") {
                 text_parsed = "＜";
             }
-            else {
+            else{
                 
             }
             current_recorded_data_in_class.append(text_parsed);
@@ -637,12 +727,23 @@ std::string replaceCommas(std::string stringToFix) {
     if(stringToFix == "")
         return "";
     
-    std::string temp = "";
     size_t pos;
     pos = stringToFix.find(",");
     while(pos != std::string::npos) {
         stringToFix = stringToFix.substr(0, pos) + "،" + stringToFix.substr(pos + 1, stringToFix.length());
         pos = stringToFix.find(",");
+    }
+    return stringToFix;
+}
+
+std::string removeSemiColons(std::string stringToFix) {
+    if(stringToFix == "")
+        return "";
+    
+    size_t pos = stringToFix.find(";");
+    while(pos != std::string::npos) {
+        stringToFix = stringToFix.substr(0, pos) + stringToFix.substr(pos + 1, stringToFix.length());
+        pos = stringToFix.find(";");
     }
     return stringToFix;
 }
