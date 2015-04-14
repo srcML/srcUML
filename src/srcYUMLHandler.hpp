@@ -127,7 +127,7 @@ public:
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.name + ":" + funcParamItr.type;
                     ++numberOfFunctionParameters;
-                    if(numberOfFunctionParameters < itr.function_parameters.size() - 1) {
+                    if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
                     }
                 }
@@ -136,13 +136,13 @@ public:
             }
         }
         if(private_functions) {
-            for(const auto& itr : class_functions.at("public")) {
+            for(const auto& itr : class_functions.at("private")) {
                 yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.name + ":" + funcParamItr.type;
                     ++numberOfFunctionParameters;
-                    if(numberOfFunctionParameters < itr.function_parameters.size() - 1) {
+                    if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
                     }
                 }
@@ -151,13 +151,13 @@ public:
             }
         }
         if(protected_functions) {
-            for(const auto& itr : class_functions.at("public")) {
+            for(const auto& itr : class_functions.at("protected")) {
                 yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.name + ":" + funcParamItr.type;
                     ++numberOfFunctionParameters;
-                    if(numberOfFunctionParameters < itr.function_parameters.size() - 1) {
+                    if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
                     }
                 }
@@ -443,67 +443,18 @@ public:
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
         if((consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed && !consuming_function) || (consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "struct" && !class_name_consumed && !consuming_function)) {
-            
-            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-            
-            if(!class_in_class) {
-                current_class = current_recorded_data_in_class;
-                classes_in_source[current_class];
-                class_name_consumed = true;
-            }
-            else if(class_in_class)
-            {
-                // add the name to the stack so we can modify it, then add the key to the map
-                class_names_in_class_stack.push_back(current_recorded_data_in_class);
-                classes_in_source[current_class].classes_in_class[current_recorded_data_in_class];
-                class_in_class_name_consumed = true;
-            }
-            
+            recordClassName();
         }
         // If we hit this we have consumed the WHOLE type
         else if(consuming_class && consuming_data_declaration && lname == "type" && !data_member_type_consumed && !consuming_function && !consuming_function) {
-            
-            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-            
-
-            consuming_data_declaration_type = current_recorded_data_in_class;
-            current_recorded_data_in_class = "";
-            
-            data_member_type_consumed = true;
+            recordDataDeclarationType();
         }
         else if(consuming_class && lname == "decl" && consuming_data_declaration && data_member_type_consumed && !consuming_function) {
-            current_data_declaration_names += current_recorded_data_in_class + ", ";
+            buildDataDeclarationNamesString();
         }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
         else if(consuming_class && lname == "decl_stmt" && consuming_data_declaration && data_member_type_consumed && !consuming_function) {
-            current_data_declaration_names = current_data_declaration_names.substr(0, current_data_declaration_names.length() - 2);
-            current_data_declaration_names = removePortionOfString(current_data_declaration_names, "std::");
-            current_data_declaration_names = replaceCommas(current_data_declaration_names);
-            current_data_declaration_names = removeSemiColons(current_data_declaration_names);
-            
-            struct AttributeDeclaration temp(consuming_data_declaration_type, current_data_declaration_names);
-            
-            if(!class_in_class) {
-                if(in_public || in_private || in_protected) {
-                    classes_in_source[current_class].class_data_members[current_class_visibility].push_back(temp);
-                    // attribute has been fully consumed
-                }
-                // Default the visibility to public
-                else {
-                    classes_in_source[current_class].class_data_members["public"].push_back(temp);
-                    // attribute has been fully consumed
-                }
-            }
-            else if(class_in_class) {
-                // Class in class data member has been fully consumed
-                classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_data_members[current_class_visibility].push_back(temp);
-            }
-            consuming_data_declaration = false;
-            data_member_type_consumed = false;
-            current_data_declaration_names = "";
-            
+            recordFullDataDeclaration();
         }
         // This will keep track of classes in the class
         else if(consuming_class && class_in_class && !class_in_class_name_consumed && lname == "name")
@@ -513,15 +464,7 @@ public:
         }
         // We have consumed the whole inheritance list
         else if(consuming_class && in_inheritance_list && lname == "name") {
-            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-            
-            if(!class_in_class) {
-                classes_in_source[current_class].inheritance_list.push_back(current_recorded_data_in_class);
-            }
-            else if(class_in_class) {
-                classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].inheritance_list.push_back(current_recorded_data_in_class);
-            }
+            recordClassInheritanceList();
         }
         // We are no longer in public visibility
         // and we must reset the visibility string
@@ -559,64 +502,18 @@ public:
             consuming_function = false;
         }
         else if(lname == "type" && consuming_class && consuming_function && !in_function_param_list && !function_return_type_consumed) {
-            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-            current_function_return_type = current_recorded_data_in_class;
-            current_recorded_data_in_class = "";
-            function_return_type_consumed = true;
+            recordFunctionReturnType();
         }
         else if(lname == "type" && consuming_class && consuming_function && in_function_param_list && consuming_data_declaration && function_return_type_consumed) {
-            
-            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-            
-            
-            consuming_data_declaration_type = current_recorded_data_in_class;
-            current_recorded_data_in_class = "";
-            
-            data_member_type_consumed = true;
+            recordDataDeclarationType();
         }
         else if(lname == "name" && consuming_class && consuming_function && in_function_param_list && consuming_data_declaration && data_member_type_consumed) {
-
-            current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-            current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-            current_recorded_data_in_class = removeSemiColons(current_recorded_data_in_class);
-            
-            struct AttributeDeclaration temp(consuming_data_declaration_type, current_recorded_data_in_class);
-            
-            function_parameters.push_back(temp);
-            consuming_data_declaration = false;
-            data_member_type_consumed = false;
+            buildDataDeclarationNamesString();
+            recordFullDataDeclaration();
         }
         else if(lname == "parameter_list" && consuming_class && consuming_function && in_function_param_list) {
             // build a FunctionDeclaration
-            struct FunctionDeclaration temp(current_function_return_type, current_function_name, function_parameters);
-            
-            if(!class_in_class) {
-                if(in_public || in_private || in_protected) {
-                    classes_in_source[current_class].class_functions[current_class_visibility].push_back(temp);
-                }
-                // in-case we are in a struct default the visibility option to public
-                else {
-                    classes_in_source[current_class].class_functions["public"].push_back(temp);
-                }
-            }
-            else if(class_in_class) {
-                if( in_public || in_private || in_protected) {
-                    classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(temp);
-                }
-                // in-case we are in a struct, once again default the visibility option to public
-                else {
-                    
-                    classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions["public"].push_back(temp);
-                }
-            }
-            current_recorded_data_in_class = "";
-            current_function_return_type = "";
-            consuming_function = false;
-            in_function_param_list = false;
-            function_return_type_consumed = false;
-            function_parameters.clear();
-
+            recordFunctionDeclaration();
         }
     }
     
@@ -701,10 +598,135 @@ public:
      */
     virtual void processingInstruction(const char * target, const char * data) {}
 
+    void recordClassName() {
+        
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+        current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+        
+        if(!class_in_class) {
+            current_class = current_recorded_data_in_class;
+            classes_in_source[current_class];
+            class_name_consumed = true;
+        }
+        else if(class_in_class)
+        {
+            // add the name to the stack so we can modify it, then add the key to the map
+            class_names_in_class_stack.push_back(current_recorded_data_in_class);
+            classes_in_source[current_class].classes_in_class[current_recorded_data_in_class];
+            class_in_class_name_consumed = true;
+        }
+
+    }
+    
+    void recordDataDeclarationType() {
+        
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+        current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+        
+        
+        consuming_data_declaration_type = current_recorded_data_in_class;
+        current_recorded_data_in_class = "";
+        
+        data_member_type_consumed = true;
+
+    }
+    
+    void buildDataDeclarationNamesString() {
+        current_data_declaration_names += current_recorded_data_in_class + ", ";
+    }
+
+    void recordFullDataDeclaration() {
+
+        consuming_data_declaration = false;
+        data_member_type_consumed = false;
+
+        current_data_declaration_names = current_data_declaration_names.substr(0, current_data_declaration_names.length() - 2);
+        
+        
+        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "std::");
+        current_data_declaration_names = replaceCommas(current_data_declaration_names);
+        current_data_declaration_names = removePortionOfString(current_data_declaration_names, ";");
+        
+        struct AttributeDeclaration temp(consuming_data_declaration_type, current_data_declaration_names);
+        if(consuming_function) {
+            function_parameters.push_back(temp);
+
+            current_data_declaration_names = "";
+            return;
+        }
+        if(!class_in_class) {
+            if(in_public || in_private || in_protected) {
+                classes_in_source[current_class].class_data_members[current_class_visibility].push_back(temp);
+                // attribute has been fully consumed
+            }
+            // Default the visibility to public
+            else {
+                classes_in_source[current_class].class_data_members["public"].push_back(temp);
+                // attribute has been fully consumed
+            }
+        }
+        else if(class_in_class) {
+            // Class in class data member has been fully consumed
+            classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_data_members[current_class_visibility].push_back(temp);
+        }
+        current_data_declaration_names = "";
+
+    }
+    
+    void recordClassInheritanceList() {
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+        current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+        
+        if(!class_in_class) {
+            classes_in_source[current_class].inheritance_list.push_back(current_recorded_data_in_class);
+        }
+        else if(class_in_class) {
+            classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].inheritance_list.push_back(current_recorded_data_in_class);
+        }
+    }
+    
+    void recordFunctionReturnType() {
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+        current_function_return_type = current_recorded_data_in_class;
+        current_recorded_data_in_class = "";
+        function_return_type_consumed = true;
+    }
+    
+    void recordFunctionDeclaration() {
+        struct FunctionDeclaration temp(current_function_return_type, current_function_name, function_parameters);
+        
+        if(!class_in_class) {
+            if(in_public || in_private || in_protected) {
+                classes_in_source[current_class].class_functions[current_class_visibility].push_back(temp);
+            }
+            // in-case we are in a struct default the visibility option to public
+            else {
+                classes_in_source[current_class].class_functions["public"].push_back(temp);
+            }
+        }
+        else if(class_in_class) {
+            if( in_public || in_private || in_protected) {
+                classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(temp);
+            }
+            // in-case we are in a struct, once again default the visibility option to public
+            else {
+                
+                classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions["public"].push_back(temp);
+            }
+        }
+        current_recorded_data_in_class = "";
+        current_function_return_type = "";
+        consuming_function = false;
+        in_function_param_list = false;
+        function_return_type_consumed = false;
+        function_parameters.clear();
+    }
+    
 #pragma GCC diagnostic pop
 
 };
 
+// Used to remove a substring from a string
 std::string removePortionOfString(std::string stringToFix, std::string sequenceToRemove) {
     if(stringToFix == "" || sequenceToRemove == "")
     {
@@ -722,7 +744,8 @@ std::string removePortionOfString(std::string stringToFix, std::string sequenceT
     return stringToFix;
     
 }
-
+// All commas contained in a string get replaced with a different type of comma
+// So that they can be used in yuml
 std::string replaceCommas(std::string stringToFix) {
     if(stringToFix == "")
         return "";
@@ -736,17 +759,6 @@ std::string replaceCommas(std::string stringToFix) {
     return stringToFix;
 }
 
-std::string removeSemiColons(std::string stringToFix) {
-    if(stringToFix == "")
-        return "";
-    
-    size_t pos = stringToFix.find(";");
-    while(pos != std::string::npos) {
-        stringToFix = stringToFix.substr(0, pos) + stringToFix.substr(pos + 1, stringToFix.length());
-        pos = stringToFix.find(";");
-    }
-    return stringToFix;
-}
 
 
 #endif
