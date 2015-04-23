@@ -780,13 +780,13 @@ void resolveMultiplicity(struct AttributeDeclaration& rhs) {
     }
     else if(rhs.type.find("[") != std::string::npos) {
         size_t begin_pos = rhs.type.find_last_of("[");
-        rhs.type = rhs.type.substr(0, begin_pos);
+        rhs.type = rhs.type.substr(0, begin_pos - 1);
         rhs.multiplicity = "［*］";
         
     }
     else if(rhs.type.find("*") != std::string::npos) {
         size_t begin_pos = rhs.type.find_last_of("*");
-        rhs.type = rhs.type.substr(0, begin_pos);
+        rhs.type = rhs.type.substr(0, begin_pos - 1);
         rhs.multiplicity = "［*］";
     }
 }
