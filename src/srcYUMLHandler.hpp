@@ -32,11 +32,13 @@
 std::string removePortionOfString(std::string, std::string);
 std::string replaceCommas(std::string);
 std::string removeSemiColons(std::string);
+void resolveMultiplicity(struct AttributeDeclaration&);
 
 struct AttributeDeclaration {
     
     std::string type;
     std::string name;
+    std::string multiplicity;
     
     AttributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
 };
@@ -100,17 +102,17 @@ public:
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += "+" + itr.name + ":" + itr.type + ";";
+                yuml_format += "+" + itr.name + ":" + itr.multiplicity + itr.type + ";";
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += "+" + itr.name + ":" + itr.type + ";";
+                yuml_format += "+" + itr.name + ":" + itr.multiplicity + itr.type + ";";
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += "+" + itr.name + ":" + itr.type + ";";
+                yuml_format += "+" + itr.name + ":" + itr.multiplicity + itr.type + ";";
             }
         }
 
@@ -125,7 +127,7 @@ public:
                 yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
-                    yuml_format += funcParamItr.name + ":" + funcParamItr.type;
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.multiplicity + funcParamItr.type;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
@@ -140,7 +142,7 @@ public:
                 yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
-                    yuml_format += funcParamItr.name + ":" + funcParamItr.type;
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.multiplicity + funcParamItr.type;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
@@ -155,7 +157,7 @@ public:
                 yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
-                    yuml_format += funcParamItr.name + ":" + funcParamItr.type;
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.multiplicity + funcParamItr.type;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
@@ -204,6 +206,7 @@ private:
          consuming_function,
          in_function_param_list,
          function_return_type_consumed,
+         end_of_decl,
          data_member_type_consumed,
          class_in_class,
          class_in_class_name_consumed,
@@ -261,6 +264,7 @@ public:
                         consuming_function(false),
                         in_function_param_list(false),
                         function_return_type_consumed(false),
+                        end_of_decl(false),
                         data_member_type_consumed(false),
                         class_in_class(false),
                         class_in_class_name_consumed(false),
@@ -454,6 +458,7 @@ public:
         }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
         else if(consuming_class && lname == "decl_stmt" && consuming_data_declaration && data_member_type_consumed && !consuming_function) {
+            end_of_decl = true;
             recordFullDataDeclaration();
         }
         // This will keep track of classes in the class
@@ -508,6 +513,7 @@ public:
             recordDataDeclarationType();
         }
         else if(lname == "name" && consuming_class && consuming_function && in_function_param_list && consuming_data_declaration && data_member_type_consumed) {
+            end_of_decl = true;
             buildDataDeclarationNamesString();
             recordFullDataDeclaration();
         }
@@ -537,19 +543,7 @@ public:
      */
     virtual void charactersUnit(const char * ch, int len) {
         std::string text_parsed(ch, len);
-        if(consuming_class) {
-            if(text_parsed == ">") {
-                text_parsed = "＞";
-            }
-            else if(text_parsed == "<") {
-                text_parsed = "＜";
-            }
-            else{
-                
-            }
-            current_recorded_data_in_class.append(text_parsed);
-        }
-        
+        current_recorded_data_in_class.append(text_parsed);
     }
 
     /**
@@ -632,15 +626,18 @@ public:
     }
     
     void buildDataDeclarationNamesString() {
-        current_data_declaration_names += current_recorded_data_in_class + ", ";
+        current_data_declaration_names = current_recorded_data_in_class;
+        
     }
 
     void recordFullDataDeclaration() {
+        if(end_of_decl) {
+            end_of_decl = false;
+            consuming_data_declaration = false;
+            data_member_type_consumed = false;
+        }
 
-        consuming_data_declaration = false;
-        data_member_type_consumed = false;
-
-        current_data_declaration_names = current_data_declaration_names.substr(0, current_data_declaration_names.length() - 2);
+        current_data_declaration_names = current_data_declaration_names.substr(0, current_data_declaration_names.length());
         
         
         current_data_declaration_names = removePortionOfString(current_data_declaration_names, "std::");
@@ -648,6 +645,7 @@ public:
         current_data_declaration_names = removePortionOfString(current_data_declaration_names, ";");
         
         struct AttributeDeclaration temp(consuming_data_declaration_type, current_data_declaration_names);
+        resolveMultiplicity(temp);
         if(consuming_function) {
             function_parameters.push_back(temp);
 
@@ -759,6 +757,38 @@ std::string replaceCommas(std::string stringToFix) {
     return stringToFix;
 }
 
-
+void resolveMultiplicity(struct AttributeDeclaration& rhs) {
+    // Make sure the type is a container of some sort
+    if(rhs.type.find("<") != std::string::npos) {
+        size_t begin_pos = rhs.type.find_last_of("<");
+        std::string new_type = rhs.type.substr(begin_pos, rhs.type.length());
+        size_t end_pos = new_type.find_first_of("،");
+        if(end_pos == std::string::npos) {
+            end_pos = new_type.find_first_of(">");
+        }
+        else {
+            size_t find_last_comma = new_type.find_last_of("،");
+            new_type = new_type.substr(find_last_comma, new_type.length());
+            
+            
+            new_type = new_type.substr(0, new_type.length());
+            end_pos = new_type.find_first_of(">");
+        }
+        new_type = new_type.substr(0, new_type.length());
+        rhs.type = new_type.substr(1, end_pos -1);
+        rhs.multiplicity = "［*］";
+    }
+    else if(rhs.type.find("[") != std::string::npos) {
+        size_t begin_pos = rhs.type.find_last_of("[");
+        rhs.type = rhs.type.substr(0, begin_pos);
+        rhs.multiplicity = "［*］";
+        
+    }
+    else if(rhs.type.find("*") != std::string::npos) {
+        size_t begin_pos = rhs.type.find_last_of("*");
+        rhs.type = rhs.type.substr(0, begin_pos);
+        rhs.multiplicity = "［*］";
+    }
+}
 
 #endif
