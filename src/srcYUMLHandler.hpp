@@ -102,17 +102,17 @@ public:
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += "+" + itr.name + ":" + itr.multiplicity + itr.type + ";";
+                yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += "+" + itr.name + ":" + itr.multiplicity + itr.type + ";";
+                yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += "+" + itr.name + ":" + itr.multiplicity + itr.type + ";";
+                yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
             }
         }
 
@@ -127,7 +127,7 @@ public:
                 yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
-                    yuml_format += funcParamItr.name + ":" + funcParamItr.multiplicity + funcParamItr.type;
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
@@ -142,7 +142,7 @@ public:
                 yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
-                    yuml_format += funcParamItr.name + ":" + funcParamItr.multiplicity + funcParamItr.type;
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
@@ -157,7 +157,7 @@ public:
                 yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
-                    yuml_format += funcParamItr.name + ":" + funcParamItr.multiplicity + funcParamItr.type;
+                    yuml_format += funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
                         yuml_format += "،";
