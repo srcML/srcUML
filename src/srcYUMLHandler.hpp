@@ -130,7 +130,7 @@ public:
                     yuml_format += funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
-                        yuml_format += "،";
+                        yuml_format += "، ";
                     }
                 }
                 yuml_format += " ):" + itr.returnType + ";";
@@ -145,7 +145,7 @@ public:
                     yuml_format += funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
-                        yuml_format += "،";
+                        yuml_format += "، ";
                     }
                 }
                 yuml_format += " ):" + itr.returnType + ";";
@@ -160,7 +160,7 @@ public:
                     yuml_format += funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
                     ++numberOfFunctionParameters;
                     if(numberOfFunctionParameters < itr.function_parameters.size()) {
-                        yuml_format += "،";
+                        yuml_format += "، ";
                     }
                 }
                 yuml_format += " ): " + itr.returnType + ";";
@@ -615,6 +615,12 @@ public:
     void recordDataDeclarationType() {
         
         current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "*");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, " ");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "const");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "struct");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "virtual");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "&");
         current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
         
         
@@ -643,6 +649,12 @@ public:
         current_data_declaration_names = removePortionOfString(current_data_declaration_names, "std::");
         current_data_declaration_names = replaceCommas(current_data_declaration_names);
         current_data_declaration_names = removePortionOfString(current_data_declaration_names, ";");
+        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "*");
+        current_data_declaration_names = removePortionOfString(current_data_declaration_names, " ");
+        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "struct");
+        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "const");
+        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "virtual");
+        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "&");
         
         struct AttributeDeclaration temp(consuming_data_declaration_type, current_data_declaration_names);
         resolveMultiplicity(temp);
@@ -685,6 +697,12 @@ public:
     
     void recordFunctionReturnType() {
         current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "*");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, " ");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "const");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "struct");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "virtual");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "&");
         current_function_return_type = current_recorded_data_in_class;
         current_recorded_data_in_class = "";
         function_return_type_consumed = true;
