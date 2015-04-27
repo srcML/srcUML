@@ -235,6 +235,8 @@ private:
      // so that we can properly map where we got data from in our class
     std::string current_class_visibility;
     
+    std::string yuml_relationships;
+    
     std::ostream & output;
     
 
@@ -247,11 +249,18 @@ public:
         
         for(const auto& itr : classes_in_source) {
             converted_classes[itr.first] = itr.second.convertToYuml(itr.first);
+            for(const auto& class_in_class_itr : itr.second.classes_in_class) {
+                converted_classes[class_in_class_itr.first] = class_in_class_itr.second.convertToYuml(class_in_class_itr.first);
+            }
         }
 
         for(const auto& itr : converted_classes) {
             output << itr.second;
         }
+        
+        resolveRelationships();
+        
+        output << "\n" + yuml_relationships;
         
     }
     /**
@@ -686,6 +695,10 @@ public:
     void recordClassInheritanceList() {
         current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
         current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "virtual");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "public");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "private");
+        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "protected");
         
         if(!class_in_class) {
             classes_in_source[current_class].inheritance_list.push_back(current_recorded_data_in_class);
@@ -737,6 +750,31 @@ public:
         function_return_type_consumed = false;
         function_parameters.clear();
     }
+    
+    void resolveRelationships() {
+        // Classes <name, class> -> class : { attributes : inheritance }
+        // name is important, if attribute type == Classes key name we have a relationship
+        for(const auto& class_itr : classes_in_source) {
+            for(const auto& visibility_itr : class_itr.second.class_data_members) {
+                for(const auto& attribute_itr : visibility_itr.second) {
+                    // We have found a has-a relationship
+                    if(classes_in_source.find(attribute_itr.type) != classes_in_source.end()) {
+                        yuml_relationships += "[" + class_itr.first + "]" + "->" + "[" + attribute_itr.type + "]\n";
+                    }
+                }
+                for(const auto& class_in_class_itr : class_itr.second.classes_in_class) {
+                    for(const auto& class_in_class_visibility_itr : class_in_class_itr.second.class_data_members) {
+                        for(const auto& class_in_class_attr_itr : class_in_class_visibility_itr.second)
+                            // We have a relationship
+                            if(classes_in_source.find(class_in_class_attr_itr.type) != classes_in_source.end()) {
+                                yuml_relationships += "[" + class_itr.first + "]" + "->" + "[" + class_in_class_attr_itr.type + "]\n";
+                            }
+                    }
+                }
+            }
+        }
+    }
+
     
 #pragma GCC diagnostic pop
 
