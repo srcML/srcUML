@@ -764,11 +764,12 @@ public:
                 }
                 for(const auto& class_in_class_itr : class_itr.second.classes_in_class) {
                     for(const auto& class_in_class_visibility_itr : class_in_class_itr.second.class_data_members) {
-                        for(const auto& class_in_class_attr_itr : class_in_class_visibility_itr.second)
+                        for(const auto& class_in_class_attr_itr : class_in_class_visibility_itr.second) {
                             // We have a relationship
                             if(classes_in_source.find(class_in_class_attr_itr.type) != classes_in_source.end()) {
                                 yuml_relationships += "[" + class_itr.first + "]" + "->" + "[" + class_in_class_attr_itr.type + "]\n";
                             }
+                        }
                     }
                 }
             }
