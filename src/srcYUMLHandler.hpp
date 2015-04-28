@@ -47,8 +47,9 @@ struct AttributeDeclaration {
     std::string type;
     std::string name;
     std::string multiplicity;
+    bool is_composite;
     
-    AttributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
+    AttributeDeclaration(std::string t, std::string n) : type(t), name(n), is_composite(false) {};
 };
 
 /**
@@ -795,11 +796,21 @@ public:
                     // We have found a has-a relationship
                     if(classes_in_source.find(attribute_itr.type) != classes_in_source.end()) {
                         // Composite aggregation
-                        if(attribute_itr.multiplicity != "") {
-                            yuml_relationships += "[" + class_itr.first + "]" + "<>1->*[" + attribute_itr.type + "]\n";
+                        if(attribute_itr.is_composite) {
+                            if(attribute_itr.multiplicity != "") {
+                                yuml_relationships += "[" + class_itr.first + "]" + "<>1->*[" + attribute_itr.type + "]\n";
+                            }
+                            else {
+                                yuml_relationships += "[" + class_itr.first + "]" + "<>1->1[" + attribute_itr.type + "]\n";
+                            }
                         }
                         else {
-                            yuml_relationships += "[" + class_itr.first + "]" + "++-1>" + "[" + attribute_itr.type + "]\n";
+                            if(attribute_itr.multiplicity != "") {
+                                yuml_relationships += "[" + class_itr.first + "]" + "++1->*" + "[" + attribute_itr.type + "]\n";
+                            }
+                            else {
+                                yuml_relationships += "[" + class_itr.first + "]" + "++-1>" + "[" + attribute_itr.type + "]\n";
+                            }
                         }
                     }
                 }
@@ -808,11 +819,21 @@ public:
                         for(const auto& class_in_class_attr_itr : class_in_class_visibility_itr.second) {
                             // We have a relationship
                             if(classes_in_source.find(class_in_class_attr_itr.type) != classes_in_source.end()) {
-                                if(class_in_class_attr_itr.multiplicity != "") {
-                                yuml_relationships += "[" + class_itr.first + "]" + "<>1->*" + "[" + class_in_class_attr_itr.type + "]\n";
+                                if(class_in_class_attr_itr.is_composite) {
+                                    if(class_in_class_attr_itr.multiplicity != "") {
+                                        yuml_relationships += "[" + class_itr.first + "]" + "<>1->*" + "[" + class_in_class_attr_itr.type + "]\n";
+                                    }
+                                    else {
+                                        yuml_relationships += "[" + class_itr.first + "]" + "<>1->1" + "[" + class_in_class_attr_itr.type + "]\n";
+                                    }
                                 }
                                 else {
-                                    yuml_relationships += "[" + class_itr.first + "]" + "++-1>" + "[" + class_in_class_attr_itr.type + "]\n";
+                                    if(class_in_class_attr_itr.multiplicity != "") {
+                                        yuml_relationships += "[" + class_itr.first + "]" + "++1->*" + "[" + class_in_class_attr_itr.type + "]\n";
+                                    }
+                                    else {
+                                       yuml_relationships += "[" + class_itr.first + "]" + "++1->1" + "[" + class_in_class_attr_itr.type + "]\n"; 
+                                    }
                                 }
                             }
                         }
@@ -894,17 +915,23 @@ void resolveMultiplicity(struct AttributeDeclaration& rhs) {
         new_type = new_type.substr(0, new_type.length());
         rhs.type = new_type.substr(1, end_pos -1);
         rhs.multiplicity = "［*］";
+        rhs.is_composite = true;
     }
     else if(rhs.type.find("[") != std::string::npos) {
         // Arrays don't get multiplicity as they are aggregates
         size_t begin_pos = rhs.type.find_last_of("[");
         rhs.type = rhs.type.substr(0, begin_pos - 1);
+        rhs.multiplicity = "［*］";
+        rhs.is_composite = true;
         
     }
     else if(rhs.type.find("*") != std::string::npos) {
         size_t begin_pos = rhs.type.find_last_of("*");
         rhs.type = rhs.type.substr(0, begin_pos - 1);
         rhs.multiplicity = "［*］";
+    }
+    else {
+        rhs.is_composite = true;
     }
 }
 
