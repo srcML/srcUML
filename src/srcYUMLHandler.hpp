@@ -798,18 +798,18 @@ public:
                         // Composite aggregation
                         if(attribute_itr.is_composite) {
                             if(attribute_itr.multiplicity != "") {
-                                yuml_relationships += "[" + class_itr.first + "]" + "<>1->*[" + attribute_itr.type + "]\n";
+                                yuml_relationships += "[" + attribute_itr.type + "]" + "<>*->1[" + class_itr.first + "]\n";
                             }
                             else {
-                                yuml_relationships += "[" + class_itr.first + "]" + "<>1->1[" + attribute_itr.type + "]\n";
+                                yuml_relationships += "[" + attribute_itr.type + "]" + "<>1->1[" + class_itr.first + "]\n";
                             }
                         }
                         else {
                             if(attribute_itr.multiplicity != "") {
-                                yuml_relationships += "[" + class_itr.first + "]" + "++1->*" + "[" + attribute_itr.type + "]\n";
+                                yuml_relationships += "[" + attribute_itr.type + "]" + "++*->1" + "[" + class_itr.first + "]\n";
                             }
                             else {
-                                yuml_relationships += "[" + class_itr.first + "]" + "++-1>" + "[" + attribute_itr.type + "]\n";
+                                yuml_relationships += "[" + attribute_itr.type + "]" + "++-1>" + "[" + class_itr.first + "]\n";
                             }
                         }
                     }
@@ -821,18 +821,18 @@ public:
                             if(classes_in_source.find(class_in_class_attr_itr.type) != classes_in_source.end()) {
                                 if(class_in_class_attr_itr.is_composite) {
                                     if(class_in_class_attr_itr.multiplicity != "") {
-                                        yuml_relationships += "[" + class_itr.first + "]" + "<>1->*" + "[" + class_in_class_attr_itr.type + "]\n";
+                                        yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "<>*->1" + "[" + class_itr.first + "]\n";
                                     }
                                     else {
-                                        yuml_relationships += "[" + class_itr.first + "]" + "<>1->1" + "[" + class_in_class_attr_itr.type + "]\n";
+                                        yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "<>1->1" + "[" + class_itr.first + "]\n";
                                     }
                                 }
                                 else {
                                     if(class_in_class_attr_itr.multiplicity != "") {
-                                        yuml_relationships += "[" + class_itr.first + "]" + "++1->*" + "[" + class_in_class_attr_itr.type + "]\n";
+                                        yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "++*->1" + "[" + class_itr.first + "]\n";
                                     }
                                     else {
-                                       yuml_relationships += "[" + class_itr.first + "]" + "++1->1" + "[" + class_in_class_attr_itr.type + "]\n"; 
+                                       yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "++1->1" + "[" + class_itr.first + "]\n";
                                     }
                                 }
                             }
