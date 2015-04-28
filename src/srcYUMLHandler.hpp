@@ -29,11 +29,19 @@
 #include <vector>
 #include <fstream>
 
+/**
+ * Prototypes for helper functions
+ */
 std::string removePortionOfString(std::string, std::string);
 std::string replaceCommas(std::string);
 std::string removeSemiColons(std::string);
 void resolveMultiplicity(struct AttributeDeclaration&);
 
+/**
+ * AttributDeclaration
+ *
+ * Structure used for storing class attribute declarations
+ */
 struct AttributeDeclaration {
     
     std::string type;
@@ -43,6 +51,11 @@ struct AttributeDeclaration {
     AttributeDeclaration(std::string t, std::string n) : type(t), name(n) {};
 };
 
+/**
+ * FunctionDeclaration
+ *
+ * Structure used for storing class function declarations
+ */
 struct FunctionDeclaration {
     std::string returnType;
     std::string function_name;
@@ -51,24 +64,17 @@ struct FunctionDeclaration {
     FunctionDeclaration(std::string rType, std::string fName, std::list<struct AttributeDeclaration> params) : returnType(rType), function_name(fName), function_parameters(params) {};
 };
 
-
+/**
+ * srcYUMLClass
+ *
+ * Class used for storing all information for a class located within parsed source code
+ */
 class srcYUMLClass {
 public:
-    // attributes
-    // functions
-    // inheritance list
-    // Inside a class
-    // Inside public
-    // inside private
-    // inside protected
-    // inside inheritance list
-    // public, private, protected
-
     bool is_abstract;
     
     // Keys can be public, private, or protected
     std::map<std::string, std::list<struct AttributeDeclaration> > class_data_members;
-    //std::map<std::string, std::list<std::string> > class_functions;
     std::list<std::string> inheritance_list;
     std::map<std::string, std::list<struct FunctionDeclaration>> class_functions;
     std::map<std::string, srcYUMLClass> classes_in_class;
@@ -621,16 +627,14 @@ public:
 
     }
     
+    /**
+     * recordDataDeclarationType
+     *
+     * Records the type for a data declaration
+     */
     void recordDataDeclarationType() {
         
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "*");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, " ");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "const");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "struct");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "virtual");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "&");
-        current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
+        current_recorded_data_in_class = removeCPPIsms(current_recorded_data_in_class);
         
         
         consuming_data_declaration_type = current_recorded_data_in_class;
@@ -640,11 +644,21 @@ public:
 
     }
     
+    /**
+     * buildDataDeclarationNamesString
+     *
+     * This concatenates the strings for all the names that are inside of a data declaration
+     */
     void buildDataDeclarationNamesString() {
         current_data_declaration_names = current_recorded_data_in_class;
         
     }
-
+    
+    /**
+     * recordFullDataDeclaration
+     *
+     * Once a data declaration has been fully parsed this function records it in the correct class
+     */
     void recordFullDataDeclaration() {
         if(end_of_decl) {
             end_of_decl = false;
@@ -654,16 +668,7 @@ public:
 
         current_data_declaration_names = current_data_declaration_names.substr(0, current_data_declaration_names.length());
         
-        
-        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "std::");
-        current_data_declaration_names = replaceCommas(current_data_declaration_names);
-        current_data_declaration_names = removePortionOfString(current_data_declaration_names, ";");
-        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "*");
-        current_data_declaration_names = removePortionOfString(current_data_declaration_names, " ");
-        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "struct");
-        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "const");
-        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "virtual");
-        current_data_declaration_names = removePortionOfString(current_data_declaration_names, "&");
+        current_data_declaration_names = removeCPPIsms(current_data_declaration_names);
         
         struct AttributeDeclaration temp(consuming_data_declaration_type, current_data_declaration_names);
         resolveMultiplicity(temp);
@@ -691,14 +696,13 @@ public:
         current_data_declaration_names = "";
 
     }
-    
+    /**
+     * recordClassInheritanceList
+     *
+     * Records the whole class inheritance list
+     */
     void recordClassInheritanceList() {
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-        current_recorded_data_in_class = replaceCommas(current_recorded_data_in_class);
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "virtual");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "public");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "private");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "protected");
+        current_recorded_data_in_class = removeCPPIsms(current_recorded_data_in_class);
         
         if(!class_in_class) {
             classes_in_source[current_class].inheritance_list.push_back(current_recorded_data_in_class);
@@ -708,19 +712,23 @@ public:
         }
     }
     
+    /**
+     * recordFunctionReturnType
+     *
+     * Records the return type of a function being parsed
+     */
     void recordFunctionReturnType() {
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "*");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, " ");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "const");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "struct");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "virtual");
-        current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "&");
+        current_recorded_data_in_class = removeCPPIsms(current_recorded_data_in_class);
         current_function_return_type = current_recorded_data_in_class;
         current_recorded_data_in_class = "";
         function_return_type_consumed = true;
     }
     
+    /**
+     * recordFunctionDeclaration
+     *
+     * Combines all parsed data and builds a function declaration object
+     */
     void recordFunctionDeclaration() {
         struct FunctionDeclaration temp(current_function_return_type, current_function_name, function_parameters);
         
@@ -751,6 +759,33 @@ public:
         function_parameters.clear();
     }
     
+    /**
+     * removeCPPIsms
+     * @param stringToCleanUp the string that needs fixed
+     *
+     * Used to remove C++ language from UML attributes
+     */
+    std::string removeCPPIsms(std::string stringToCleanUp) {
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "std::");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "*");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, " ");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "const");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "struct");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "virtual");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "&");
+        stringToCleanUp = replaceCommas(stringToCleanUp);
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "public");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "private");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "protected");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, ";");
+        
+        return stringToCleanUp;
+    }
+    /**
+     * resolveRelationships
+     *
+     * Used to evaluate the relationships between objects that have been parsed
+     */
     void resolveRelationships() {
         // Classes <name, class> -> class : { attributes : inheritance }
         // name is important, if attribute type == Classes key name we have a relationship
@@ -759,7 +794,13 @@ public:
                 for(const auto& attribute_itr : visibility_itr.second) {
                     // We have found a has-a relationship
                     if(classes_in_source.find(attribute_itr.type) != classes_in_source.end()) {
-                        yuml_relationships += "[" + class_itr.first + "]" + "->" + "[" + attribute_itr.type + "]\n";
+                        // Composite aggregation
+                        if(attribute_itr.multiplicity != "") {
+                            yuml_relationships += "[" + class_itr.first + "]" + "<>1->*[" + attribute_itr.type + "]\n";
+                        }
+                        else {
+                            yuml_relationships += "[" + class_itr.first + "]" + "++-1>" + "[" + attribute_itr.type + "]\n";
+                        }
                     }
                 }
                 for(const auto& class_in_class_itr : class_itr.second.classes_in_class) {
@@ -767,7 +808,12 @@ public:
                         for(const auto& class_in_class_attr_itr : class_in_class_visibility_itr.second) {
                             // We have a relationship
                             if(classes_in_source.find(class_in_class_attr_itr.type) != classes_in_source.end()) {
-                                yuml_relationships += "[" + class_itr.first + "]" + "->" + "[" + class_in_class_attr_itr.type + "]\n";
+                                if(class_in_class_attr_itr.multiplicity != "") {
+                                yuml_relationships += "[" + class_itr.first + "]" + "<>1->*" + "[" + class_in_class_attr_itr.type + "]\n";
+                                }
+                                else {
+                                    yuml_relationships += "[" + class_itr.first + "]" + "++-1>" + "[" + class_in_class_attr_itr.type + "]\n";
+                                }
                             }
                         }
                     }
@@ -781,7 +827,11 @@ public:
 
 };
 
-// Used to remove a substring from a string
+/**
+ * removePortionOfString
+ *
+ * Used to remove a substring from a string
+ */
 std::string removePortionOfString(std::string stringToFix, std::string sequenceToRemove) {
     if(stringToFix == "" || sequenceToRemove == "")
     {
@@ -799,8 +849,13 @@ std::string removePortionOfString(std::string stringToFix, std::string sequenceT
     return stringToFix;
     
 }
-// All commas contained in a string get replaced with a different type of comma
-// So that they can be used in yuml
+
+/**
+ * replaceCommas
+ *
+ * All commas contained in a string get replaced with a different type of comma
+ * So that they can be used in yuml
+ */
 std::string replaceCommas(std::string stringToFix) {
     if(stringToFix == "")
         return "";
@@ -814,6 +869,11 @@ std::string replaceCommas(std::string stringToFix) {
     return stringToFix;
 }
 
+/**
+ * resolveMultiplicity
+ *
+ * Used to evaluate multiplicity, deciding whether an attribute is an aggregate or composite
+ */
 void resolveMultiplicity(struct AttributeDeclaration& rhs) {
     // Make sure the type is a container of some sort
     if(rhs.type.find("<") != std::string::npos) {
@@ -836,9 +896,9 @@ void resolveMultiplicity(struct AttributeDeclaration& rhs) {
         rhs.multiplicity = "［*］";
     }
     else if(rhs.type.find("[") != std::string::npos) {
+        // Arrays don't get multiplicity as they are aggregates
         size_t begin_pos = rhs.type.find_last_of("[");
         rhs.type = rhs.type.substr(0, begin_pos - 1);
-        rhs.multiplicity = "［*］";
         
     }
     else if(rhs.type.find("*") != std::string::npos) {
