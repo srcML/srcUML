@@ -32,6 +32,8 @@
 /**
  * Prototypes for helper functions
  */
+std::string removeNameSpaces(std::string);
+std::string checkNumeric(std::string);
 std::string removePortionOfString(std::string, std::string);
 std::string replaceCommas(std::string);
 std::string removeSemiColons(std::string);
@@ -48,8 +50,9 @@ struct AttributeDeclaration {
     std::string name;
     std::string multiplicity;
     bool is_composite;
+    bool is_relationship;
     
-    AttributeDeclaration(std::string t, std::string n) : type(t), name(n), is_composite(false) {};
+    AttributeDeclaration(std::string t, std::string n) : type(t), name(n), is_composite(false), is_relationship(false) {};
 };
 
 /**
@@ -109,17 +112,23 @@ public:
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                if(!itr.is_relationship) {
+                    yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                }
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                if(!itr.is_relationship) {
+                    yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                }
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                if(!itr.is_relationship) {
+                    yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                }
             }
         }
 
@@ -636,7 +645,8 @@ public:
     void recordDataDeclarationType() {
         
         current_recorded_data_in_class = removeCPPIsms(current_recorded_data_in_class);
-        
+        current_recorded_data_in_class = removeNameSpaces(current_recorded_data_in_class);
+        current_recorded_data_in_class = checkNumeric(current_recorded_data_in_class);
         
         consuming_data_declaration_type = current_recorded_data_in_class;
         current_recorded_data_in_class = "";
@@ -720,6 +730,9 @@ public:
      */
     void recordFunctionReturnType() {
         current_recorded_data_in_class = removeCPPIsms(current_recorded_data_in_class);
+        current_recorded_data_in_class = removeNameSpaces(current_recorded_data_in_class);
+        current_recorded_data_in_class = checkNumeric(current_recorded_data_in_class);
+        
         current_function_return_type = current_recorded_data_in_class;
         current_recorded_data_in_class = "";
         function_return_type_consumed = true;
@@ -770,6 +783,7 @@ public:
         stringToCleanUp = removePortionOfString(stringToCleanUp, "std::");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "*");
         stringToCleanUp = removePortionOfString(stringToCleanUp, " ");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "const expr");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "const");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "struct");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "virtual");
@@ -779,6 +793,8 @@ public:
         stringToCleanUp = removePortionOfString(stringToCleanUp, "private");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "protected");
         stringToCleanUp = removePortionOfString(stringToCleanUp, ";");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "static");
+        stringToCleanUp = removePortionOfString(stringToCleanUp, "inline");
         
         return stringToCleanUp;
     }
@@ -790,49 +806,57 @@ public:
     void resolveRelationships() {
         // Classes <name, class> -> class : { attributes : inheritance }
         // name is important, if attribute type == Classes key name we have a relationship
-        for(const auto& class_itr : classes_in_source) {
-            for(const auto& visibility_itr : class_itr.second.class_data_members) {
-                for(const auto& attribute_itr : visibility_itr.second) {
+        for(auto& class_itr : classes_in_source) {
+            for(auto& visibility_itr : class_itr.second.class_data_members) {
+                for(auto& attribute_itr : visibility_itr.second) {
                     // We have found a has-a relationship
                     if(classes_in_source.find(attribute_itr.type) != classes_in_source.end()) {
                         // Composite aggregation
                         if(attribute_itr.is_composite) {
                             if(attribute_itr.multiplicity != "") {
                                 yuml_relationships += "[" + attribute_itr.type + "]" + "<>*->1[" + class_itr.first + "]\n";
+                                attribute_itr.is_relationship = true;
                             }
                             else {
-                                yuml_relationships += "[" + attribute_itr.type + "]" + "<>1->1[" + class_itr.first + "]\n";
+                                yuml_relationships += "[" + attribute_itr.type + "]" + "<>->[" + class_itr.first + "]\n";
+                                attribute_itr.is_relationship = true;
                             }
                         }
                         else {
                             if(attribute_itr.multiplicity != "") {
                                 yuml_relationships += "[" + attribute_itr.type + "]" + "++*->1" + "[" + class_itr.first + "]\n";
+                                attribute_itr.is_relationship = true;
                             }
                             else {
-                                yuml_relationships += "[" + attribute_itr.type + "]" + "++-1>" + "[" + class_itr.first + "]\n";
+                                yuml_relationships += "[" + attribute_itr.type + "]" + "++->" + "[" + class_itr.first + "]\n";
+                                attribute_itr.is_relationship = true;
                             }
                         }
                     }
                 }
-                for(const auto& class_in_class_itr : class_itr.second.classes_in_class) {
-                    for(const auto& class_in_class_visibility_itr : class_in_class_itr.second.class_data_members) {
-                        for(const auto& class_in_class_attr_itr : class_in_class_visibility_itr.second) {
+                for(auto& class_in_class_itr : class_itr.second.classes_in_class) {
+                    for(auto& class_in_class_visibility_itr : class_in_class_itr.second.class_data_members) {
+                        for(auto& class_in_class_attr_itr : class_in_class_visibility_itr.second) {
                             // We have a relationship
                             if(classes_in_source.find(class_in_class_attr_itr.type) != classes_in_source.end()) {
                                 if(class_in_class_attr_itr.is_composite) {
                                     if(class_in_class_attr_itr.multiplicity != "") {
                                         yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "<>*->1" + "[" + class_itr.first + "]\n";
+                                        class_in_class_attr_itr.is_relationship = true;
                                     }
                                     else {
-                                        yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "<>1->1" + "[" + class_itr.first + "]\n";
+                                        yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "<>->" + "[" + class_itr.first + "]\n";
+                                        class_in_class_attr_itr.is_relationship = true;
                                     }
                                 }
                                 else {
                                     if(class_in_class_attr_itr.multiplicity != "") {
                                         yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "++*->1" + "[" + class_itr.first + "]\n";
+                                        class_in_class_attr_itr.is_relationship = true;
                                     }
                                     else {
-                                       yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "++1->1" + "[" + class_itr.first + "]\n";
+                                       yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "++->" + "[" + class_itr.first + "]\n";
+                                        class_in_class_attr_itr.is_relationship = true;
                                     }
                                 }
                             }
@@ -847,7 +871,26 @@ public:
 #pragma GCC diagnostic pop
 
 };
-
+/**
+ * removeNameSpaces
+ *
+ * stringToFix - string to remove namespaces from
+ *
+ * Removes namespaces from strings which are identified by "::"
+ **/
+std::string removeNameSpaces(std::string stringToFix) {
+    if(stringToFix == "")
+    {
+        return "";
+    }
+    size_t pos;
+    pos = stringToFix.find("::");
+    while(pos != std::string::npos) {
+        stringToFix = stringToFix.substr(pos + 2, stringToFix.length());
+        pos = stringToFix.find("::");
+    }
+    return stringToFix;
+}
 /**
  * removePortionOfString
  *
@@ -933,6 +976,38 @@ void resolveMultiplicity(struct AttributeDeclaration& rhs) {
     else {
         rhs.is_composite = true;
     }
+}
+/**
+ * checkNumeric
+ *
+ * Looks for a numeric type Ex. int, long, double and changes the type name to number
+ *
+ * stringToCheck - string to check and possibly modify
+ */
+std::string checkNumeric(std::string stringToCheck) {
+    if(stringToCheck == "")
+    {
+        return "";
+    }
+    if(stringToCheck.find("int") != std::string::npos ) {
+        stringToCheck = "number";
+    }
+    else if(stringToCheck.find("long") != std::string::npos) {
+        stringToCheck = "number";
+    }
+    else if(stringToCheck.find("double") != std::string::npos) {
+        stringToCheck = "number";
+    }
+    else if(stringToCheck.find("float") != std::string::npos) {
+        stringToCheck = "number";
+    }
+    else if(stringToCheck.find("size_t") != std::string::npos) {
+        stringToCheck = "number";
+    }
+    else if(stringToCheck.find("short") != std::string::npos) {
+        stringToCheck = "number";
+    }
+    return stringToCheck;
 }
 
 #endif
