@@ -51,7 +51,6 @@ public:
             for(auto& visibility_itr : class_itr.second.class_data_members) {
                 for(auto& attribute_itr : visibility_itr.second) {
                     // We have found a has-a relationship
-                    std::cout << attribute_itr.type << std::endl;
                     const auto& found_class = classes_in_source_.find(attribute_itr.type);
                     if(found_class != classes_in_source_.end()) {
                         // Composite aggregation

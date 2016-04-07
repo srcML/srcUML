@@ -285,12 +285,9 @@ public:
         }
         if(public_functions) {
             for(const auto& itr : class_functions.at("public")) {
-                std::cout << itr.function_name << "\n\n";
                 if(itr.overloaded_assignment) {
-                    std::cout << "wow....\n";
                     continue;
                 } else if( itr.overloaded_equality) {
-                    std::cout << "zzz....\n";
                     continue;
                 }
                 yuml_format += "+" + itr.function_name + "( ";
