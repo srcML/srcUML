@@ -220,13 +220,15 @@ public:
     }
     
     void identifyInterface() {
-        if(class_data_members.empty()) {
+        if(!class_functions.empty()) {
             for(const auto& visibility : class_functions) {
                 for(const auto& function : visibility.second) {
-                    if(!function.pure_virtual) return;
+                    if(function.pure_virtual) {
+                        is_interface = true;
+                        return;
+                    }
                 }
             }
-            is_interface = true;
         }
     }
     
@@ -248,12 +250,13 @@ public:
         if(class_functions.find("protected") != class_functions.end()) protected_functions = true;
         
         if(is_interface) {
-           yuml_format = "[＜＜interface＞＞;" + class_name ;
-           interface_data_type_name = "＜＜interface＞＞;" + class_name;
+           yuml_format = "[«interface»;" + class_name ;
+           interface_data_type_name = "«interface»;" + class_name;
         } else if(is_data_type) {
-           yuml_format = "[＜＜datatype＞＞;" + class_name;
-           interface_data_type_name = "＜＜datatype＞＞;" + class_name;
+           yuml_format = "[«datatype»;" + class_name;
+           interface_data_type_name = "«datatype»;" + class_name;
         } else {
+            interface_data_type_name = class_name;
             yuml_format = "[" + class_name;
         }
         
@@ -265,17 +268,17 @@ public:
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += "+" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                yuml_format += "+ " + itr.name + ":" + itr.type + itr.multiplicity + ";";
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += "-" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                yuml_format += "- " + itr.name + ":" + itr.type + itr.multiplicity + ";";
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += "#" + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                yuml_format += "# " + itr.name + ":" + itr.type + itr.multiplicity + ";";
             }
         }
 
@@ -290,7 +293,7 @@ public:
                 } else if( itr.overloaded_equality) {
                     continue;
                 }
-                yuml_format += "+" + itr.function_name + "( ";
+                yuml_format += "+ " + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
@@ -309,7 +312,7 @@ public:
         if(private_functions) {
             for(const auto& itr : class_functions.at("private")) {
                 if(itr.overloaded_assignment || itr.overloaded_equality) continue;
-                yuml_format += "-" + itr.function_name + "( ";
+                yuml_format += "- " + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
@@ -328,7 +331,7 @@ public:
         if(protected_functions) {
             for(const auto& itr : class_functions.at("protected")) {
                 if(itr.overloaded_assignment || itr.overloaded_equality) continue;
-                yuml_format += "#" + itr.function_name + "( ";
+                yuml_format += "# " + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;

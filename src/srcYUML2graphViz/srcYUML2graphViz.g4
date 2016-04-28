@@ -1,11 +1,7 @@
 grammar srcYUML2graphViz;
 
 yuml
-	: line+ EOF
-	;
-
-line
-	: (node | relationship)
+	: (node | relationship)+ EOF
 	;
 
 relationship
@@ -13,21 +9,33 @@ relationship
 	;
 
 node
-	: '['  ']'
+	: '[' text ']'
 	;
 
 aggregation
-	: ('+->')
+	: text '+' text '-' text '>' text
 	;
 
 composition
-	: ('++->')
+	: text '+' text '+' text '-' text '>'
 	;
 
 realization
-	: ('^-.-')
+	: text '^' text '-' text '.' text '-'
  	;
  
  generalization
- 	: ('^-')
+ 	: text '^' text '-' text
  	; 
+
+ text
+ 	: (LETTER | NUMBER | ('|') | ('-') | ('+') | ('#') | ('<') | ('>') | ';' | '(' | ')' | ':' | ' ' | '*')*
+ 	;
+
+ LETTER
+ 	: [a-zA-Z]
+ 	;
+
+ NUMBER
+ 	: [0-9]
+ 	;

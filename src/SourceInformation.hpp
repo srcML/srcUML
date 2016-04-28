@@ -61,34 +61,18 @@ public:
                                 //Relationship temp(class_itr.first, found_class->second.interface_data_type_name, Aggregation);
                                 //addRelationship(temp);
                             } else {
-                                Relationship temp(class_itr.first, found_class->second.class_name_, Aggregation);
-                                addRelationship(temp);
+                                    Relationship temp(class_itr.second.interface_data_type_name, found_class->second.interface_data_type_name, Aggregation);
+                                    addRelationship(temp);
                             }
-                            
-                                //yuml_relationships += "[" + class_itr.first + "]" + "<>1->*[" + attribute_itr.type + "]\n";
-                                //attribute_itr.is_relationship = true;
-                            //}
-                            //else {
-                                //yuml_relationships += "[" + class_itr.first + "]" + "<>->[" + attribute_itr.type + "]\n";
-                                //attribute_itr.is_relationship = true;
-                            //}
                         }
                         else {
                             if(found_class->second.is_data_type) {
                                 //Relationship temp(class_itr.first, found_class->second.interface_data_type_name, Composition);
                                 //addRelationship(temp);
                             } else {
-                                Relationship temp(class_itr.first, found_class->second.class_name_, Composition);
+                                Relationship temp(class_itr.second.interface_data_type_name, found_class->second.interface_data_type_name, Composition);
                                 addRelationship(temp);
                             }
-                            //if(attribute_itr.multiplicity != "") {
-                                //yuml_relationships += "[" + class_itr.first + "]" + "++*->1" + "[" + attribute_itr.type + "]\n";
-                                //attribute_itr.is_relationship = true;
-                            //}
-                            //else {
-                                //yuml_relationships += "[" + class_itr.first + "]" + "++->" + "[" + attribute_itr.type + "]\n";
-                                //attribute_itr.is_relationship = true;
-                            //}
                         }
                     }
                 }
@@ -99,28 +83,12 @@ public:
                             const auto& found_class = classes_in_source_.find(class_in_class_attr_itr.type);
                             if(found_class != classes_in_source_.end()) {
                                 if(!class_in_class_attr_itr.is_composite) {
-                                    //if(class_in_class_attr_itr.multiplicity != "") {
-                                        Relationship temp(class_itr.first, found_class->second.class_name_, Aggregation);
+                                        Relationship temp(class_itr.second.interface_data_type_name, found_class->second.interface_data_type_name, Aggregation);
                                         addRelationship(temp);
-                                        //yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "<>*->1" + "[" + class_itr.first + "]\n";
-                                        //class_in_class_attr_itr.is_relationship = true;
-                                    //}
-                                    //else {
-                                        //yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "<>->" + "[" + class_itr.first + "]\n";
-                                        //class_in_class_attr_itr.is_relationship = true;
-                                    //}
                                 }
                                 else {
-                                    //if(class_in_class_attr_itr.multiplicity != "") {
-                                        Relationship temp(class_itr.first, found_class->second.class_name_, Composition);
+                                        Relationship temp(class_itr.second.interface_data_type_name, found_class->second.interface_data_type_name, Composition);
                                         addRelationship(temp);
-                                        //yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "++*->1" + "[" + class_itr.first + "]\n";
-                                        //class_in_class_attr_itr.is_relationship = true;
-                                    //}
-                                    //else {
-                                       //yuml_relationships += "[" + class_in_class_attr_itr.type + "]" + "++->" + "[" + class_itr.first + "]\n";
-                                        //class_in_class_attr_itr.is_relationship = true;
-                                    //}
                                 }
                             }
                         }
@@ -133,10 +101,10 @@ public:
                 const auto& found_class = classes_in_source_.find(inheritance_list_itr);
                 if(found_class != classes_in_source_.end()) {
                     if(found_class->second.is_interface) {
-                        Relationship temp(current_class_itr.first, found_class->second.interface_data_type_name, Realization);
+                        Relationship temp(current_class_itr.second.interface_data_type_name, found_class->second.interface_data_type_name, Realization);
                         addRelationship(temp);
                     } else {
-                        Relationship temp(current_class_itr.first, found_class->first, Generalization);
+                        Relationship temp(current_class_itr.second.interface_data_type_name, found_class->second.interface_data_type_name, Generalization);
                         addRelationship(temp);
                     }
                 }
