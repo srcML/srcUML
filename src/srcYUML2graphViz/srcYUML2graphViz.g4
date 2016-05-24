@@ -1,15 +1,15 @@
 grammar srcYUML2graphViz;
 
 yuml
-	: (node | relationship)+ EOF
+	: (node | relationship | NEWLINE)+ EOF
 	;
 
 relationship
-	: (node (aggregation | composition | realization | generalization)  node) NEWLINE*
+	: (node (aggregation | composition | realization | generalization)  node)
 	;
 
 node
-	: '[' text ']' NEWLINE*
+	: '[' text ']'
 	;
 
 aggregation
