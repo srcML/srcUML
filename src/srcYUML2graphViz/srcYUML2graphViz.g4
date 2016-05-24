@@ -5,11 +5,11 @@ yuml
 	;
 
 relationship
-	: (node (aggregation | composition | realization | generalization)  node)
+	: (node (aggregation | composition | realization | generalization)  node) NEWLINE*
 	;
 
 node
-	: '[' text ']'
+	: '[' text ']' NEWLINE*
 	;
 
 aggregation
@@ -39,3 +39,7 @@ realization
  NUMBER
  	: [0-9]
  	;
+
+NEWLINE
+	: '\n'
+	;
