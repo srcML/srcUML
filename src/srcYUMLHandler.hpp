@@ -43,7 +43,7 @@ Need to fix checkNumeric as it is only looking for substrings not complete strin
 #include <fstream>
 #include "srcYUMLClass.hpp"
 #include "SourceInformation.hpp"
-
+#include <cstring>
 
 /**
  * Prototypes for helper functions
