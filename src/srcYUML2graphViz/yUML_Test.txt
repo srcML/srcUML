@@ -1,0 +1,8 @@
+[interfaceContent|- currentContent:String;|+  setContent( inout newContent:String );+  displayContent(  );]
+[interfaceMyApplicationWindow|- myApplicationContent:Content［*］;]
+[interfaceMyOperatingSystemWindow|- name:String;- ID:WindowID;]
+[interfaceString|]
+[interfaceWindow|+  draw(  );+  minimize(  );+  maximize(  );]
+[interfaceWindowID|- ID:String;- name:String;- cool:String;]
+[interfaceMyOperatingSystemWindow]^-.-[interfaceMyApplicationWindow]
+[interfaceWindow]^-.-[interfaceMyOperatingSystemWindow]
