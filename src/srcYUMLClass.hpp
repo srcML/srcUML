@@ -196,9 +196,14 @@ public:
     // To class as our key, so we have unique relationships for each class
     std::map<std::string, Relationship> relationships_;
     
-    srcYUMLClass() {}
+    srcYUMLClass() : srcYUMLClass("") {}
 
-    srcYUMLClass(std::string class_name) : class_name_(class_name) {}
+    srcYUMLClass(const std::string & class_name) : is_interface(false),
+                     is_data_type(false),
+                     default_constructor(false),
+                     copy_constructor(false),
+                     overloaded_assignment(false),
+                     class_name_(class_name) {}
 
     void setClassName(std::string class_name) {
         class_name_ = class_name;
