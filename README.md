@@ -14,11 +14,17 @@ The following provide examples of how to build.
 ```bash
 // in-source build
 cmake .
+make
 
 // out-of-source build
 mkdir srcyuml_build
+cd srcyuml_build
 cmake path_to_srcYUML_repo
+make
 
 // release mode
+mkdir srcyuml_build
+cd srcyuml_build
 cmake -DCMAKE_BUILD_TYPE=Release path_to_srcYUML_repo
+make
 ```
