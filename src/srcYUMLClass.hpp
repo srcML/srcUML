@@ -246,7 +246,7 @@ public:
         overloaded_assignment = true;
     }
     
-    void identifyInterface() {
+    void identifyClassType() {
         if(!class_functions.empty()) {
             for(const auto& visibility : class_functions) {
                 for(const auto& function : visibility.second) {

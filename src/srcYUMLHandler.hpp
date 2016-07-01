@@ -403,7 +403,7 @@ public:
         // We have ended the class
         else if((consuming_class && lname == "class" && !class_in_class) || (consuming_class && lname == "struct" && !class_in_class)) {
             // Send the class to our SourceInformation class
-            current_class_.identifyInterface();
+            current_class_.identifyClassType();
             parsed_source_.addClass(current_class, current_class_);
             consuming_class = false;
             class_name_consumed = false;
