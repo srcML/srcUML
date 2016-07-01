@@ -9,20 +9,20 @@ git clone --recursive https://github.com/srcML/srcYUML.git
 
 ### Build
 The project utilizes CMake for building.
-The following provide examples of how to build.
+The following provide examples of how to build.  srcyuml will be placed in the ./bin directory in all cases.
 
 ```bash
-// in-source build
+# in-source build
 cmake .
 make
 
-// out-of-source build
+# out-of-source build
 mkdir srcyuml_build
 cd srcyuml_build
 cmake path_to_srcYUML_repo
 make
 
-// release mode
+# release mode
 mkdir srcyuml_build
 cd srcyuml_build
 cmake -DCMAKE_BUILD_TYPE=Release path_to_srcYUML_repo
