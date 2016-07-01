@@ -278,7 +278,8 @@ public:
         if(is_interface) {
            yuml_format = "[«interface»;" + class_name ;
            interface_data_type_name = "«interface»;" + class_name;
-        } else if(is_data_type) {
+        } else if(overloaded_assignment && copy_constructor) {
+            is_data_type = true;
            yuml_format = "[«datatype»;" + class_name;
            interface_data_type_name = "«datatype»;" + class_name;
         } else {
