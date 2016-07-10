@@ -35,7 +35,9 @@ def main(argv):
 		output = open("output.txt", 'w')
 
 	output.write("digraph hierarchy {\nsize=\"5, 5\"\n")
-
+	output.write("node[shape=record,style=filled,fillcolor=gray95]\n")
+	output.write("edge[dir=back, arrowtail=empty]\n")
+	
 
 	file = open(argv[1], "rb") #rb is R-read and B-binary
 	input_str = to_unicode(file.read())

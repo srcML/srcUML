@@ -28,7 +28,7 @@ class Relay(srcYUML2graphVizListener):
 		self.output = otpt
 	#======================================================Yuml - (node | relationship | NEWLINE)+ EOF
 	def enterYuml(self, ctx):
-		print("yumlStart")
+		print("------------yumlStart")
 		##################
 
 		print(dir(ctx))
@@ -36,7 +36,7 @@ class Relay(srcYUML2graphVizListener):
 		# self.output.write(ctx.getText()) # THIS IS IT!!!
 		####################################
 	def exitYuml(self, ctx):
-		print("yumlExit")
+		print("------------yumlExit")
 		#################
 
 	#======================================================Relationship - (node (a|c|r|g) node)
@@ -44,7 +44,7 @@ class Relay(srcYUML2graphVizListener):
 		print("--relationStart")
 		######################
 
-		print("--" + ctx.getText())
+		print(ctx.getText())
 		#print("--" + ctx.getRuleContext())
 
 	def exitRelationship(self, ctx):
