@@ -1,4 +1,4 @@
-##
+#!/usr/bin/python
 # srcYUML2graphViz.py
 #
 # Copyright (C) 2015-2016 srcML, LLC. (www.srcML.org)
@@ -20,21 +20,40 @@
 
 from antlr4 import *
 from antlr4.tree.Trees import Trees
+from srcYUMLrelay import Relay
 from srcYUML2graphVizLexer import srcYUML2graphVizLexer
 from srcYUML2graphVizParser import srcYUML2graphVizParser
+from srcYUML2graphVizListener import srcYUML2graphVizListener
 from kitchen.text.converters import to_unicode
 
 def main(argv):
-    file = open(argv[1], "rb")
-    input_str = to_unicode(file.read())
-    file.close()
-    input = InputStream(input_str)
-    lexer = srcYUML2graphVizLexer(input)
-    stream = CommonTokenStream(lexer)
-    parser = srcYUML2graphVizParser(stream)
-    tree = parser.yuml()
-    print(Trees.toStringTree(tree, None, parser))
+	if len(argv) == 3:
+		print("Worked")
+		output = open(argv[2], 'w')
+	else:
+		print("defaultFile Used")
+		output = open("output.txt", 'w')
+
+	output.write("digraph hierarchy {\nsize=\"5, 5\"\n")
+
+
+	file = open(argv[1], "rb") #rb is R-read and B-binary
+	input_str = to_unicode(file.read())
+	file.close()
+	input = InputStream(input_str)
+	lexer = srcYUML2graphVizLexer(input)
+	stream = CommonTokenStream(lexer)
+	parser = srcYUML2graphVizParser(stream)
+	tree = parser.yuml()
+	relay = Relay(output)#realization of Listener
+	walker = ParseTreeWalker()
+	walker.walk(relay, tree)
+	#enterYuml(self, tree)
+	#ok here is where I need to start learning to navigate the parse tree
+	#print(Trees.toStringTree(tree, None, parser))
+
+	output.close()
 
 if __name__ == '__main__':
-    import sys
-    main(sys.argv)
+	import sys
+	main(sys.argv)

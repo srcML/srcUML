@@ -1,0 +1,16 @@
+digraph hierarchy {
+size="5, 5"
+[Content|- currentContent:String;|+  setContent( inout newContent:String );+  displayContent(  );]
+[MyApplicationWindow|- myApplicationContent:Content*;]
+[MyOperatingSystemWindow|- name:String;- ID:WindowID;]
+[String|]
+[interface;Window|+  draw(  );+  minimize(  );+  maximize(  );]
+[WindowID|- ID:String;- name:String;- cool:String;]
+[Content]1++-1>[String]
+[MyApplicationWindow]+->[Content]
+[MyOperatingSystemWindow]^-[MyApplicationWindow]
+[MyOperatingSystemWindow]1++-1>[String]
+[MyOperatingSystemWindow]1++-1>[WindowID]
+[interface;Window]^-.-[MyOperatingSystemWindow]
+[WindowID]1++-1>[String]
+<EOF>
