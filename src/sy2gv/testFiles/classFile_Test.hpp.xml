@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.srcML.org/srcML/src" xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="0.9.5" language="C++" filename="classFile_Test.hpp"><class>class <name>String</name> <block>{<private type="default">
 </private><public>public:
-    <constructor><name>String</name><parameter_list>()</parameter_list><block>{}</block></constructor>
-    <constructor><name>String</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list><block>{}</block></constructor>
-    <destructor><name>~<name>String</name></name><parameter_list>()</parameter_list><block>{}</block></destructor>
+    <constructor><name>String</name><parameter_list>()</parameter_list><block>{}</block></constructor><empty_stmt>;</empty_stmt>
+    <constructor><name>String</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list><block>{}</block></constructor><empty_stmt>;</empty_stmt>
+    <destructor><name>~<name>String</name></name><parameter_list>()</parameter_list><block>{}</block></destructor><empty_stmt>;</empty_stmt>
     
-    <function type="operator"><type><name>String</name><modifier>&amp;</modifier></type> <name>operator<name>=</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list><block>{}</block></function>
+    <function type="operator"><type><name>String</name><modifier>&amp;</modifier></type> <name>operator<name>=</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list><block>{}</block></function><empty_stmt>;</empty_stmt>
 </public>}</block>;</class>
 <comment type="line">//====================================================</comment>
 <class>class <name>Window</name><block>{<private type="default"> <comment type="line">//virtual class pure? check</comment>
@@ -17,7 +17,7 @@
 <comment type="line">//====================================================</comment>
 <class>class <name>MyOperatingSystemWindow</name> <super>: <specifier>public</specifier> <name>Window</name></super><block>{<private type="default">
 </private><public>public:
-    <constructor><name>MyOperatingSystemWindow</name><parameter_list>()</parameter_list><block>{}</block></constructor>
+    <constructor><name>MyOperatingSystemWindow</name><parameter_list>()</parameter_list><block>{}</block></constructor><empty_stmt>;</empty_stmt>
 </public><private>private:
     <decl_stmt><decl><type><name>String</name></type> <name>name</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>WindowID</name></type> <name>ID</name></decl>;</decl_stmt>
@@ -25,7 +25,7 @@
 <comment type="line">//====================================================</comment>
 <class>class <name>MyApplicationWindow</name> <super>: <specifier>public</specifier> <name>MyOperatingSystemWindow</name></super> <block>{<private type="default"> <comment type="line">//inherites MyOperatingSystemWindow</comment>
 </private><public>public:
-    <constructor_decl><name>MyApplicationWindow</name><parameter_list>()</parameter_list>;</constructor_decl>
+    <constructor><name>MyApplicationWindow</name><parameter_list>()</parameter_list><block>{}</block></constructor><empty_stmt>;</empty_stmt>
 </public><private>private:
     <decl_stmt><decl><type><name><name>List</name><argument_list type="generic">&lt;<argument><expr><name>Content</name></expr></argument>&gt;</argument_list></name></type> <name>myApplicationContent</name></decl>;</decl_stmt>
 </private>}</block>;</class>
@@ -37,8 +37,8 @@
 <comment type="line">//====================================================</comment>
 <class>class <name>Content</name> <block>{<private type="default">
 </private><public>public:
-    <function><specifier>virtual</specifier> <type><name>void</name></type> <name>setContent</name><parameter_list>(<parameter><decl><type><name>String</name> <modifier>&amp;</modifier></type><name>newContent</name></decl></parameter>)</parameter_list> <block>{}</block></function>
-    <function_decl><type><name>void</name></type> <name>displayContent</name><parameter_list>()</parameter_list>;</function_decl>
+    <function><specifier>virtual</specifier> <type><name>void</name></type> <name>setContent</name><parameter_list>(<parameter><decl><type><name>String</name> <modifier>&amp;</modifier></type><name>newContent</name></decl></parameter>)</parameter_list><block>{}</block></function><empty_stmt>;</empty_stmt>
+    <function><type><name>void</name></type> <name>displayContent</name><parameter_list>()</parameter_list><block>{}</block></function><empty_stmt>;</empty_stmt>
 </public><private>private:
     <decl_stmt><decl><type><name>String</name></type> <name>currentContent</name></decl>;</decl_stmt>
 </private>}</block>;</class>

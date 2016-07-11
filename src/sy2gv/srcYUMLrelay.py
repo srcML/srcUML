@@ -20,6 +20,7 @@
 
 from antlr4 import*
 from srcYUML2graphVizListener import srcYUML2graphVizListener
+from kitchen.text.converters import to_bytes
 import srcYUML2graphVizParser
 
 class Relay(srcYUML2graphVizListener):
@@ -28,90 +29,121 @@ class Relay(srcYUML2graphVizListener):
 		self.output = otpt
 	#======================================================Yuml - (node | relationship | NEWLINE)+ EOF
 	def enterYuml(self, ctx):
-		print("------------yumlStart")
+		print("----------------yumlStart")
 		##################
 
 		print(dir(ctx))
 		####################################
-		# self.output.write(ctx.getText()) # THIS IS IT!!!
+		self.output.write( to_bytes(ctx.getText()) ) # THIS IS IT!!!
 		####################################
 	def exitYuml(self, ctx):
-		print("------------yumlExit")
+		print("----------------yumlExit")
 		#################
+
+	#======================================================Class
+	def enterClassDef(self, ctx):
+		print("------------classStart")
+		##################
+
+	def exitClassDef(self, ctx):
+		print("------------classExit")
 
 	#======================================================Relationship - (node (a|c|r|g) node)
 	def enterRelationship(self, ctx):
-		print("--relationStart")
+		print("------------relationStart")
 		######################
 
-		print(ctx.getText())
+		print("--------" + ctx.getText())
 		#print("--" + ctx.getRuleContext())
 
 	def exitRelationship(self, ctx):
-		print("--relationExit")
+		print("------------relationExit")
 		#####################
 
 	#======================================================Node - '[' text ']''
-	def enterNode(self, ctx):
-		#print("----nodeStart")
-		##################
-
-		print(ctx.getText())
-
-	def exitNode(self, ctx):
-		#print("----nodeExit")
-		#################
+	#def enterNode(self, ctx):
+	#	#print("----nodeStart")
+	#	##################
+	#
+	#	print(ctx.getText())
+	#
+	#def exitNode(self, ctx):
+	#	#print("----nodeExit")
+	#	#################
+	#
 
 	#======================================================Realization - the use of an 
 	def enterRealization(self, ctx):                      #interface, the realization
-		print("----realizationStart")                         #of an interface
+		print("--------realizationStart")                         #of an interface
 		#########################
 
-		temp = dir(ctx)
+		#temp = dir(ctx)
 		#print(temp)
 
 		print("----" + ctx.getText())
 
 	def exitRealization(self, ctx):
-		print("----realizationExit")
+		print("--------realizationExit")
 		########################
 
 	#=====================================================Aggregation - child can exist 
 	def enterAggregation(self, ctx):                     #independently of the parent
-		print("----aggregationStart")
+		print("--------aggregationStart")
 		#########################
 
 	def exitAggregation(self, ctx):
-		print("----aggregationExit")
+		print("--------aggregationExit")
 		########################
 
 	#=====================================================Composition - without parent child
 	def enterComposition(self, ctx):                     #can not exist
-		print("----compositionStart")
+		print("--------compositionStart")
 		#########################
 
 	def exitComposition(self, ctx):
-		print("----compositionExit")
+		print("--------compositionExit")
 		########################
 
 	#====================================================Generalization - the generalization of
 	def enterGeneralization(self, ctx):                 #children, children inherit the parent
-		print("----generalizationStart")
+		print("--------generalizationStart")
 		############################
 
 	def exitGeneralization(self, ctx):
-		print("----generalizationExit")
+		print("--------generalizationExit")
 		############################
 
 	#====================================================Text
 	def enterText(self, ctx):
-		print("------textStart")
+		print("----textStart")
 		##################
 
-		print("------" + ctx.getText())
+		print(ctx.getText())
 
 	def exitText(self, ctx):
-		print("------textExit")
+		print("----textExit")
 		#################
 
-	#====================================================
+	#====================================================ClassID
+	def enterClassID(self, ctx):
+		print("--------IDStart")
+		##################
+
+	def exitClassID(self, ctx):
+		print("--------IDExit")
+	#=====================================================Composition - without parent child
+	def enterMethods(self, ctx):                     #can not exist
+		print("--------methodsStart")
+		#########################
+
+	def exitMethods(self, ctx):
+		print("--------methodsExit")
+		########################
+#=====================================================Composition - without parent child
+	def enterVariables(self, ctx):                     #can not exist
+		print("--------variablesStart")
+		#########################
+
+	def exitVariables(self, ctx):
+		print("--------variablesExit")
+		########################

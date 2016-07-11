@@ -16,7 +16,7 @@ public:
 //====================================================
 class MyOperatingSystemWindow : public Window{
 public:
-    MyOperatingSystemWindow(){}
+    MyOperatingSystemWindow(){};
 private:
     String name;
     WindowID ID;
@@ -24,7 +24,7 @@ private:
 //====================================================
 class MyApplicationWindow : public MyOperatingSystemWindow { //inherites MyOperatingSystemWindow
 public:
-    MyApplicationWindow();
+    MyApplicationWindow(){};
 private:
     List<Content> myApplicationContent;
 };
@@ -36,8 +36,8 @@ private:
 //====================================================
 class Content {
 public:
-    virtual void setContent(String &newContent) {}
-    void displayContent();
+    virtual void setContent(String &newContent){}
+    void displayContent(){}
 private:
     String currentContent;
 };

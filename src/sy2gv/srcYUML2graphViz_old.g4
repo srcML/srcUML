@@ -22,15 +22,15 @@
 grammar srcYUML2graphViz;
 
 yuml
-	: ( classDef | relationship | NEWLINE )+ EOF
-	;
-
-classDef
-	: '[' classID ( '|' variables ('|' methods )? )? ']'
+	: ( node | relationship | NEWLINE )+ EOF
 	;
 
 relationship
-	: classDef ( aggregation | composition | realization | generalization ) classDef 
+	: ( node ( aggregation | composition | realization | generalization ) node )
+	;
+
+node
+	: '[' text ']'
 	;
 
 aggregation
@@ -45,35 +45,20 @@ realization
 	: text '^' text '-' text '.' text '-'
  	;
  
-generalization
-	: text '^' text '-' text
+ generalization
+ 	: text '^' text '-' text
  	; 
 
-classID
-	: text
-	;
-
-variables
-	: (text semicolon)*
-	;
-
-methods
-	: (text semicolon)*
-	;
-semicolon
-	: ';'
-	;
-
-text
-	: ( LETTER | NUMBER | ('-') | ('+') | ('#') | ('<') | ('>') | '(' | ')' | ';' | ':' | ' ' | '*' | '［' | '］' | '«' | '»' )*
-	;
-
-LETTER
-	: [a-zA-Z]
+ text
+ 	: ( LETTER | NUMBER | ('|') | ('-') | ('+') | ('#') | ('<') | ('>') | ';' | '(' | ')' | ':' | ' ' | '*' )*
  	;
 
-NUMBER
-	: [0-9]
+ LETTER
+ 	: [a-zA-Z]
+ 	;
+
+ NUMBER
+ 	: [0-9]
  	;
 
 NEWLINE

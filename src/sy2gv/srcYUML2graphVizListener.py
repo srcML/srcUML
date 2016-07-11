@@ -13,21 +13,21 @@ class srcYUML2graphVizListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by srcYUML2graphVizParser#classDef.
+    def enterClassDef(self, ctx):
+        pass
+
+    # Exit a parse tree produced by srcYUML2graphVizParser#classDef.
+    def exitClassDef(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by srcYUML2graphVizParser#relationship.
     def enterRelationship(self, ctx):
         pass
 
     # Exit a parse tree produced by srcYUML2graphVizParser#relationship.
     def exitRelationship(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by srcYUML2graphVizParser#node.
-    def enterNode(self, ctx):
-        pass
-
-    # Exit a parse tree produced by srcYUML2graphVizParser#node.
-    def exitNode(self, ctx):
         pass
 
 
@@ -64,6 +64,42 @@ class srcYUML2graphVizListener(ParseTreeListener):
 
     # Exit a parse tree produced by srcYUML2graphVizParser#generalization.
     def exitGeneralization(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by srcYUML2graphVizParser#classID.
+    def enterClassID(self, ctx):
+        pass
+
+    # Exit a parse tree produced by srcYUML2graphVizParser#classID.
+    def exitClassID(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by srcYUML2graphVizParser#variables.
+    def enterVariables(self, ctx):
+        pass
+
+    # Exit a parse tree produced by srcYUML2graphVizParser#variables.
+    def exitVariables(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by srcYUML2graphVizParser#methods.
+    def enterMethods(self, ctx):
+        pass
+
+    # Exit a parse tree produced by srcYUML2graphVizParser#methods.
+    def exitMethods(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by srcYUML2graphVizParser#semicolon.
+    def enterSemicolon(self, ctx):
+        pass
+
+    # Exit a parse tree produced by srcYUML2graphVizParser#semicolon.
+    def exitSemicolon(self, ctx):
         pass
 
 
