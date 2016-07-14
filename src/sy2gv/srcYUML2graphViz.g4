@@ -34,19 +34,19 @@ relationship
 	;
 
 aggregation
-	: text '+' text '-' text '>' text
+	: relationText '+' relationText '-' relationText '>' relationText
 	;
 
 composition
-	: text '+' text '+' text '-' text '>'
+	: relationText '+' relationText '+' relationText '-' relationText '>'
 	;
 
 realization
-	: text '^' text '-' text '.' text '-'
+	: relationText '^' relationText '-' relationText '.' relationText '-'
  	;
  
 generalization
-	: text '^' text '-' text
+	: relationText '^' relationText '-' relationText
  	; 
 
 classID
@@ -54,18 +54,23 @@ classID
 	;
 
 variables
-	: (text semicolon)*
+	: (vmText ';')*
 	;
 
 methods
-	: (text semicolon)*
-	;
-semicolon
-	: ';'
+	: (vmText ';')*
 	;
 
 text
 	: ( LETTER | NUMBER | ('-') | ('+') | ('#') | ('<') | ('>') | '(' | ')' | ';' | ':' | ' ' | '*' | '［' | '］' | '«' | '»' )*
+	;
+
+vmText
+	: ( LETTER | NUMBER | ('-') | ('+') | ('#') | ('<') | ('>') | '(' | ')' | ':' | ' ' | '*' | '［' | '］' | '«' | '»' )*
+	;
+
+relationText
+	: ( LETTER | NUMBER | ('#') | '(' | ')' | ':' | ' ' | '*' | '［' | '］' | '«' | '»' )*
 	;
 
 LETTER
@@ -79,3 +84,4 @@ NUMBER
 NEWLINE
 	: '\n'
 	;
+	
