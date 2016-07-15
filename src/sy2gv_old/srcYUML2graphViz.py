@@ -25,7 +25,7 @@ from srcYUML2graphVizParser import srcYUML2graphVizParser
 from kitchen.text.converters import to_unicode
 
 def main(argv):
-    file = open(argv[1], "rb")
+    file = open(argv[1], "rb") #rb is R-read and B-binary
     input_str = to_unicode(file.read())
     file.close()
     input = InputStream(input_str)
