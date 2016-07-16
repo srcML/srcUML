@@ -1,0 +1,10 @@
+#Files that should not be commited
+srcYUML2graphViz.tokens
+srcYUML2graphVizLexer.py
+srcYUML2graphVizLexer.pyc
+srcYUML2graphVizLexer.tokens
+srcYUML2graphVizListener.py
+srcYUML2graphVizListener.pyc
+srcYUML2graphVizParser.py
+srcYUML2graphVizParser.pyc
+research/*
