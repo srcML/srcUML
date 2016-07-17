@@ -7,4 +7,5 @@ srcYUML2graphVizListener.py
 srcYUML2graphVizListener.pyc
 srcYUML2graphVizParser.py
 srcYUML2graphVizParser.pyc
+build/*
 research/*
