@@ -167,10 +167,11 @@ class Relay(srcYUML2graphVizListener):
 	def enterVmText(self, ctx):
 		print("----vmTextStart")
 		##################
+		print(ctx.getText())
 		if self.inMethod == True :
-			self.output.write("|" + ctx.getText())
+			self.output.write( "|" + to_bytes(ctx.getText().replace(";", "\\" + "n")) )
 			return
-		self.output.write( to_bytes(ctx.getText()) )
+		self.output.write( to_bytes(ctx.getText().replace(";", "\\" + "n")) )
 
 	def exitVmText(self, ctx):
 		print("----vmTextExit")
@@ -221,7 +222,6 @@ class Relay(srcYUML2graphVizListener):
 	def enterVariables(self, ctx):                     
 		print("--------variablesStart")
 		#########################
-
 
 	def exitVariables(self, ctx):
 		print("--------variablesExit")
