@@ -22,35 +22,35 @@
 grammar srcYUML2graphViz;
 
 yuml
-	: ( node | relationship | NEWLINE )+ EOF
+	: (node | relationship | NEWLINE)+ EOF
 	;
 
 relationship
-	: ( node ( aggregation | composition | realization | generalization ) node )
+	: (node (aggregation | composition | realization | generalization)  node)
 	;
 
 node
 	: '[' text ']'
 	;
 
-aggregation
+aggregation - a child can exist independetly of the parent
 	: text '+' text '-' text '>' text
 	;
 
-composition
+composition - without parent child can't exist
 	: text '+' text '+' text '-' text '>'
 	;
 
-realization
+realization - the use of an interface, the realization of an interface
 	: text '^' text '-' text '.' text '-'
  	;
  
- generalization
+ generalization - the generalization of children, the children inherite the parent
  	: text '^' text '-' text
  	; 
 
  text
- 	: ( LETTER | NUMBER | ('|') | ('-') | ('+') | ('#') | ('<') | ('>') | ';' | '(' | ')' | ':' | ' ' | '*' )*
+ 	: (LETTER | NUMBER | ('|') | ('-') | ('+') | ('#') | ('<') | ('>') | ';' | '(' | ')' | ':' | ' ' | '*')*
  	;
 
  LETTER

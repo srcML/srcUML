@@ -22,6 +22,7 @@ from antlr4 import*
 from srcYUML2graphVizListener import srcYUML2graphVizListener
 from kitchen.text.converters import to_bytes
 import srcYUML2graphVizParser
+import sys
 
 class Relay(srcYUML2graphVizListener):
 	#======================================================Constructer
@@ -152,6 +153,16 @@ class Relay(srcYUML2graphVizListener):
 		print("----textExit")
 		#################
 
+	#====================================================relationText
+	def enterRelationText(self, ctx):
+		print("----reltextStart")
+		##################
+
+
+	def exitRelationText(self, ctx):
+		print("----reltextExit")
+		#################
+
 	#====================================================vmText
 	def enterVmText(self, ctx):
 		print("----vmTextStart")
@@ -185,7 +196,11 @@ class Relay(srcYUML2graphVizListener):
 			return
 		if ctx.getText() in self.label2class.keys():
 			return
-		self.output.write(to_bytes(str(self.labeler) + "[label = \"{" + ctx.getText() + "|"))
+		toPlace = ctx.getText()
+		if toPlace.find(';') > -1:
+			indx = toPlace.find(';')
+			toPlace = " " + unichr(171) + "interface" + unichr(187) + "\\" + "n" + toPlace[indx + 1:]
+		self.output.write(to_bytes(str(self.labeler) + "[label = \"{" + toPlace + "|"))
 		self.label2class[ctx.getText()] = self.labeler # maps the number to the classID for later recall
 		self.labeler += 1
 

@@ -1,14 +1,22 @@
+class String{
+public:
+    String(){}
+    String(const String&){}
+    ~String(){}
+    
+    String& operator=(const String&){}
+};
 class Animals{
 private:
 	int numLegs;
 	bool flight;
 public:
-	Animals(){};
-	Animals(int){};
-	void setType(){};
+	Animals(){}
+	Animals(int){}
+	void setType(){}
 };
 //=============================
-class Pet{
+class Pet : public Animals{
 public:
 	virtual void setName() = 0;
 	virtual void setType() = 0;
@@ -17,6 +25,13 @@ public:
 class MyPet : public Pet{
 public:
 	play(){}
+	feed(){}
 private:
-	petName
-}
+	String petName;
+	String type;
+};
+//=============================
+class feedPet{
+public:
+	feed(){}
+};
