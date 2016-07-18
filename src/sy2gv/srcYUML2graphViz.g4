@@ -54,11 +54,11 @@ classID
 	;
 
 variables
-	: (vmText ';')*
+	: vmText
 	;
 
 methods
-	: (vmText ';')*
+	: vmText
 	;
 
 text
@@ -66,7 +66,7 @@ text
 	;
 
 vmText
-	: ( LETTER | NUMBER | ('-') | ('+') | ('#') | ('<') | ('>') | '(' | ')' | ':' | ' ' | '*' | '［' | '］' | '«' | '»' )*
+	: ( LETTER | NUMBER | ('-') | ('+') | ('#') | ('<') | ('>') | '(' | ')' | ':' | ';' | ' ' | '*' | '［' | '］' | '«' | '»' )*
 	;
 
 relationText
