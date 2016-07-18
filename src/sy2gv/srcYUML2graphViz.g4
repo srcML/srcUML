@@ -72,6 +72,7 @@ vmText
 relationText
 	: ( LETTER | NUMBER | UNICODE | ('#') | '(' | ')' | ':' | ' ' | '*' | '［' | '］' | '«' | '»' )*
 	;
+	
 UNICODE
 	: [\u0020-\u23FA]
 	;
