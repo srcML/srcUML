@@ -407,6 +407,7 @@ public:
         }
         // We have ended the class
         else if((consuming_class && lname == "class" && !class_in_class) || (consuming_class && lname == "struct" && !class_in_class)) {
+
             // Send the class to our SourceInformation class
             current_class_.identifyClassType();
             parsed_source_.addClass(current_class, current_class_);
@@ -710,6 +711,8 @@ public:
 
         // need to check if deleted
         //if(consuming_deleted) ??;
+
+        current_class_.hasConstructor();
 
         if(in_public) {
 

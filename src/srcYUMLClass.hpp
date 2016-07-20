@@ -179,7 +179,8 @@ public:
          is_data_type,
          default_constructor,
          copy_constructor,
-         overloaded_assignment;
+         overloaded_assignment,
+         has_constructor;
     
     std::string class_name_;
     std::string interface_data_type_name;
@@ -204,6 +205,7 @@ public:
                       default_constructor(false),
                       copy_constructor(false),
                       overloaded_assignment(false),
+                      has_constructor(false),
                       class_name_(class_name) {}
 
     void setClassName(std::string class_name) {
@@ -246,6 +248,10 @@ public:
         overloaded_assignment = true;
     }
 
+    void hasConstructor() {
+        has_constructor = true;
+    }
+
     void hasDefaultConstructor() {
         default_constructor = true;
     }
@@ -255,6 +261,7 @@ public:
     }
     
     void identifyClassType() {
+
         if(!class_functions.empty()) {
             for(const auto& visibility : class_functions) {
                 for(const auto& function : visibility.second) {
@@ -264,10 +271,13 @@ public:
                     }
                 }
             }
-            if(overloaded_assignment && copy_constructor) {
-                is_data_type = true;
-            }
         }
+
+        if((overloaded_assignment && copy_constructor && default_constructor) || (!has_constructor && !overloaded_assignment)) {
+            is_data_type = true;
+        }
+
+
     }
     
     std::string convertToYuml(std::string class_name){
