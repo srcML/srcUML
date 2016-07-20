@@ -283,15 +283,15 @@ public:
             current_class_visibility = "protected";
         }
         // We are at a class attribute
-        else if(lname == "decl_stmt" && consuming_class && !consuming_function && !(srcml_element_stack[srcml_element_stack.size() - 2] == "block")) {
+        else if(lname == "decl_stmt" && consuming_class && !consuming_function && !consuming_constructor && !(srcml_element_stack[srcml_element_stack.size() - 2] == "block")) {
             consuming_data_declaration = true;
             current_recorded_data_in_class = "";
         }
-        else if(lname == "decl" && consuming_class && consuming_function && in_function_param_list) {
+        else if(lname == "decl" && consuming_class && (consuming_function || consuming_constructor) && in_function_param_list) {
             consuming_data_declaration = true;
             current_recorded_data_in_class = "";
         }
-        else if(lname == "decl" && consuming_class && !consuming_function && consuming_data_declaration) {
+        else if(lname == "decl" && consuming_class && !consuming_function && !consuming_constructor && consuming_data_declaration) {
             current_recorded_data_in_class = "";
         }
         // We are at one of the classes functions
@@ -304,13 +304,18 @@ public:
             consuming_function = true;
             current_recorded_data_in_class = "";
         }
-        else if(lname == "literal" && consuming_class && consuming_function && !in_function_param_list) {
+        else if((lname == "constructor" || lname == "constructor_decl") && consuming_class) {
+
+            consuming_constructor = true;
+            current_recorded_data_in_class = "";
+
+        } else if(lname == "literal" && consuming_class && consuming_function && !in_function_param_list) {
             consuming_pure_virtual = true;
         }
-        else if(lname == "type" && consuming_class && consuming_function && !in_function_param_list) {
+        else if(lname == "type" && consuming_class && (consuming_function || consuming_constructor) && !in_function_param_list) {
             current_recorded_data_in_class = "";
         }
-        else if(lname == "parameter_list" && consuming_class && consuming_function && !in_function_param_list) {
+        else if(lname == "parameter_list" && consuming_class && (consuming_function || consuming_constructor) && !in_function_param_list) {
             in_function_param_list = true;
             current_recorded_data_in_class = removePortionOfString(current_recorded_data_in_class, "std::");
             current_function_name = current_recorded_data_in_class;
@@ -352,14 +357,14 @@ public:
     virtual void endElement(const char * localname, const char * prefix, const char * URI) {
         std::string lname = localname;
         // If we hit the </name> tag and the parent is the Class tag we have consumed the class' name
-        if((consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed && !consuming_function) || (consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "struct" && !class_name_consumed && !consuming_function)) {
+        if((consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "class" && !class_name_consumed && !consuming_function && !consuming_constructor) || (consuming_class && lname == "name" && srcml_element_stack[srcml_element_stack.size() - 1] == "struct" && !class_name_consumed && !consuming_function && !consuming_constructor)) {
             recordClassName();
         }
         // If we hit this we have consumed the WHOLE type
-        else if(consuming_class && consuming_data_declaration && lname == "type" && !data_member_type_consumed && !consuming_function) {
+        else if(consuming_class && consuming_data_declaration && lname == "type" && !data_member_type_consumed && !consuming_function && !consuming_constructor) {
             recordDataDeclarationType();
         }
-        else if(consuming_class && lname == "decl" && consuming_data_declaration && data_member_type_consumed && !consuming_function) {
+        else if(consuming_class && lname == "decl" && consuming_data_declaration && data_member_type_consumed && !consuming_function && !consuming_constructor) {
             if(current_recorded_data_in_class.substr(0, consuming_data_declaration_type.length()) == consuming_data_declaration_type){
                 current_recorded_data_in_class = current_recorded_data_in_class.substr(consuming_data_declaration_type.length() + 1, current_recorded_data_in_class.length());
             }
@@ -367,7 +372,7 @@ public:
             recordFullDataDeclaration();
         }
         // We hit an </decl_stmt> tag in the class so we now have all of the declaration information
-        else if(consuming_class && lname == "decl_stmt" && consuming_data_declaration && data_member_type_consumed && !consuming_function) {
+        else if(consuming_class && lname == "decl_stmt" && consuming_data_declaration && data_member_type_consumed && !consuming_function && !consuming_constructor) {
             end_of_decl = false;
             consuming_data_declaration = false;
             data_member_type_consumed = false;
@@ -422,18 +427,21 @@ public:
         else if(consuming_class && consuming_function && (lname == "function" || lname == "function_decl")) {
             recordFunctionDeclaration();
         }
+        else if(consuming_class && consuming_constructor && (lname == "constructor" || lname == "constructor_decl")) {
+            recordConstructorDeclaration();
+        }
         else if(lname == "type" && consuming_class && consuming_function && !in_function_param_list && !function_return_type_consumed) {
             recordFunctionReturnType();
         }
-        else if(lname == "type" && consuming_class && consuming_function && in_function_param_list && consuming_data_declaration && function_return_type_consumed) {
+        else if(lname == "type" && consuming_class && (consuming_function || consuming_constructor) && in_function_param_list && consuming_data_declaration) {
             recordDataDeclarationType();
         }
-        else if(lname == "name" && consuming_class && consuming_function && in_function_param_list && consuming_data_declaration && data_member_type_consumed) {
+        else if(lname == "name" && consuming_class && (consuming_function || consuming_constructor) && in_function_param_list && consuming_data_declaration && data_member_type_consumed) {
             end_of_decl = true;
             buildDataDeclarationNamesString();
             recordFullDataDeclaration();
         }
-        else if(lname == "parameter_list" && consuming_class && consuming_function && in_function_param_list) {
+        else if(lname == "parameter_list" && consuming_class && (consuming_function || consuming_constructor) && in_function_param_list) {
             in_function_param_list = false;
         }
     }
@@ -578,7 +586,7 @@ public:
         struct AttributeDeclaration temp(consuming_data_declaration_type, current_data_declaration_names);
         
         resolveMultiplicity(temp);
-        if(consuming_function) {
+        if(consuming_function || consuming_constructor) {
             resolveMultiplicity(temp);
             temp.parameter_direction = current_function_parameter_direction;
             function_parameters.push_back(temp);
@@ -691,6 +699,33 @@ public:
         consuming_pure_virtual = false;
         function_return_type_consumed = false;
         function_parameters.clear();
+    }
+
+    /**
+     * recordConstructorDeclaration
+     *
+     * Probably not need to record, but just look if copy/default
+     */
+    void recordConstructorDeclaration() {
+
+        // need to check if deleted
+        //if(consuming_deleted) ??;
+
+        if(in_public) {
+
+            if(function_parameters.size() == 0)
+                current_class_.hasDefaultConstructor();
+
+            if(function_parameters.size() == 1 && function_parameters.begin()->type == current_class)
+                current_class_.hasCopyConstructor();
+
+        }
+        
+        current_recorded_data_in_class = "";
+        consuming_constructor = false;
+        in_function_param_list = false;
+        function_parameters.clear();
+
     }
     
     /**

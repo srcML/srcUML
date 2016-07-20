@@ -245,6 +245,14 @@ public:
     void hasOverloadedAssignment() {
         overloaded_assignment = true;
     }
+
+    void hasDefaultConstructor() {
+        default_constructor = true;
+    }
+
+    void hasCopyConstructor() {
+        copy_constructor = true;
+    }
     
     void identifyClassType() {
         if(!class_functions.empty()) {
