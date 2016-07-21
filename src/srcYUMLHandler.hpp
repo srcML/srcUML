@@ -663,7 +663,8 @@ public:
         
         if(consuming_operator_overload) {
             // check for = operator
-            if(current_function_name.find("=") != std::string::npos && current_function_name.find("==") == std::string::npos) {
+            if(current_function_name.find("=") != std::string::npos && current_function_name.find("==") == std::string::npos
+                && in_public) {
                 current_class_.hasOverloadedAssignment();
                 temp.overloaded_assignment = true;
             }
