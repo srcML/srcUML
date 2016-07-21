@@ -34,6 +34,7 @@ tester_t::tester_t(const std::string & name) : name(name), test_count(0), number
 tester_t & tester_t::src2srcml(const std::string & src) {
 
     source_code = src;
+    srcml = std::string();
 
     srcml_archive * archive = srcml_archive_create();
 
@@ -97,6 +98,8 @@ tester_t & tester_t::test(const std::string & expected_yuml) {
 
     }
 
+    yuml = std::string();
+
     return *this;
 }
 
@@ -112,7 +115,7 @@ size_t tester_t::results() const {
 
         std::cout << std::get<0>(result);
 
-        std::cout << "\x1b[0;0m";
+        std::cout << "\x1b[0;0m ";
 
     }
 

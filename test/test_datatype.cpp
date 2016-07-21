@@ -1,5 +1,5 @@
 /**
- * @file test_empty_struct.cpp
+ * @file test_datatype.cpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
@@ -21,11 +21,22 @@
 
 #include <tester.hpp>
 
+#include <string>
+#include <vector>
+
 int main(int argc, char * argv[]) {
 
-    tester_t tester("empty struct");
+    tester_t tester("datatype");
 
-    tester.src2srcml("struct foo {};").run().test("[«datatype»;foo]\n");
+    std::vector<std::string> class_types{ "class", "struct" };
+
+    for(const std::string & class_type : class_types) {
+
+        tester.src2srcml(class_type + " foo {};").run().test("[«datatype»;foo]\n");
+
+        tester.src2srcml(class_type + " foo {};").run().test("[«datatype»;foo]\n");
+
+    }
 
     return tester.results();
 
