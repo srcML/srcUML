@@ -668,30 +668,33 @@ public:
             if(current_function_name.find("==") != std::string::npos) {
                 temp.overloaded_equality = true;
             }
+        } else {
+            
+            if(!class_in_class) {
+                if(in_public || in_private || in_protected) {
+                    current_class_.addFunctionDeclaration(temp, current_class_visibility);
+                    //classes_in_source[current_class].class_functions[current_class_visibility].push_back(temp);
+                }
+                // in-case we are in a struct default the visibility option to public
+                else {
+                    current_class_.addFunctionDeclaration(temp);
+                    //classes_in_source[current_class].class_functions["public"].push_back(temp);
+                }
+            }
+            else if(class_in_class) {
+                if( in_public || in_private || in_protected) {
+                    current_class_.addInternalClassFunctionDeclaration(*class_names_in_class_stack.end(), temp, current_class_visibility);
+                    //classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(temp);
+                }
+                // in-case we are in a struct, once again default the visibility option to public
+                else {
+                    current_class_.addInternalClassFunctionDeclaration(*class_names_in_class_stack.end(), temp);
+                    //classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions["public"].push_back(temp);
+                }
+            }
+
         }
-        
-        if(!class_in_class) {
-            if(in_public || in_private || in_protected) {
-                current_class_.addFunctionDeclaration(temp, current_class_visibility);
-                //classes_in_source[current_class].class_functions[current_class_visibility].push_back(temp);
-            }
-            // in-case we are in a struct default the visibility option to public
-            else {
-                current_class_.addFunctionDeclaration(temp);
-                //classes_in_source[current_class].class_functions["public"].push_back(temp);
-            }
-        }
-        else if(class_in_class) {
-            if( in_public || in_private || in_protected) {
-                current_class_.addInternalClassFunctionDeclaration(*class_names_in_class_stack.end(), temp, current_class_visibility);
-                //classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions[current_class_visibility].push_back(temp);
-            }
-            // in-case we are in a struct, once again default the visibility option to public
-            else {
-                current_class_.addInternalClassFunctionDeclaration(*class_names_in_class_stack.end(), temp);
-                //classes_in_source[current_class].classes_in_class[*class_names_in_class_stack.end()].class_functions["public"].push_back(temp);
-            }
-        }
+
         current_recorded_data_in_class = "";
         current_function_return_type = "";
         consuming_operator_overload = false;
