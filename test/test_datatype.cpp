@@ -35,6 +35,12 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " foo {};").run().test("[«datatype»;foo]\n");
 
         tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo]\n");
+
+        if(class_type == "class")
+            tester.src2srcml(class_type + " foo { foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[foo]\n");
+        else if(class_type == "struct")
+            tester.src2srcml(class_type + " foo { foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo]\n");
+
         tester.src2srcml(class_type + " foo { public: foo(); foo(const foo &); foo & operator=(foo bar); };").run().test("[«datatype»;foo]\n");
         tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo); };").run().test("[«datatype»;foo]\n");
         tester.src2srcml(class_type + " foo { public: foo(); foo(const foo &); foo & operator=(foo); };").run().test("[«datatype»;foo]\n");
