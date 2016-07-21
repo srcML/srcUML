@@ -438,8 +438,10 @@ public:
             recordDataDeclarationType();
         }
         else if(lname == "name" && consuming_class && (consuming_function || consuming_constructor) && in_function_param_list && consuming_data_declaration && data_member_type_consumed) {
-            end_of_decl = true;
             buildDataDeclarationNamesString();
+        }
+        else if(lname == "parameter" && consuming_class && (consuming_function || consuming_constructor) && in_function_param_list && consuming_data_declaration && data_member_type_consumed) { 
+            end_of_decl = true;
             recordFullDataDeclaration();
         }
         else if(lname == "parameter_list" && consuming_class && (consuming_function || consuming_constructor) && in_function_param_list) {
