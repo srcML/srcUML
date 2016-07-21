@@ -34,7 +34,8 @@ int main(int argc, char * argv[]) {
 
         tester.src2srcml(class_type + " foo {};").run().test("[«datatype»;foo]\n");
 
-        tester.src2srcml(class_type + " foo {};").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo &); foo & operator=(foo); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo]\n");
 
     }
 
