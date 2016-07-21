@@ -180,7 +180,8 @@ public:
          default_constructor,
          copy_constructor,
          overloaded_assignment,
-         has_constructor;
+         has_constructor,
+         has_destructor;
     
     std::string class_name_;
     std::string interface_data_type_name;
@@ -191,8 +192,7 @@ public:
     std::map<std::string, std::list<struct FunctionDeclaration>> class_functions;
     std::map<std::string, srcYUMLClass> classes_in_class;
     std::list<ConstructorDeclaration> constructors;
-    
-    
+
     
     // To class as our key, so we have unique relationships for each class
     std::map<std::string, Relationship> relationships_;
@@ -206,6 +206,7 @@ public:
                       copy_constructor(false),
                       overloaded_assignment(false),
                       has_constructor(false),
+                      has_destructor(false),
                       class_name_(class_name) {}
 
     void setClassName(std::string class_name) {
@@ -259,17 +260,39 @@ public:
     void hasCopyConstructor() {
         copy_constructor = true;
     }
+
+    void hasDestructor() {
+        has_destructor = true;
+    }
     
     void identifyClassType() {
 
-        if(!class_functions.empty()) {
+        bool has_data = false;
+        if(    class_data_members.find("public") != class_data_members.end()
+            || class_data_members.find("private") != class_data_members.end()
+            || class_data_members.find("protected") != class_data_members.end())
+            has_data = true;
+
+        bool only_public_methods = false;
+        if(class_functions.find("public") != class_functions.end()
+            && class_functions.find("private") == class_functions.end()
+            && class_functions.find("protected") == class_functions.end())
+            only_public_methods = true;
+
+
+        if(!has_constructor && !has_data && !has_destructor && only_public_methods) {
+
+            is_interface = true;
             for(const auto& visibility : class_functions) {
+
                 for(const auto& function : visibility.second) {
-                    if(function.pure_virtual) {
-                        is_interface = true;
-                        return;
+
+                    if(!function.pure_virtual) {
+                        is_interface = false;
                     }
+
                 }
+
             }
         }
 
@@ -360,7 +383,7 @@ public:
         if(private_functions) {
             for(const auto& itr : class_functions.at("private")) {
                 if(itr.overloaded_assignment || itr.overloaded_equality) continue;
-                yuml_format += "- " + itr.function_name + "( ";
+                yuml_format += "-" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
@@ -379,7 +402,7 @@ public:
         if(protected_functions) {
             for(const auto& itr : class_functions.at("protected")) {
                 if(itr.overloaded_assignment || itr.overloaded_equality) continue;
-                yuml_format += "# " + itr.function_name + "( ";
+                yuml_format += "#" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;

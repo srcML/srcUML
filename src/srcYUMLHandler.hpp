@@ -309,7 +309,13 @@ public:
             consuming_constructor = true;
             current_recorded_data_in_class = "";
 
-        } else if(lname == "literal" && consuming_class && consuming_function && !in_function_param_list) {
+        }
+        else if(lname == "destructor" && consuming_class) {
+
+            current_class_.hasDestructor();
+
+        }
+        else if(lname == "literal" && consuming_class && consuming_function && !in_function_param_list) {
             consuming_pure_virtual = true;
         }
         else if(lname == "type" && consuming_class && (consuming_function || consuming_constructor) && !in_function_param_list) {
