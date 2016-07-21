@@ -26,6 +26,8 @@
 #include <map>
 #include <string>
 #include <list>
+#include <algorithm>
+#include <cctype>
 
 enum Multiplicity {
     OneToOne,
@@ -167,6 +169,16 @@ struct FunctionDeclaration {
     
     FunctionDeclaration(std::string rType, std::string fName, std::list<struct AttributeDeclaration> params) : returnType(rType), function_name(fName), function_parameters(params), pure_virtual(false), overloaded_assignment(false), overloaded_equality(false) {};
 };
+
+std::string & trim(std::string & str) {
+
+    str.erase(str.begin(), std::find_if_not(str.begin(), str.end(), isspace));
+    while(!str.empty() && isspace(str.back()))
+        str.pop_back();
+
+    return str;
+
+}
 
 /**
  * srcYUMLClass
@@ -358,13 +370,13 @@ public:
             yuml_format += "|";
         }
         if(public_functions) {
-            for(const auto& itr : class_functions.at("public")) {
+            for(auto& itr : class_functions.at("public")) {
                 if(itr.overloaded_assignment) {
                     continue;
                 } else if( itr.overloaded_equality) {
                     continue;
                 }
-                yuml_format += "+" + itr.function_name + "( ";
+                yuml_format += "+ " + trim(itr.function_name) + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
@@ -381,9 +393,9 @@ public:
             }
         }
         if(private_functions) {
-            for(const auto& itr : class_functions.at("private")) {
+            for(auto& itr : class_functions.at("private")) {
                 if(itr.overloaded_assignment || itr.overloaded_equality) continue;
-                yuml_format += "-" + itr.function_name + "( ";
+                yuml_format += "- " + trim(itr.function_name) + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
@@ -400,9 +412,9 @@ public:
             }
         }
         if(protected_functions) {
-            for(const auto& itr : class_functions.at("protected")) {
+            for(auto& itr : class_functions.at("protected")) {
                 if(itr.overloaded_assignment || itr.overloaded_equality) continue;
-                yuml_format += "#" + itr.function_name + "( ";
+                yuml_format += "# " + trim(itr.function_name) + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
