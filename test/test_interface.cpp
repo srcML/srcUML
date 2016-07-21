@@ -34,6 +34,12 @@ int main(int argc, char * argv[]) {
 
         tester.src2srcml(class_type + " foo { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar(  );]\n");
 
+        tester.src2srcml(class_type + " foo { public: void bar(); };").run().test("[«datatype»;foo||+ bar(  );]\n");
+        tester.src2srcml(class_type + " foo { public: void bar() {} };").run().test("[«datatype»;foo||+ bar(  );]\n");
+
+        tester.src2srcml(class_type + " foo { private: void bar() = 0; };").run().test("[«datatype»;foo||- bar(  );]\n");
+        tester.src2srcml(class_type + " foo { protected: void bar() = 0; };").run().test("[«datatype»;foo||# bar(  );]\n");
+
     }
 
     return tester.results();
