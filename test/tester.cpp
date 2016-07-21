@@ -51,7 +51,7 @@ tester_t & tester_t::src2srcml(const std::string & src) {
     srcml_archive_close(archive);
     srcml_archive_free(archive);
 
-    srcml = srcml_buffer;
+    srcml.append(srcml_buffer, size);
 
     return *this;
 
@@ -63,9 +63,13 @@ tester_t & tester_t::run() {
 
     std::ostringstream output;
 
-    srcYUMLHandler handler(output);
-    control.parse(&handler);
-    handler.processClassesInSource();
+    try {
+
+        srcYUMLHandler handler(output);
+        control.parse(&handler);
+        handler.processClassesInSource();
+
+    } catch(...) {}
 
     yuml = output.str();
 

@@ -40,3 +40,4 @@ endmacro()
 
 
 add_srcyuml_test(test_empty_class.cpp)
+add_srcyuml_test(test_empty_struct.cpp)
