@@ -309,7 +309,7 @@ public:
         }
         
         
-        if(public_data || private_data || protected_data) {
+        if(public_data || private_data || protected_data || public_functions || private_functions || protected_functions) {
             yuml_format += "|";
         }
         
@@ -341,7 +341,7 @@ public:
                 } else if( itr.overloaded_equality) {
                     continue;
                 }
-                yuml_format += "+ " + itr.function_name + "( ";
+                yuml_format += "+" + itr.function_name + "( ";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
