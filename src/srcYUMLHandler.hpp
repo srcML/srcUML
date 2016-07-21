@@ -310,7 +310,7 @@ public:
             current_recorded_data_in_class = "";
 
         }
-        else if(lname == "destructor" && consuming_class) {
+        else if((lname == "destructor" || lname == "destructor_decl") && consuming_class) {
 
             current_class_.hasDestructor();
 
@@ -669,10 +669,17 @@ public:
         
         if(consuming_operator_overload) {
             // check for = operator
-            if(current_function_name.find("=") != std::string::npos && current_function_name.find("==") == std::string::npos
-                && in_public) {
-                current_class_.hasOverloadedAssignment();
-                temp.overloaded_assignment = true;
+            if(current_function_name.find("=") != std::string::npos && current_function_name.find("==") == std::string::npos) {
+
+                current_class_.set_assignment(temp);
+
+                if(in_public) {
+
+                    current_class_.hasOverloadedAssignment();
+                    temp.overloaded_assignment = true;
+
+                }
+
             }
             if(current_function_name.find("==") != std::string::npos) {
                 temp.overloaded_equality = true;

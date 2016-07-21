@@ -167,6 +167,7 @@ struct FunctionDeclaration {
     bool pure_virtual, overloaded_assignment, overloaded_equality;
     std::list<struct AttributeDeclaration> function_parameters;
     
+    FunctionDeclaration() : returnType(), function_name(), function_parameters(), pure_virtual(false), overloaded_assignment(false), overloaded_equality(false) {}
     FunctionDeclaration(std::string rType, std::string fName, std::list<struct AttributeDeclaration> params) : returnType(rType), function_name(fName), function_parameters(params), pure_virtual(false), overloaded_assignment(false), overloaded_equality(false) {};
 };
 
@@ -204,6 +205,7 @@ public:
     std::map<std::string, std::list<struct FunctionDeclaration>> class_functions;
     std::map<std::string, srcYUMLClass> classes_in_class;
     std::list<ConstructorDeclaration> constructors;
+    FunctionDeclaration assignment_operator;
 
     
     // To class as our key, so we have unique relationships for each class
@@ -261,6 +263,10 @@ public:
         overloaded_assignment = true;
     }
 
+    void set_assignment(const FunctionDeclaration & assignment_operator) {
+        this->assignment_operator = assignment_operator;
+    }
+
     void hasConstructor() {
         has_constructor = true;
     }
@@ -292,7 +298,11 @@ public:
             only_public_methods = true;
 
 
-        if(!has_constructor && !has_data && !has_destructor && only_public_methods) {
+        if(    !has_constructor
+            && !has_data
+            && !has_destructor
+            && only_public_methods
+            && (assignment_operator.function_name == "" || (assignment_operator.pure_virtual && overloaded_assignment))) {
 
             is_interface = true;
             for(const auto& visibility : class_functions) {
@@ -308,7 +318,7 @@ public:
             }
         }
 
-        if((overloaded_assignment && copy_constructor && default_constructor) || (!has_constructor && !overloaded_assignment)) {
+        if((overloaded_assignment && copy_constructor && default_constructor) || (!has_constructor && !overloaded_assignment && assignment_operator.function_name == "")) {
             is_data_type = true;
         }
 
@@ -342,8 +352,7 @@ public:
             interface_data_type_name = class_name;
             yuml_format = "[" + class_name;
         }
-        
-        
+
         if(public_data || private_data || protected_data || public_functions || private_functions || protected_functions) {
             yuml_format += "|";
         }
@@ -376,7 +385,7 @@ public:
                 } else if( itr.overloaded_equality) {
                     continue;
                 }
-                yuml_format += "+ " + trim(itr.function_name) + "( ";
+                yuml_format += "+ " + trim(itr.function_name) + "(";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
@@ -386,16 +395,16 @@ public:
                     }
                 }
                 if(itr.returnType == "void") {
-                    yuml_format += " );";
+                    yuml_format += ");";
                 } else {
-                    yuml_format += " ): " + itr.returnType + ";";
+                    yuml_format += "): " + itr.returnType + ";";
                 }
             }
         }
         if(private_functions) {
             for(auto& itr : class_functions.at("private")) {
                 if(itr.overloaded_assignment || itr.overloaded_equality) continue;
-                yuml_format += "- " + trim(itr.function_name) + "( ";
+                yuml_format += "- " + trim(itr.function_name) + "(";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
@@ -405,16 +414,16 @@ public:
                     }
                 }
                 if(itr.returnType == "void") {
-                    yuml_format += " );";
+                    yuml_format += ");";
                 } else {
-                    yuml_format += " ): " + itr.returnType + ";";
+                    yuml_format += "): " + itr.returnType + ";";
                 }
             }
         }
         if(protected_functions) {
             for(auto& itr : class_functions.at("protected")) {
                 if(itr.overloaded_assignment || itr.overloaded_equality) continue;
-                yuml_format += "# " + trim(itr.function_name) + "( ";
+                yuml_format += "# " + trim(itr.function_name) + "(";
                 size_t numberOfFunctionParameters = 0;
                 for(const auto& funcParamItr : itr.function_parameters) {
                     yuml_format += funcParamItr.parameter_direction + " " + funcParamItr.name + ":" + funcParamItr.type + funcParamItr.multiplicity;
@@ -424,9 +433,9 @@ public:
                     }
                 }
                 if(itr.returnType == "void") {
-                    yuml_format += " );";
+                    yuml_format += ");";
                 } else {
-                    yuml_format += " ): " + itr.returnType + ";";
+                    yuml_format += "): " + itr.returnType + ";";
                 }
             }
         }
