@@ -61,6 +61,17 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " foo { public: void bar() = 0; foo & operator=(foo f) = 0; };").run().test("[«interface»;foo||+ bar();]\n");
         tester.src2srcml(class_type + " foo { public: void bar() = 0; private: foo & operator=(foo f) = 0; };").run().test("[foo||+ bar();]\n");
 
+        tester.src2srcml(class_type + " foo { public: int f; void bar() = 0; };").run().test("[«datatype»;foo|+ f:number;|+ bar();]\n");
+
+        if(class_type == "class")
+            tester.src2srcml(class_type + " foo { int f;  public: void bar() = 0; };").run().test("[«datatype»;foo|- f:number;|+ bar();]\n");
+        else if(class_type == "struct")
+            tester.src2srcml(class_type + " foo { int f;  public: void bar() = 0; };").run().test("[«datatype»;foo|+ f:number;|+ bar();]\n");
+
+        tester.src2srcml(class_type + " foo { public: int f;  public: void bar() = 0; };").run().test("[«datatype»;foo|+ f:number;|+ bar();]\n");
+        tester.src2srcml(class_type + " foo { private: int f;  public: void bar() = 0; };").run().test("[«datatype»;foo|- f:number;|+ bar();]\n");
+        tester.src2srcml(class_type + " foo { protected: int f;  public: void bar() = 0; };").run().test("[«datatype»;foo|# f:number;|+ bar();]\n");
+
     }
 
     return tester.results();
