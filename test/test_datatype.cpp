@@ -34,8 +34,33 @@ int main(int argc, char * argv[]) {
 
         tester.src2srcml(class_type + " foo {};").run().test("[«datatype»;foo]\n");
 
-        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo &); foo & operator=(foo); };").run().test("[«datatype»;foo]\n");
         tester.src2srcml(class_type + " foo {public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo &); foo & operator=(foo bar); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo & bar); foo & operator=(foo); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo &); foo & operator=(foo); };").run().test("[«datatype»;foo]\n");
+
+        tester.src2srcml(class_type + " foo {public: foo(const foo & bar); foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo & bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(const foo & bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); };").run().test("[foo]\n");
+
+        tester.src2srcml(class_type + " foo {private: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {protected: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[foo]\n");
+
+        tester.src2srcml(class_type + " foo {public: foo(); public: foo(const foo & bar); public: foo & operator=(foo bar); };").run().test("[«datatype»;foo]\n");
+
+        tester.src2srcml(class_type + " foo {private: foo(); public: foo(const foo & bar); public: foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {protected: foo(); public: foo(const foo & bar); public: foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); private: foo(const foo & bar); public: foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); protected: foo(const foo & bar); public: foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); public: foo(const foo & bar); private: foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo {public: foo(); public: foo(const foo & bar); protected: foo & operator=(foo bar); };").run().test("[foo]\n");
+
+        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo & bar); bool operator==(const foo & bar); };").run().test("[foo]\n");
+
+        tester.src2srcml(class_type + " foo {public: foo(); foo(const foo & bar); foo & operator=(foo bar); bool operator==(const foo & bar); };").run().test("[«datatype»;foo]\n");
 
     }
 
