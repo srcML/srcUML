@@ -75,6 +75,46 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); bool operator==(const foo & bar); };").run().test("[foo]\n");
 
         tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); bool operator==(const foo & bar); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); public: bool operator==(const foo & bar); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); private: bool operator==(const foo & bar); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); protected: bool operator==(const foo & bar); };").run().test("[«datatype»;foo]\n");
+
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); void foobar(); };").run().test("[«datatype»;foo||+ foobar();]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); public: void foobar(); };").run().test("[«datatype»;foo||+ foobar();]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); private: void foobar(); };").run().test("[«datatype»;foo||- foobar();]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); protected: void foobar(); };").run().test("[«datatype»;foo||# foobar();]\n");
+
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); foo(int); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); public: foo(int); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); private: foo(int); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); protected: foo(int); };").run().test("[«datatype»;foo]\n");
+
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); ~foo(); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); public: ~foo(); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); private: ~foo(); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { public: foo(); foo(const foo & bar); foo & operator=(foo bar); protected: ~foo(); };").run().test("[«datatype»;foo]\n");
+
+
+        tester.src2srcml(class_type + " foo { public: bool operator==(const foo & bar); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { private: bool operator==(const foo & bar); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { protected: bool operator==(const foo & bar); };").run().test("[«datatype»;foo]\n");
+
+        tester.src2srcml(class_type + " foo { public: void foobar(); };").run().test("[«datatype»;foo||+ foobar();]\n");
+        tester.src2srcml(class_type + " foo { private: void foobar(); };").run().test("[«datatype»;foo||- foobar();]\n");
+        tester.src2srcml(class_type + " foo { protected: void foobar(); };").run().test("[«datatype»;foo||# foobar();]\n");
+
+        if(class_type == "class")
+            tester.src2srcml(class_type + " foo { foo(int); };").run().test("[foo]\n");
+        else if(class_type == "struct")
+            tester.src2srcml(class_type + " foo { foo(int); };").run().test("[foo]\n");
+
+        tester.src2srcml(class_type + " foo { public: foo(int); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo { private: foo(int); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo { protected: foo(int); };").run().test("[foo]\n");
+
+        tester.src2srcml(class_type + " foo { public: ~foo(); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { private: ~foo(); };").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo { protected: ~foo(); };").run().test("[«datatype»;foo]\n");
 
         tester.src2srcml(class_type + " foo { public: int f; };").run().test("[«datatype»;foo|+ f:number;]\n");
 
