@@ -254,7 +254,7 @@ public:
             current_recorded_data_in_class = "";
         }
         // We are about to start reading the inheritance list
-        else if(consuming_class && lname == "super" && srcml_element_stack[srcml_element_stack.size() - 2] == "class"){
+        else if(consuming_class && lname == "super" && (srcml_element_stack[srcml_element_stack.size() - 2] == "class" || srcml_element_stack[srcml_element_stack.size() - 2] == "struct")) {
             in_inheritance_list = true;
         }
         // We have found the names in the inheritance list
