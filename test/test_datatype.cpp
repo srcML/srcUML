@@ -122,27 +122,27 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " foo { protected: ~foo(); };").run().test("[«datatype»;foo]\n");
 
         // attribute tests
-        tester.src2srcml(class_type + " foo { public: int f; };").run().test("[«datatype»;foo|+ f:number;]\n");
+        tester.src2srcml(class_type + " foo { public: int f; };").run().test("[«datatype»;foo|+ f: number;]\n");
 
         if(class_type == "class")
-            tester.src2srcml(class_type + " foo { int f; };").run().test("[«datatype»;foo|- f:number;]\n");
+            tester.src2srcml(class_type + " foo { int f; };").run().test("[«datatype»;foo|- f: number;]\n");
         else if(class_type == "struct")
-            tester.src2srcml(class_type + " foo { int f; };").run().test("[«datatype»;foo|+ f:number;]\n");
+            tester.src2srcml(class_type + " foo { int f; };").run().test("[«datatype»;foo|+ f: number;]\n");
 
-        tester.src2srcml(class_type + " foo { public: int f; };").run().test("[«datatype»;foo|+ f:number;]\n");
-        tester.src2srcml(class_type + " foo { private: int f; };").run().test("[«datatype»;foo|- f:number;]\n");
-        tester.src2srcml(class_type + " foo { protected: int f; };").run().test("[«datatype»;foo|# f:number;]\n");
+        tester.src2srcml(class_type + " foo { public: int f; };").run().test("[«datatype»;foo|+ f: number;]\n");
+        tester.src2srcml(class_type + " foo { private: int f; };").run().test("[«datatype»;foo|- f: number;]\n");
+        tester.src2srcml(class_type + " foo { protected: int f; };").run().test("[«datatype»;foo|# f: number;]\n");
 
-        tester.src2srcml(class_type + " foo { public: int f; foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|+ f:number;]\n");
+        tester.src2srcml(class_type + " foo { public: int f; foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|+ f: number;]\n");
 
         if(class_type == "class")
-            tester.src2srcml(class_type + " foo { int f; public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|- f:number;]\n");
+            tester.src2srcml(class_type + " foo { int f; public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|- f: number;]\n");
         else if(class_type == "struct")
-            tester.src2srcml(class_type + " foo { int f; foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|+ f:number;]\n");
+            tester.src2srcml(class_type + " foo { int f; foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|+ f: number;]\n");
 
-        tester.src2srcml(class_type + " foo { public: int f; public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|+ f:number;]\n");
-        tester.src2srcml(class_type + " foo { private: int f; public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|- f:number;]\n");
-        tester.src2srcml(class_type + " foo { protected: int f; public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|# f:number;]\n");
+        tester.src2srcml(class_type + " foo { public: int f; public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|+ f: number;]\n");
+        tester.src2srcml(class_type + " foo { private: int f; public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|- f: number;]\n");
+        tester.src2srcml(class_type + " foo { protected: int f; public: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[«datatype»;foo|# f: number;]\n");
 
     }
 

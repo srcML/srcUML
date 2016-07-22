@@ -362,17 +362,17 @@ public:
         if(public_data) {
             
             for(const auto& itr : class_data_members.at("public")) {
-                yuml_format += "+ " + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                yuml_format += "+ " + itr.name + ": " + itr.type + itr.multiplicity + ";";
             }
         }
         if(private_data) {
             for(const auto& itr : class_data_members.at("private")) {
-                yuml_format += "- " + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                yuml_format += "- " + itr.name + ": " + itr.type + itr.multiplicity + ";";
             }
         }
         if(protected_data) {
             for(const auto& itr : class_data_members.at("protected")) {
-                yuml_format += "# " + itr.name + ":" + itr.type + itr.multiplicity + ";";
+                yuml_format += "# " + itr.name + ": " + itr.type + itr.multiplicity + ";";
             }
         }
 
