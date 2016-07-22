@@ -25,7 +25,86 @@ int main(int argc, char * argv[]) {
 
     tester_t tester("numeric");
 
+    // simple numeric
     tester.src2srcml("class foo { public: int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: size_t bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: double bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: float bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    // signed numeric
+    tester.src2srcml("class foo { public: unsigned int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: signed int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: unsigned short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: signed short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    // long long variations with/without signed
+    tester.src2srcml("class foo { public: long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: unsigned long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: unsigned long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: signed long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: signed long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+
+    // const
+    tester.src2srcml("class foo { public: const int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: const short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: const long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+
+    tester.src2srcml("class foo { public: const unsigned int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const signed int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: const unsigned short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const signed short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: const long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const unsigned long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const unsigned long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const signed long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const signed long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+
+    tester.src2srcml("class foo { public: int const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: int const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: short const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: short const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+
+    tester.src2srcml("class foo { public: unsigned int const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: signed int const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: unsigned short const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: signed short const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: unsigned long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: unsigned long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: signed long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: signed long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
     return tester.results();
 
