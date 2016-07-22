@@ -96,6 +96,36 @@ int main(int argc, char * argv[]) {
     tester.src2srcml("class foo { public: signed long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
     tester.src2srcml("class foo { public: signed long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
+    // pointer
+    tester.src2srcml("class foo { public: int * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
+    tester.src2srcml("class foo { public: size_t * bar; };").run().test("[«datatype»;foo|+ bar: numbe［*］;]\n");
+
+    tester.src2srcml("class foo { public: short * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
+
+    tester.src2srcml("class foo { public: long long * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
+    tester.src2srcml("class foo { public: long long long * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
+
+    // reference
+    tester.src2srcml("class foo { public: int & bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: size_t & bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: short & bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: long long & bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: long long long & bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    // template
+    tester.src2srcml("class foo { public: std::shared_ptr<int> bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: std::shared_ptr<size_t> bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: std::shared_ptr<short> bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    tester.src2srcml("class foo { public: std::shared_ptr<long long> bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: std::shared_ptr<long long long> bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
+    // complex
+    tester.src2srcml("class foo { public: std::shared_ptr<const unsigned int const * const> bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+
     return tester.results();
 
 }
