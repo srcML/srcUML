@@ -81,6 +81,35 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " foo { private: int f;  public: virtual void bar() = 0; };").run().test("[«datatype»;foo|- f:number;|+ bar();]\n");
         tester.src2srcml(class_type + " foo { protected: int f;  public: virtual void bar() = 0; };").run().test("[«datatype»;foo|# f:number;|+ bar();]\n");
 
+        // inheritence tests
+        tester.src2srcml(class_type + " foo { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n");
+
+        // not found inheritence
+        tester.src2srcml(class_type + " foo : public object { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n");
+        tester.src2srcml(class_type + " foo : virtual public object { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n");
+        tester.src2srcml(class_type + " foo : private object { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n");
+        tester.src2srcml(class_type + " foo : protected object { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n");
+
+        tester.src2srcml(class_type + " foo : public object_one, object_two  { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n");
+
+        // found interface inheritence
+        tester.src2srcml(class_type + " object { public: void hash() = 0; };\n" + class_type + " foo : public object { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n[«interface»;object||+ hash();]\n[«interface»;object]^-.-[«interface»;foo]\n");
+        tester.src2srcml(class_type + " object { public: void hash() = 0; };\n" + class_type + " foo : virtual public object { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n[«interface»;object||+ hash();]\n[«interface»;object]^-.-[«interface»;foo]\n");
+        tester.src2srcml(class_type + " object { public: void hash() = 0; };\n" + class_type + " foo : private object { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n[«interface»;object||+ hash();]\n[«interface»;object]^-.-[«interface»;foo]\n");
+        tester.src2srcml(class_type + " object { public: void hash() = 0; };\n" + class_type + " foo : protected object { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n[«interface»;object||+ hash();]\n[«interface»;object]^-.-[«interface»;foo]\n");
+
+        tester.src2srcml(class_type + " object_one { public: void hash() = 0; };\n" + class_type + " object_two { public: void clone() = 0; };\n" + class_type + " foo : public object_one, object_two  { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n[«interface»;object_one||+ hash();]\n[«interface»;object_two||+ clone();]\n[«interface»;object_one]^-.-[«interface»;foo]\n[«interface»;object_two]^-.-[«interface»;foo]\n");
+
+        // found concreate inheritence
+        tester.src2srcml(class_type + " object { public: void hash(); };\n" + class_type + " foo : public object { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«datatype»;object||+ hash();]\n[«datatype»;object]^-[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " object { public: void hash(); };\n" + class_type + " foo : virtual public object { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«datatype»;object||+ hash();]\n[«datatype»;object]^-[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " object { public: void hash(); };\n" + class_type + " foo : private object { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«datatype»;object||+ hash();]\n[«datatype»;object]^-[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " object { public: void hash(); };\n" + class_type + " foo : protected object { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«datatype»;object||+ hash();]\n[«datatype»;object]^-[«datatype»;foo]\n");
+
+        tester.src2srcml(class_type + " object_one { public: void hash(); };\n" + class_type + " object_two { public: void clone() = 0; };\n" + class_type + " foo : public object_one, object_two  { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«datatype»;object_one||+ hash();]\n[«interface»;object_two||+ clone();]\n[«datatype»;object_one]^-[«datatype»;foo]\n[«interface»;object_two]^-.-[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " object_one { public: void hash() = 0; };\n" + class_type + " object_two { public: void clone(); };\n" + class_type + " foo : public object_one, object_two  { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«interface»;object_one||+ hash();]\n[«datatype»;object_two||+ clone();]\n[«interface»;object_one]^-.-[«datatype»;foo]\n[«datatype»;object_two]^-[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " object_one { public: void hash(); };\n" + class_type + " object_two { public: void clone(); };\n" + class_type + " foo : public object_one, object_two  { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«datatype»;object_one||+ hash();]\n[«datatype»;object_two||+ clone();]\n[«datatype»;object_one]^-[«datatype»;foo]\n[«datatype»;object_two]^-[«datatype»;foo]\n");
+
     }
 
     return tester.results();
