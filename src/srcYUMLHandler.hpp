@@ -45,6 +45,8 @@ Need to fix checkNumeric as it is only looking for substrings not complete strin
 #include "srcYUMLClass.hpp"
 #include "SourceInformation.hpp"
 #include <cstring>
+#include <sstream>
+#include <iterator>
 
 /**
  * Prototypes for helper functions
@@ -557,7 +559,7 @@ public:
         if(consuming_function){
             current_function_parameter_direction = resolveParameterDirection(current_recorded_data_in_class);
         }
-        
+
         current_recorded_data_in_class = removeCPPIsms(current_recorded_data_in_class);
         current_recorded_data_in_class = removeNameSpaces(current_recorded_data_in_class);
         current_recorded_data_in_class = checkNumeric(current_recorded_data_in_class);
@@ -749,6 +751,16 @@ public:
         function_parameters.clear();
 
     }
+
+    std::string & trim(std::string & str) {
+
+        str.erase(str.begin(), std::find_if_not(str.begin(), str.end(), isspace));
+        while(!str.empty() && isspace(str.back()))
+            str.pop_back();
+
+        return str;
+
+    }
     
     /**
      * removeCPPIsms
@@ -759,7 +771,6 @@ public:
     std::string removeCPPIsms(std::string stringToCleanUp) {
         stringToCleanUp = removePortionOfString(stringToCleanUp, "std::");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "*");
-        stringToCleanUp = removePortionOfString(stringToCleanUp, " ");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "const expr");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "const");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "struct");
@@ -772,6 +783,7 @@ public:
         stringToCleanUp = removePortionOfString(stringToCleanUp, ";");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "static");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "inline");
+        trim(stringToCleanUp);
         
         return stringToCleanUp;
     }
@@ -921,30 +933,41 @@ std::string resolveParameterDirection(std::string parameter_type) {
  */
 std::string checkNumeric(std::string stringToCheck) {
     bool isNumeric = false;
-    
+
     if(stringToCheck == "")
     {
         return "";
     }
-    if(stringToCheck.find("int") != std::string::npos && stringToCheck.length() == std::string("int").length()) {
-         isNumeric = true;
+
+    std::istringstream stream(stringToCheck);
+    std::vector<std::string> tokens = std::vector<std::string>(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
+
+    for(const std::string & token : tokens) {
+
+        if(token.find("int") != std::string::npos && token.length() == std::string("int").length()) {
+             isNumeric = true;
+        }
+        else if(token.find("long") != std::string::npos && token.length() == std::string("long").length()) {
+            isNumeric = true;
+        }
+        else if(token.find("double") != std::string::npos && token.length() == std::string("double").length()) {
+            isNumeric = true;
+        }
+        else if(token.find("float") != std::string::npos && token.length() == std::string("float").length()) {
+            isNumeric = true;
+        }
+        else if(token.find("size_t") != std::string::npos && token.length() == std::string("size_t").length()) {
+            isNumeric = true;
+        }
+        else if(token.find("short") != std::string::npos && token.length() == std::string("short").length()) {
+            isNumeric = true;
+        }
+
+        if(isNumeric)
+            break;
+
     }
-    else if(stringToCheck.find("long") != std::string::npos && stringToCheck.length() == std::string("long").length()) {
-        isNumeric = true;
-    }
-    else if(stringToCheck.find("double") != std::string::npos && stringToCheck.length() == std::string("double").length()) {
-        isNumeric = true;
-    }
-    else if(stringToCheck.find("float") != std::string::npos && stringToCheck.length() == std::string("float").length()) {
-        isNumeric = true;
-    }
-    else if(stringToCheck.find("size_t") != std::string::npos && stringToCheck.length() == std::string("size_t").length()) {
-        isNumeric = true;
-    }
-    else if(stringToCheck.find("short") != std::string::npos && stringToCheck.length() == std::string("short").length()) {
-        isNumeric = true;
-    }
-    
+        
     if(isNumeric) stringToCheck = "number";
     
     return stringToCheck;

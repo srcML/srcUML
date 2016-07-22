@@ -52,15 +52,10 @@ int main(int argc, char * argv[]) {
 
     // const
     tester.src2srcml("class foo { public: const int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: const int bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: const size_t bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
     tester.src2srcml("class foo { public: const short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: const short bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
-    tester.src2srcml("class foo { public: const long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: const long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: const long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: const long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
     tester.src2srcml("class foo { public: const long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
     tester.src2srcml("class foo { public: const long long long bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
@@ -80,15 +75,10 @@ int main(int argc, char * argv[]) {
 
 
     tester.src2srcml("class foo { public: int const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: int const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
+    tester.src2srcml("class foo { public: size_t const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
     tester.src2srcml("class foo { public: short const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: short const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
-    tester.src2srcml("class foo { public: long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
-    tester.src2srcml("class foo { public: long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
     tester.src2srcml("class foo { public: long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
     tester.src2srcml("class foo { public: long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
