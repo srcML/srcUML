@@ -39,7 +39,44 @@ public:
 		classes_in_source_.insert(std::pair<std::string, srcYUMLClass>(class_name, class_to_add));
 	}
 
+
+    void check_interface(srcYUMLClass & yuml_class) {
+
+        for(const auto& inheritance_list_itr : yuml_class.inheritance_list_) {
+
+            const auto& found_class = classes_in_source_.find(inheritance_list_itr);
+            if(found_class == classes_in_source_.end()) {
+
+                /** @todo not sure what default shold be */
+
+            } else {
+
+                if(!found_class->second.checked_interface && found_class->second.is_interface)
+                    check_interface(found_class->second);
+
+                if(!found_class->second.is_interface)
+                    yuml_class.is_interface = false;
+
+            }
+
+
+        }
+
+        yuml_class.checked_interface = true;
+
+
+    }
+
+
 	std::string compileYUML() {
+
+        for(auto& current_class_itr : classes_in_source_) {
+
+            if(current_class_itr.second.is_interface)
+                check_interface(current_class_itr.second);
+
+        }
+
 		std::string output_string;
 		for(auto& c : classes_in_source_) {
 			output_string += c.second.convertToYuml(c.first);
@@ -117,6 +154,8 @@ public:
                 }
            }
 		}
+
+
         for(const auto& current_class_itr : classes_in_source_) {
             for(const auto& inheritance_list_itr : current_class_itr.second.inheritance_list_) {
                 const auto& found_class = classes_in_source_.find(inheritance_list_itr);

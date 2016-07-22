@@ -194,7 +194,8 @@ public:
          copy_constructor,
          overloaded_assignment,
          has_constructor,
-         has_destructor;
+         has_destructor,
+         checked_interface;
     
     std::string class_name_;
     std::string interface_data_type_name;
@@ -221,6 +222,7 @@ public:
                       overloaded_assignment(false),
                       has_constructor(false),
                       has_destructor(false),
+                      checked_interface(false),
                       class_name_(class_name) {}
 
     void setClassName(std::string class_name) {
