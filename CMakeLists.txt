@@ -38,7 +38,7 @@ include_directories(src
                     ${CMAKE_SOURCE_DIR}/srcSAX/src/srcsax
                     ${CMAKE_SOURCE_DIR}/srcSAX/src/cpp
                     ${CMAKE_SOURCE_DIR}/srcSAX/src/windows
-                    test)
+                    test/driver)
 
 add_subdirectory(srcSAX/src)
 add_subdirectory(src)

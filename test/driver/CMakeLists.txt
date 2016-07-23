@@ -18,5 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
 
-add_subdirectory(driver)
-add_subdirectory(suite)
+add_library(tester STATIC tester.cpp tester.hpp)
