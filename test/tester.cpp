@@ -93,7 +93,7 @@ tester_t & tester_t::test(const std::string & expected_yuml) {
         error += expected_yuml;
         error += "### actual ###\n";
         error += yuml;
-        error += "### end ###\n";
+        error += "### end ###\n\n";
         test_results.push_back(std::make_tuple(test_count, false, error));
 
     }
@@ -132,7 +132,6 @@ size_t tester_t::results() const {
 
     }
 
-    std::cout << '\n';
 
     std::cout << "Passed " << number_passed << " out of " << test_count << '\n';
 
