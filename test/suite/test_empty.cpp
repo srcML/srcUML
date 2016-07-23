@@ -27,7 +27,7 @@ int main(int argc, char * argv[]) {
 
     for(const std::string & class_type : { "class", "struct" }) {
 
-        tester.src2srcml("class foo {};").run().test("[«datatype»;foo]\n");
+        tester.src2srcml(class_type + " foo {};").run().test("[«datatype»;foo]\n");
 
     }
 
