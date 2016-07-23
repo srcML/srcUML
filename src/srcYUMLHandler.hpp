@@ -42,8 +42,8 @@ Need to fix checkNumeric as it is only looking for substrings not complete strin
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include "srcYUMLClass.hpp"
-#include "SourceInformation.hpp"
+#include <srcYUMLClass.hpp>
+#include <SourceInformation.hpp>
 #include <cstring>
 #include <sstream>
 #include <iterator>
@@ -608,7 +608,8 @@ public:
             return;
         }
         
-        
+        trim(temp.type);
+        trim(temp.name);
         
         if(!class_in_class) {
             if(in_public || in_private || in_protected) {
@@ -751,16 +752,6 @@ public:
         function_parameters.clear();
 
     }
-
-    std::string & trim(std::string & str) {
-
-        str.erase(str.begin(), std::find_if_not(str.begin(), str.end(), isspace));
-        while(!str.empty() && isspace(str.back()))
-            str.pop_back();
-
-        return str;
-
-    }
     
     /**
      * removeCPPIsms
@@ -770,7 +761,6 @@ public:
      */
     std::string removeCPPIsms(std::string stringToCleanUp) {
         stringToCleanUp = removePortionOfString(stringToCleanUp, "std::");
-        stringToCleanUp = removePortionOfString(stringToCleanUp, "*");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "const expr");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "const");
         stringToCleanUp = removePortionOfString(stringToCleanUp, "struct");
@@ -888,6 +878,7 @@ void resolveMultiplicity(struct AttributeDeclaration& rhs) {
         rhs.is_composite = false;
     }
     else if(rhs.type.find("[") != std::string::npos) {
+
         // Arrays don't get multiplicity as they are aggregates
         size_t begin_pos = rhs.type.find_last_of("[");
         rhs.type = rhs.type.substr(0, begin_pos - 1);
@@ -904,6 +895,17 @@ void resolveMultiplicity(struct AttributeDeclaration& rhs) {
     else {
         rhs.is_composite = true;
     }
+
+    if(rhs.name.find("[") != std::string::npos) {
+
+        // Arrays don't get multiplicity as they are aggregates
+        size_t begin_pos = rhs.name.find_last_of("[");
+        rhs.name = rhs.name.substr(0, begin_pos);
+        rhs.multiplicity = "［*］";
+        rhs.is_composite = false;
+        
+    }
+
 }
 
 std::string resolveParameterDirection(std::string parameter_type) {
