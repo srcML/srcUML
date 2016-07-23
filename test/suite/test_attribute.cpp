@@ -56,48 +56,48 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " object { public: foo & const bar; };").run().test("[«datatype»;object|+ bar: foo;]\n");
 
         // array
-        tester.src2srcml(class_type + " object { public: array<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::array<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: array<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::array<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // list
-        tester.src2srcml(class_type + " object { public: list<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::list<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: list<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::list<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // forward_list
-        tester.src2srcml(class_type + " object { public: forward_list<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::forward_list<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: forward_list<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::forward_list<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // vector
-        tester.src2srcml(class_type + " object { public: vector<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::vector<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: vector<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::vector<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // set
-        tester.src2srcml(class_type + " object { public: set<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::set<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: set<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::set<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // unordered_set
-        tester.src2srcml(class_type + " object { public: unordered_set<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::unordered_set<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: unordered_set<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::unordered_set<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // deque
-        tester.src2srcml(class_type + " object { public: deque<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::deque<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: deque<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::deque<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // stack
-        tester.src2srcml(class_type + " object { public: stack<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::stack<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: stack<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::stack<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // queue
-        tester.src2srcml(class_type + " object { public: queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // priority_queue
-        tester.src2srcml(class_type + " object { public: priority_queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
-        tester.src2srcml(class_type + " object { public: std::priority_queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;\n");
+        tester.src2srcml(class_type + " object { public: priority_queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
+        tester.src2srcml(class_type + " object { public: std::priority_queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // auto_ptr
-        tester.src2srcml(class_type + " object { public: auto_ptr<foo> bar; };").run().test("[«datatype»;object|+ bar: foo\n");
-        tester.src2srcml(class_type + " object { public: std::auto_ptr<foo> bar; };").run().test("[«datatype»;object|+ bar: foo;\n");
+        tester.src2srcml(class_type + " object { public: auto_ptr<foo> bar; };").run().test("[«datatype»;object|+ bar: foo;]\n");
+        tester.src2srcml(class_type + " object { public: std::auto_ptr<foo> bar; };").run().test("[«datatype»;object|+ bar: foo;]\n");
 
         /** @todo tests for map, multi*?, ordering on items */
 
