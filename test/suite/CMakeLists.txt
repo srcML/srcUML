@@ -38,8 +38,7 @@ macro(add_srcyuml_test TEST_FILE)
 
 endmacro()
 
-add_srcyuml_test(test_empty_class.cpp)
-add_srcyuml_test(test_empty_struct.cpp)
+add_srcyuml_test(test_empty.cpp)
 add_srcyuml_test(test_datatype.cpp)
 add_srcyuml_test(test_interface.cpp)
 add_srcyuml_test(test_numeric.cpp)

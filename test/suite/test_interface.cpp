@@ -28,10 +28,7 @@ int main(int argc, char * argv[]) {
 
     tester_t tester("interface");
 
-    std::vector<std::string> class_types{ "class", "struct" };
-
-    for(const std::string & class_type : class_types) {
-
+    for(const std::string & class_type : { "class", "struct" }) {
 
         // simple tests
         tester.src2srcml(class_type + " foo { public: void bar() = 0; };").run().test("[«interface»;foo||+ bar();]\n");
@@ -122,7 +119,6 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " object_one { public: void hash() = 0; };\n" + class_type + " object_two : object_one { public: void clone() = 0; };\n" + class_type + " object_three : object_one { public: void to_string() = 0; };\n" + class_type + " foo : public object_two, object_three { public: void bar(); };").run().test("[«datatype»;foo||+ bar();]\n[«interface»;object_one||+ hash();]\n[«interface»;object_three||+ to_string();]\n[«interface»;object_two||+ clone();]\n[«interface»;object_three]^-.-[«datatype»;foo]\n[«interface»;object_two]^-.-[«datatype»;foo]\n[«interface»;object_one]^-.-[«interface»;object_three]\n[«interface»;object_one]^-.-[«interface»;object_two]\n");
         tester.src2srcml(class_type + " object_one { public: void hash() = 0; };\n" + class_type + " object_two : object_one { public: void clone() = 0; };\n" + class_type + " object_three : object_one { public: void to_string(); };\n" + class_type + " foo : public object_two, object_three { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«interface»;object_one||+ hash();]\n[«datatype»;object_three||+ to_string();]\n[«interface»;object_two||+ clone();]\n[«datatype»;object_three]^-[«datatype»;foo]\n[«interface»;object_two]^-.-[«datatype»;foo]\n[«interface»;object_one]^-.-[«datatype»;object_three]\n[«interface»;object_one]^-.-[«interface»;object_two]\n");
         tester.src2srcml(class_type + " object_one { public: void hash() = 0; };\n" + class_type + " object_two : object_one { public: void clone(); };\n" + class_type + " object_three : object_one { public: void to_string() = 0; };\n" + class_type + " foo : public object_two, object_three { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«interface»;object_one||+ hash();]\n[«interface»;object_three||+ to_string();]\n[«datatype»;object_two||+ clone();]\n[«datatype»;object_two]^-[«datatype»;foo]\n[«interface»;object_three]^-.-[«datatype»;foo]\n[«interface»;object_one]^-.-[«datatype»;object_two]\n[«interface»;object_one]^-.-[«interface»;object_three]\n");
-
 
         tester.src2srcml(class_type + " object_one { public: void hash(); };\n" + class_type + " object_two : object_one { public: void clone() = 0; };\n" + class_type + " object_three : object_one { public: void to_string() = 0; };\n" + class_type + " foo : public object_two, object_three { public: void bar() = 0; };").run().test("[«datatype»;foo||+ bar();]\n[«datatype»;object_one||+ hash();]\n[«datatype»;object_three||+ to_string();]\n[«datatype»;object_two||+ clone();]\n[«datatype»;object_three]^-[«datatype»;foo]\n[«datatype»;object_two]^-[«datatype»;foo]\n[«datatype»;object_one]^-[«datatype»;object_three]\n[«datatype»;object_one]^-[«datatype»;object_two]\n");
 
