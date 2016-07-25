@@ -25,10 +25,7 @@
 #include <srcSAXEventDispatchUtilities.hpp>
 #include <srcSAXController.hpp>
 
-#include <TypePolicy.hpp>
-#include <ParamTypePolicy.hpp>
-#include <FunctionCallPolicy.hpp>
-#include <FunctionSignaturePolicy.hpp>
+#include <ClassPolicy.hpp>
 
 #include <iostream>
 
@@ -43,28 +40,28 @@ private:
 
     std::ostream & out;
 
-    CallPolicy calldata;
-    DeclTypePolicy typedata;
-    ParamTypePolicy paramdata;
-    std::unordered_map<srcSAXEventDispatch::ParserState, std::function<void(const srcSAXEventDispatch::srcSAXEventContext&)>, std::hash<int>> process_map, process_map2;
+    ClassPolicy class_data;
 
 public:
 
     srcyuml_handler(const std::string & input_str, std::ostream & out) : out(out) {
 
-        srcSAXController control(input_str);
-
-        srcSAXEventDispatch::srcSAXEventDispatcher<srcyuml_handler, DeclTypePolicy, ParamTypePolicy, CallPolicy> handler { this, &typedata, &paramdata, &calldata };
-        control.parse(&handler);
+        srcSAXController controller(input_str);
+        run(controller);
 
     }
 
     srcyuml_handler(const char * input_filename, std::ostream & out) : out(out) {
 
-        srcSAXController control(input_filename);
+        srcSAXController controller(input_filename);
+        run(controller);
 
-        srcSAXEventDispatch::srcSAXEventDispatcher<srcyuml_handler, DeclTypePolicy, ParamTypePolicy, CallPolicy> handler { this, &typedata, &paramdata, &calldata };
-        control.parse(&handler);
+    }
+
+    void run(srcSAXController & controller) {
+
+        srcSAXEventDispatch::srcSAXEventDispatcher<srcyuml_handler, ClassPolicy> handler { this, &class_data };
+        controller.parse(&handler);
 
     }
 
