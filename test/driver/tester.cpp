@@ -27,6 +27,9 @@
 
 #include <sstream>
 #include <iostream>
+#include <iomanip>
+
+const size_t tester_t::COLUMN_SIZE = 80;
 
 tester_t::tester_t(const std::string & name) : name(name), test_count(0), number_passed(0), source_code(), srcml(), yuml() {}
 
@@ -103,10 +106,33 @@ tester_t & tester_t::test(const std::string & expected_yuml) {
     return *this;
 }
 
+static size_t number_characters(size_t number) {
+
+    size_t count = 1;
+    size_t current_number = number;
+    while((current_number /= 10))
+        ++count;
+
+    return count;
+
+}
+
 size_t tester_t::results() const {
 
-    std::cout << name << ":\t";
+    std::cout << std::setw(16) << std::left << (name + ":");
+
+    size_t column_count = 0;
     for(std::tuple<int, bool, std::string> result : test_results) {
+
+        if(column_count >= COLUMN_SIZE) {
+
+            std::cout << '\n';
+            std::cout << std::setw(16) << std::left << "...";
+            column_count = 0;
+
+        }
+
+        column_count += number_characters(std::get<0>(result)) + 1;
 
         if(std::get<1>(result))
             std::cout << "\x1b[0;33m";

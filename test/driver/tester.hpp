@@ -30,6 +30,8 @@ class tester_t {
 
 private:
 
+    static const size_t COLUMN_SIZE;
+
     const std::string & name;
     size_t test_count;
     size_t number_passed;
