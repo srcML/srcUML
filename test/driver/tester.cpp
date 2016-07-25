@@ -22,8 +22,7 @@
 #include <tester.hpp>
 
 #include <srcml.h>
-#include <srcSAXController.hpp>
-#include <srcYUMLHandler.hpp>
+#include <srcyuml_handler.hpp>
 
 #include <sstream>
 #include <iostream>
@@ -63,15 +62,11 @@ tester_t & tester_t::src2srcml(const std::string & src) {
 
 tester_t & tester_t::run() {
 
-    srcSAXController control(srcml);
-
     std::ostringstream output;
 
     try {
 
-        srcYUMLHandler handler(output);
-        control.parse(&handler);
-        handler.processClassesInSource();
+        srcyuml_handler handler(srcml, output);
 
     } catch(...) {}
 

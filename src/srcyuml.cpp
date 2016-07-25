@@ -28,11 +28,10 @@
   
   */
 
-#include <srcYUMLHandler.hpp>
-#include <srcSAXController.hpp>
+#include <srcyuml_handler.hpp>
 
-#include <map>
 #include <iostream>
+#include <fstream>
 
 /**
  * main
@@ -50,17 +49,14 @@ int main(int argc, char * argv[]) {
 
   }
 
-  srcSAXController control(argv[1]);
-  std::ostream * output = &std::cout;
+  std::ostream * out = &std::cout;
   if(argc == 3)
-    output = new std::ofstream(argv[2]);
+    out = new std::ofstream(argv[2]);
 
-  srcYUMLHandler handler(*output);
-  control.parse(&handler);
-  handler.processClassesInSource();
+  srcyuml_handler handler(argv[1],*out);
 
   if(argc == 3)
-    delete output;
+    delete out;
 
   return 0;
 }
