@@ -37,9 +37,9 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " object { public: foo bar[]; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
         tester.src2srcml(class_type + " object { public: foo * bar[]; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
         tester.src2srcml(class_type + " object { public: foo bar[10]; };").run().test("[«datatype»;object|+ bar: foo［10］;]\n");
-        tester.src2srcml(class_type + " object { public: foo bar[SIZE]; };").run().test("[«datatype»;object|+ bar: foo［?］;]\n");
+        tester.src2srcml(class_type + " object { public: foo bar[SIZE]; };").run().test("[«datatype»;object|+ bar: foo［SIZE］;]\n");
         tester.src2srcml(class_type + " object { public: foo * bar[10]; };").run().test("[«datatype»;object|+ bar: foo［0..10］;]\n");
-        tester.src2srcml(class_type + " object { public: foo * bar[SIZE]; };").run().test("[«datatype»;object|+ bar: foo［0..?］;]\n");
+        tester.src2srcml(class_type + " object { public: foo * bar[SIZE]; };").run().test("[«datatype»;object|+ bar: foo［0..SIZE］;]\n");
         tester.src2srcml(class_type + " object { public: foo ** bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // reference
