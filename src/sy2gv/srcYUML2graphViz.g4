@@ -62,23 +62,19 @@ methods
 	;
 
 text
-	: ( LETTER | NUMBER | UNICODE | ('-') | ('+') | ('#') | ('<') | ('>') | '(' | ')' | ';' | ':' | ' ' | '*' | '［' | '］' | '«' | '»' )*
+	: ( LETTER | ('-') | ('+') | ('<') | ('>') | ';' )*
 	;
 
 vmText
-	: ( LETTER | NUMBER | UNICODE | ('-') | ('+') | ('#') | ('<') | ('>') | '(' | ')' | ':' | ';' | ' ' | '*' | '［' | '］' | '«' | '»' )*
+	: ( LETTER | ('-') | ('+') | ('<') | ('>') | ';' )*
 	;
 
 relationText
-	: ( LETTER | NUMBER | UNICODE | ('#') | '(' | ')' | ':' | ' ' | '*' | '［' | '］' | '«' | '»' )*
-	;
-	
-UNICODE
-	: [\u0020-\u23FA]
+	: ( LETTER )*
 	;
 
 LETTER
-	: [a-zA-Z]
+	: [a-zA-Z\u0033-\u002A\u002C\u002E-\u003A\u003D\u003F-\u007B\u007D-\uFFFF]
  	;
 
 NUMBER
