@@ -34,13 +34,13 @@
  *
  * Base class that provides hooks for processing.
  */
-class srcyuml_handler : public srcSAXEventDispatch::Listener {
+class srcyuml_handler : public srcSAXEventDispatch::PolicyListener {
 
 private:
 
     std::ostream & out;
-
-    ClassPolicy class_data;
+    std::vector<ClassPolicy::ClassData *> classes;
+    
 
 public:
 
@@ -55,13 +55,43 @@ public:
 
         srcSAXController controller(input_filename);
         run(controller);
+        output_yuml();
 
     }
 
     void run(srcSAXController & controller) {
 
-        srcSAXEventDispatch::srcSAXEventDispatcher<srcyuml_handler, ClassPolicy> handler { this, &class_data };
+        ClassPolicy class_policy{this};
+        srcSAXEventDispatch::srcSAXEventDispatcher<ClassPolicy> handler { &class_policy };
         controller.parse(&handler);
+
+    }
+
+    void output_yuml() {
+
+        for(ClassPolicy::ClassData * data : classes) 
+            output_yuml_class(*data);
+
+    }
+
+    void output_yuml_class(const ClassPolicy::ClassData & data) {
+
+        // out << '[';
+        out << data.name;
+        for(ClassPolicy::ParentData p_data : data.parents)
+            out << '\t' << p_data.name << ": " << p_data.isVirtual << ',' << p_data.accessSpecifier << '\n';
+        // out << "]\n";
+        out << '\n';
+
+    }
+
+    virtual void notify(const srcSAXEventDispatch::PolicyDispatcher * policy) override {
+
+        if(typeid(ClassPolicy) == typeid(*policy)) {
+
+            classes.emplace_back(policy->data<ClassPolicy::ClassData>());
+
+        }
 
     }
 
