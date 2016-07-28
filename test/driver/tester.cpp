@@ -48,7 +48,7 @@ tester_t & tester_t::src2srcml(const std::string & src) {
     srcml_unit_set_language(unit, "C++");
     srcml_unit_parse_memory(unit, source_code.c_str(), source_code.size());
 
-    srcml_write_unit(archive, unit);
+    srcml_archive_write_unit(archive, unit);
     srcml_unit_free(unit);
 
     srcml_archive_close(archive);
