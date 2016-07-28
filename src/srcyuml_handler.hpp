@@ -85,11 +85,11 @@ public:
 
     }
 
-    virtual void notify(const srcSAXEventDispatch::PolicyDispatcher * policy) override {
+    virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy) override {
 
         if(typeid(ClassPolicy) == typeid(*policy)) {
 
-            classes.emplace_back(policy->data<ClassPolicy::ClassData>());
+            classes.emplace_back(policy->Data<ClassPolicy::ClassData>());
 
         }
 
