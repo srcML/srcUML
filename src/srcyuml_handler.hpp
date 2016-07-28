@@ -28,6 +28,7 @@
 #include <ClassPolicy.hpp>
 
 #include <iostream>
+#include <iomanip>
 
 /**
  * srcyuml_handler
@@ -77,15 +78,19 @@ public:
     void output_yuml_class(const ClassPolicy::ClassData & data) {
 
         // out << '[';
-        out << data.name;
-        for(ClassPolicy::ParentData p_data : data.parents)
-            out << '\t' << p_data.name << ": " << p_data.isVirtual << ',' << p_data.accessSpecifier << '\n';
+        out << (*data.name) << '\n';
+        for(ClassPolicy::ParentData p_data : data.parents) {
+            out << "\t";
+            out << p_data.name << ": " << p_data.isVirtual << ',' << p_data.accessSpecifier << '\n';
+
+        }
+
         // out << "]\n";
         out << '\n';
 
     }
 
-    virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy) override {
+    virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy, const srcSAXEventDispatch::srcSAXEventContext & ctx) override {
 
         if(typeid(ClassPolicy) == typeid(*policy)) {
 
