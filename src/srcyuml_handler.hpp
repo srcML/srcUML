@@ -25,10 +25,12 @@
 #include <srcSAXEventDispatchUtilities.hpp>
 #include <srcSAXController.hpp>
 
+#include <TypePolicy.hpp>
 #include <ClassPolicy.hpp>
 
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 /**
  * srcyuml_handler
@@ -60,10 +62,17 @@ public:
 
     }
 
+    ~srcyuml_handler() {
+
+        std::for_each(classes.begin(), classes.end(), [](ClassPolicy::ClassData * ptr) { delete ptr; });
+
+    }
+
     void run(srcSAXController & controller) {
 
         ClassPolicy class_policy{this};
-        srcSAXEventDispatch::srcSAXEventDispatcher<ClassPolicy> handler { &class_policy };
+        TypePolicy type_policy{this};
+        srcSAXEventDispatch::srcSAXEventDispatcher<ClassPolicy, TypePolicy> handler { &class_policy, &type_policy };
         controller.parse(&handler);
 
     }
@@ -95,6 +104,12 @@ public:
         if(typeid(ClassPolicy) == typeid(*policy)) {
 
             classes.emplace_back(policy->Data<ClassPolicy::ClassData>());
+
+        }
+
+        if(typeid(TypePolicy) == typeid(*policy)) {
+
+            out << (*policy->Data<TypePolicy::TypeData>()) << '\n';
 
         }
 
