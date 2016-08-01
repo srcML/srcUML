@@ -37,6 +37,7 @@ class Relay(srcYUML2graphVizListener):
 		self.inAgg = False
 		self.inGen = False
 		self.secondRelationPart = False
+
 	#======================================================Yuml - (node | relationship | NEWLINE)+ EOF
 	def enterYuml(self, ctx):
 		print("----------------yumlStart")
@@ -79,18 +80,6 @@ class Relay(srcYUML2graphVizListener):
 		self.inComp = False
 		self.inAgg = False
 		self.inGen = False
-
-	#======================================================Node - '[' text ']''
-	#def enterNode(self, ctx):
-	#	#print("----nodeStart")
-	#	##################
-	#
-	#	print(ctx.getText())
-	#
-	#def exitNode(self, ctx):
-	#	#print("----nodeExit")
-	#	#################
-	#
 
 	#======================================================Realization - the use of an 
 	def enterRealization(self, ctx):                      #interface, the realization
@@ -147,7 +136,6 @@ class Relay(srcYUML2graphVizListener):
 		##################
 
 		print(ctx.getText())
-
 
 	def exitText(self, ctx):
 		print("----textExit")
@@ -208,6 +196,7 @@ class Relay(srcYUML2graphVizListener):
 	def exitClassID(self, ctx):
 		print("--------IDExit")
 		###################
+
 	#=====================================================
 	def enterMethods(self, ctx):                     
 		print("--------methodsStart")
@@ -218,6 +207,7 @@ class Relay(srcYUML2graphVizListener):
 		print("--------methodsExit")
 		########################
 		self.inMethod = False
+
 	#=====================================================
 	def enterVariables(self, ctx):                     
 		print("--------variablesStart")
