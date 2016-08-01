@@ -10,3 +10,4 @@ srcYUML2graphVizParser.pyc
 build/*
 research/*
 *.pyc
+testFiles/*
