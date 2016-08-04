@@ -25,8 +25,8 @@
 #include <srcSAXEventDispatchUtilities.hpp>
 #include <srcSAXController.hpp>
 
-#include <TypePolicy.hpp>
-#include <ClassPolicy.hpp>
+#include <srcSAXSingleEventDispatcher.hpp>
+#include <DeclTypePolicySingleEvent.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -42,7 +42,7 @@ class srcyuml_handler : public srcSAXEventDispatch::PolicyListener {
 private:
 
     std::ostream & out;
-    std::vector<ClassPolicy::ClassData *> classes;
+    std::vector<DeclTypePolicy::DeclTypeData *> classes;
     
 
 public:
@@ -58,41 +58,40 @@ public:
 
         srcSAXController controller(input_filename);
         run(controller);
-        output_yuml();
+        // output_yuml();
 
     }
 
     ~srcyuml_handler() {
 
-        std::for_each(classes.begin(), classes.end(), [](ClassPolicy::ClassData * ptr) { delete ptr; });
+        std::for_each(classes.begin(), classes.end(), [](DeclTypePolicy::DeclTypeData * ptr) { delete ptr; });
 
     }
 
     void run(srcSAXController & controller) {
 
-        ClassPolicy class_policy{this};
-        TypePolicy type_policy{this};
-        srcSAXEventDispatch::srcSAXEventDispatcher<ClassPolicy, TypePolicy> handler { &class_policy, &type_policy };
+        DeclTypePolicy class_policy{this};
+        srcSAXEventDispatch::srcSAXSingleEventDispatcher<DeclTypePolicy> handler { &class_policy };
         controller.parse(&handler);
 
     }
 
     void output_yuml() {
 
-        for(ClassPolicy::ClassData * data : classes) 
+        for(DeclTypePolicy::DeclTypeData * data : classes) 
             output_yuml_class(*data);
 
     }
 
-    void output_yuml_class(const ClassPolicy::ClassData & data) {
+    void output_yuml_class(const DeclTypePolicy::DeclTypeData & data) {
 
         // out << '[';
-        out << (*data.name) << '\n';
-        for(ClassPolicy::ParentData p_data : data.parents) {
-            out << "\t";
-            out << p_data.name << ": " << p_data.isVirtual << ',' << p_data.accessSpecifier << '\n';
+        out << (*data.type) << ' ' << (*data.name) << '\n';
+        // for(DeclTypePolicy::ParentData p_data : data.parents) {
+        //     out << "\t";
+        //     out << p_data.name << ": " << p_data.isVirtual << ',' << p_data.accessSpecifier << '\n';
 
-        }
+        // }
 
         // out << "]\n";
         out << '\n';
@@ -101,15 +100,9 @@ public:
 
     virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy, const srcSAXEventDispatch::srcSAXEventContext & ctx) override {
 
-        if(typeid(ClassPolicy) == typeid(*policy)) {
+        if(typeid(DeclTypePolicy) == typeid(*policy)) {
 
-            classes.emplace_back(policy->Data<ClassPolicy::ClassData>());
-
-        }
-
-        if(typeid(TypePolicy) == typeid(*policy)) {
-
-            out << (*policy->Data<TypePolicy::TypeData>()) << '\n';
+            classes.emplace_back(policy->Data<DeclTypePolicy::DeclTypeData>());
 
         }
 
