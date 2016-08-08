@@ -129,7 +129,6 @@ public:
 
     }
 
-
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {
 
         out << '[';
@@ -149,35 +148,49 @@ public:
             out << '|';
 
         for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PUBLIC]) {
-            out << "+ " << *field << ';';
+            out << "+ "; output_decl(out, *field) << ';';
         }
 
         for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PRIVATE]) {
-            out << "- " << *field << ';';
+            out << "- "; output_decl(out, *field) << ';';
         }
 
         for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PROTECTED]) {
-            out << "# " << *field << ';';
+            out << "# "; output_decl(out, *field) << ';';
         }
 
         if(aclass.has_method)
             out << '|';
 
         for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PUBLIC]) {
-            out << "+ " << *function << ';';
+            out << "+ "; output_method(out, *function) << ';';
         }
 
         for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PRIVATE]) {
-            out << "- " << *function << ';';
+            out << "- "; output_method(out, *function) << ';';
         }
 
         for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PROTECTED]) {
-            out << "# " << *function << ';';
+            out << "# "; output_method(out, *function) << ';';
         }
 
         out << "]\n";
 
         return out;
+
+    }
+
+private:
+
+    static std::ostream & output_decl(std::ostream & out, const DeclTypePolicy::DeclTypeData & field) {
+
+        return out << *field.name << ": " << *field.type;
+
+    }
+
+    static std::ostream & output_method(std::ostream & out, const FunctionSignaturePolicy::FunctionSignatureData & function) {
+
+        return out << function;
 
     }
 
