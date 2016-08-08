@@ -39,12 +39,15 @@ private:
     bool has_field;
     bool has_constructor;
     bool has_default_constructor;
+    bool has_public_default_constructor;
     bool has_copy_constructor;
-
+    bool has_public_copy_constructor;
     bool has_destructor;
-    bool has_method;
-
+    bool has_public_assignment;
     const FunctionSignaturePolicy::FunctionSignatureData * assignment;
+
+    bool has_operator;
+    bool has_method;
 
     class_type type;
 
@@ -54,10 +57,14 @@ public:
         has_field(false),
         has_constructor(false),
         has_default_constructor(false),
+        has_public_default_constructor(false),
+        has_public_copy_constructor(false),
         has_copy_constructor(false),
         has_destructor(false),
-        has_method(false),
+        has_public_assignment(false),
         assignment(nullptr),
+        has_operator(false),
+        has_method(false),
         type(NONE) {
 
             analyze_data();
@@ -126,24 +133,56 @@ private:
         has_field = data->fields[ClassPolicy::PUBLIC].size() || data->fields[ClassPolicy::PRIVATE].size() || data->fields[ClassPolicy::PROTECTED].size();
         has_constructor = data->constructors[ClassPolicy::PUBLIC].size() || data->constructors[ClassPolicy::PRIVATE].size() || data->constructors[ClassPolicy::PROTECTED].size();
         has_destructor = data->hasDestructor;
+        has_method = data->operators[ClassPolicy::PUBLIC].size() || data->operators[ClassPolicy::PRIVATE].size() || data->operators[ClassPolicy::PROTECTED].size();
         has_method = data->methods[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PRIVATE].size() || data->methods[ClassPolicy::PROTECTED].size();
 
-        bool only_public_methods = data->methods[ClassPolicy::PUBLIC].size() && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
+        bool only_public_methods = 
+            data->operators[ClassPolicy::PUBLIC].size() && data->operators[ClassPolicy::PRIVATE].empty() && data->operators[ClassPolicy::PROTECTED].empty()
+            && data->methods[ClassPolicy::PUBLIC].size() && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
 
-        /** @todo need to look for protected/private and deleted */
-        for(const FunctionSignaturePolicy::FunctionSignatureData * constructor : data->constructors[ClassPolicy::PUBLIC]) {
+        for(std::size_t access = 0; access < ClassPolicy::PROTECTED; ++access) {
 
-            if(constructor->parameters.empty()) {
-                has_default_constructor = true;
-            } else if(constructor->parameters.size() == 1) {
+            for(const FunctionSignaturePolicy::FunctionSignatureData * constructor : data->constructors[access]) {
 
-                for(const std::pair<void *, TypePolicy::TypeType> & p_type : constructor->parameters.back()->type->types) {
+                if(constructor->isDelete)
+                    continue;
 
-                    if(p_type.second == TypePolicy::NAME && name == static_cast<NamePolicy::NameData *>(p_type.first)->SimpleName()) {
+                if(constructor->parameters.empty()) {
 
-                        has_copy_constructor = true;
+                    has_default_constructor = true;
+                    if(access == ClassPolicy::PUBLIC)
+                        has_public_default_constructor = true;
+
+                } else if(constructor->parameters.size() == 1) {
+
+                    for(const std::pair<void *, TypePolicy::TypeType> & p_type : constructor->parameters.back()->type->types) {
+
+                        if(p_type.second == TypePolicy::NAME && name == static_cast<NamePolicy::NameData *>(p_type.first)->SimpleName()) {
+
+                            has_copy_constructor = true;
+                            if(access == ClassPolicy::PUBLIC)
+                                has_public_copy_constructor = true;
+
+                        }
 
                     }
+
+                }
+
+            }
+        }
+
+
+        for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
+
+            for(const FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[access]) {
+
+                if(!op->isDelete && !op->name->names.empty() && op->name->names.back()->ToString() == "=") {
+                    
+                    assignment = op;
+                    if(access == ClassPolicy::PUBLIC)
+                        has_public_assignment = true;
+                    break;
 
                 }
 
@@ -151,17 +190,8 @@ private:
 
         }
 
-        for(const FunctionSignaturePolicy::FunctionSignatureData * method : data->methods[ClassPolicy::PUBLIC]) {
-
-            if(method->name->SimpleName() == "operator" && !method->name->names.empty() && method->name->names.back()->ToString() == "=") {
-                
-                assignment = method;
-
-            }
-
-        }
-
-        if((!has_constructor && !assignment) || (has_default_constructor && has_copy_constructor && assignment)) {
+        if((!has_constructor && !assignment)
+            || (has_public_default_constructor && has_public_copy_constructor && has_public_assignment)) {
 
             type = DATATYPE;
 
@@ -172,6 +202,13 @@ private:
                 && (!assignment || assignment->isPureVirtual)) {
 
             bool is_interface = true;
+            for(FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[ClassPolicy::PUBLIC]) {
+
+                if(!op->isPureVirtual) {
+                    is_interface = false;
+                }
+
+            }
             for(FunctionSignaturePolicy::FunctionSignatureData * function : data->methods[ClassPolicy::PUBLIC]) {
 
                 if(!function->isPureVirtual) {

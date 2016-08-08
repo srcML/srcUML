@@ -31,15 +31,18 @@ private:
     const TypePolicy::TypeData * data;
 
     std::string name;
+    bool is_numeric;
     bool is_pointer;
 
 public:
     srcyuml_type(const TypePolicy::TypeData * data)
         : data(data),
         name(),
+        is_numeric(false),
         is_pointer(false) {
 
             resolve_type();
+            check_is_numeric();
 
         }
 
@@ -48,7 +51,10 @@ public:
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_type & type) {
 
-        out << type.name;
+        if(type.is_numeric)
+            out << "number";
+        else
+            out << type.name;
 
         if(type.is_pointer)
             out << "［*］";
@@ -58,6 +64,20 @@ public:
     }
 
 private:
+
+    void check_is_numeric() {
+        if(    name == "int"
+            || name == "double"
+            || name == "long"
+            || name == "size_t"
+            || name == "short"
+            || name == "float"
+            || name == "signed"
+            || name == "unsigned")
+            is_numeric = true;
+
+    }
+
     void resolve_type() {
 
         for(std::vector<std::pair<void *, TypePolicy::TypeType>>::const_reverse_iterator citr = data->types.rbegin(); citr != data->types.rend(); ++citr) {
@@ -81,17 +101,8 @@ private:
                 type_str = resolve_template_type(type_name);
             }
 
-            if(    type_str == "int"
-                || type_str == "double"
-                || type_str == "long"
-                || type_str == "size_t"
-                || type_str == "short"
-                || type_str == "float"
-                || type_str == "signed"
-                || type_str == "unsigned")
-                name = "number";
-            else
-                 name = type_str;
+
+            name = type_str;
             break;
 
         }
