@@ -27,51 +27,111 @@
 class srcyuml_class {
 
 private:
+
+    enum class_type { NONE, INTERFACE, ABSTRACT, DATATYPE };
+
     const ClassPolicy::ClassData * data;
 
-public:
-    srcyuml_class(const ClassPolicy::ClassData * data) : data(data) {}
-    ~srcyuml_class() { delete data; }
+    bool has_field;
+    bool has_constructor;
+    bool has_destructor;
+    bool has_method;
 
-    void analyze_data() {}
+    class_type type;
+
+public:
+    srcyuml_class(const ClassPolicy::ClassData * data)
+        : data(data),
+        has_field(false),
+        has_constructor(false),
+        has_destructor(false),
+        has_method(false),
+        type(NONE) {}
+
+    // ~srcyuml_class() { delete data; }
+
+    void analyze_data() {
+
+        has_field = data->fields[ClassPolicy::PUBLIC].size() || data->fields[ClassPolicy::PRIVATE].size() || data->fields[ClassPolicy::PROTECTED].size();
+        has_constructor = data->constructors[ClassPolicy::PUBLIC].size() || data->constructors[ClassPolicy::PRIVATE].size() || data->constructors[ClassPolicy::PROTECTED].size();
+        has_destructor = data->hasDestructor;
+        has_method = data->methods[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PRIVATE].size() || data->methods[ClassPolicy::PROTECTED].size();
+
+        bool only_public_methods = data->methods[ClassPolicy::PUBLIC].size() && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
+
+       // if((overloaded_assignment && copy_constructor && default_constructor) || (!has_constructor && !overloaded_assignment && assignment_operator.function_name == "")) {
+        if(!has_constructor && !has_method) {
+
+            type = DATATYPE;
+
+        } else if(    !has_constructor
+            && !has_field
+            && !has_destructor
+            && only_public_methods
+            // && (assignment_operator.function_name == "" || (assignment_operator.pure_virtual && overloaded_assignment))
+            ) {
+
+            bool is_interface = true;
+            for(FunctionSignaturePolicy::FunctionSignatureData * function : data->methods[ClassPolicy::PUBLIC]) {
+
+                if(!function->isPureVirtual) {
+                    is_interface = false;
+                }
+
+            }
+
+            if(is_interface)
+                type = INTERFACE;
+
+        }
+
+
+    }
 
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {
 
         out << '[';
+
+        if(aclass.type == DATATYPE)
+            out << "«datatype»;";
+        else if(aclass.type == INTERFACE)
+            out << "«interface»;";
+
+        // not sure if should be gulliments or {}
+        else if(aclass.type == ABSTRACT)
+            out << "«abstract»;";
+
         out << *aclass.data->name;
 
-        bool has_fields = aclass.data->fields[0].size() || aclass.data->fields[1].size() || aclass.data->fields[2].size();
-        bool has_methods = aclass.data->methods[0].size() || aclass.data->methods[1].size() || aclass.data->methods[2].size();
-
-        if(has_fields || has_methods)
+        if(aclass.has_field || aclass.has_method)
             out << '|';
 
-        for(DeclTypePolicy::DeclTypeData * d_data : aclass.data->fields[0]) {
-            out << "+ " << *d_data << ';';
+        for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PUBLIC]) {
+            out << "+ " << *field << ';';
         }
 
-        for(DeclTypePolicy::DeclTypeData * d_data : aclass.data->fields[1]) {
-            out << "- " << *d_data << ';';
+        for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PRIVATE]) {
+            out << "- " << *field << ';';
         }
 
-        for(DeclTypePolicy::DeclTypeData * d_data : aclass.data->fields[2]) {
-            out << "# " << *d_data << ';';
+        for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PROTECTED]) {
+            out << "# " << *field << ';';
         }
 
-        if(has_methods)
+        if(aclass.has_method)
             out << '|';
 
-        for(FunctionSignaturePolicy::FunctionSignatureData * f_data : aclass.data->methods[0]) {
-            out << "+ " << *f_data << ';';
+        for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PUBLIC]) {
+            out << "+ " << *function << ';';
         }
 
-        for(FunctionSignaturePolicy::FunctionSignatureData * f_data : aclass.data->methods[1]) {
-            out << "- " << *f_data << ';';
+        for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PRIVATE]) {
+            out << "- " << *function << ';';
         }
 
-        for(FunctionSignaturePolicy::FunctionSignatureData * f_data : aclass.data->methods[2]) {
-            out << "# " << *f_data << ';';
+        for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PROTECTED]) {
+            out << "# " << *function << ';';
         }
 
         out << "]\n";

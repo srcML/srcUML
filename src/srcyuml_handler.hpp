@@ -1,7 +1,7 @@
 /**
  * @file srcyuml_handler.hpp
  *
- * @copyright Copyright (C) 2015-2016 srcML, LLC. (www.srcML.org)
+ * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
  * This file is part of srcYUML.
  *
@@ -26,7 +26,10 @@
 #include <srcSAXController.hpp>
 
 #include <srcSAXSingleEventDispatcher.hpp>
-#include <DeclTypePolicySingleEvent.hpp>
+#include <ClassPolicySingleEvent.hpp>
+
+
+#include <srcyuml_class.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -42,7 +45,7 @@ class srcyuml_handler : public srcSAXEventDispatch::PolicyListener {
 private:
 
     std::ostream & out;
-    std::vector<DeclTypePolicy::DeclTypeData *> classes;
+    std::vector<srcyuml_class> classes;
     
 
 public:
@@ -58,51 +61,41 @@ public:
 
         srcSAXController controller(input_filename);
         run(controller);
-        // output_yuml();
 
     }
 
-    ~srcyuml_handler() {
-
-        std::for_each(classes.begin(), classes.end(), [](DeclTypePolicy::DeclTypeData * ptr) { delete ptr; });
-
-    }
+    ~srcyuml_handler() {}
 
     void run(srcSAXController & controller) {
 
-        DeclTypePolicy class_policy{this};
-        srcSAXEventDispatch::srcSAXSingleEventDispatcher<DeclTypePolicy> handler { &class_policy };
+        ClassPolicy class_policy{this};
+        srcSAXEventDispatch::srcSAXSingleEventDispatcher<ClassPolicy> handler { &class_policy };
         controller.parse(&handler);
+        process_data();
+        output_yuml();
+
+    }
+
+    void process_data() {
+
+        for(srcyuml_class & aclass : classes)
+            aclass.analyze_data();
+
 
     }
 
     void output_yuml() {
 
-        for(DeclTypePolicy::DeclTypeData * data : classes) 
-            output_yuml_class(*data);
-
-    }
-
-    void output_yuml_class(const DeclTypePolicy::DeclTypeData & data) {
-
-        // out << '[';
-        out << (*data.type) << ' ' << (*data.name) << '\n';
-        // for(DeclTypePolicy::ParentData p_data : data.parents) {
-        //     out << "\t";
-        //     out << p_data.name << ": " << p_data.isVirtual << ',' << p_data.accessSpecifier << '\n';
-
-        // }
-
-        // out << "]\n";
-        out << '\n';
+        for(const srcyuml_class & aclass : classes) 
+            out << aclass;
 
     }
 
     virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy, const srcSAXEventDispatch::srcSAXEventContext & ctx) override {
 
-        if(typeid(DeclTypePolicy) == typeid(*policy)) {
+        if(typeid(ClassPolicy) == typeid(*policy)) {
 
-            classes.emplace_back(policy->Data<DeclTypePolicy::DeclTypeData>());
+            classes.emplace_back(srcyuml_class(policy->Data<ClassPolicy::ClassData>()));
 
         }
 
