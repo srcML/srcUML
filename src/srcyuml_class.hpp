@@ -42,7 +42,7 @@ private:
     bool has_destructor;
     bool has_method;
 
-    FunctionSignaturePolicy::FunctionSignatureData * assignment;
+    const FunctionSignaturePolicy::FunctionSignatureData * assignment;
 
     class_type type;
 
@@ -92,8 +92,17 @@ public:
 
         }
 
-       // if((overloaded_assignment && copy_constructor && default_constructor) || (!has_constructor && !overloaded_assignment && assignment_operator.function_name == "")) {
-        if(!has_constructor && !has_method) {
+        for(const FunctionSignaturePolicy::FunctionSignatureData * method : data->methods[ClassPolicy::PUBLIC]) {
+
+            if(method->name->SimpleName() == "operator" && !method->name->names.empty() && method->name->names.back()->SimpleName() == "=") {
+                
+                    assignment = method;
+
+            }
+
+        }
+
+        if((!has_constructor && !assignment) || (has_default_constructor && has_copy_constructor && assignment)) {
 
             type = DATATYPE;
 
