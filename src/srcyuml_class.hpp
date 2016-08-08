@@ -94,9 +94,9 @@ public:
 
         for(const FunctionSignaturePolicy::FunctionSignatureData * method : data->methods[ClassPolicy::PUBLIC]) {
 
-            if(method->name->SimpleName() == "operator" && !method->name->names.empty() && method->name->names.back()->SimpleName() == "=") {
+            if(method->name->SimpleName() == "operator" && !method->name->names.empty() && method->name->names.back()->ToString() == "=") {
                 
-                    assignment = method;
+                assignment = method;
 
             }
 
@@ -110,8 +110,7 @@ public:
                 && !has_field
                 && !has_destructor
                 && only_public_methods
-            // && (assignment_operator.function_name == "" || (assignment_operator.pure_virtual && overloaded_assignment))
-            ) {
+                && (!assignment || assignment->isPureVirtual)) {
 
             bool is_interface = true;
             for(FunctionSignaturePolicy::FunctionSignatureData * function : data->methods[ClassPolicy::PUBLIC]) {
