@@ -47,7 +47,6 @@ private:
     std::ostream & out;
     std::vector<srcyuml_class> classes;
     
-
 public:
 
     srcyuml_handler(const std::string & input_str, std::ostream & out) : out(out) {
@@ -95,7 +94,7 @@ public:
 
         if(typeid(ClassPolicy) == typeid(*policy)) {
 
-            classes.emplace_back(srcyuml_class(policy->Data<ClassPolicy::ClassData>()));
+            classes.emplace_back(policy->Data<ClassPolicy::ClassData>());
 
         }
 

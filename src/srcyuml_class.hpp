@@ -34,8 +34,13 @@ private:
 
     bool has_field;
     bool has_constructor;
+    bool has_default_constructor;
+    bool has_copy_constructor;
+
     bool has_destructor;
     bool has_method;
+
+    FunctionSignaturePolicy::FunctionSignatureData * assignment;
 
     class_type type;
 
@@ -44,11 +49,14 @@ public:
         : data(data),
         has_field(false),
         has_constructor(false),
+        has_default_constructor(false),
+        has_copy_constructor(false),
         has_destructor(false),
         has_method(false),
+        assignment(nullptr),
         type(NONE) {}
 
-    // ~srcyuml_class() { delete data; }
+    ~srcyuml_class() { delete data; }
 
     void analyze_data() {
 
@@ -59,15 +67,27 @@ public:
 
         bool only_public_methods = data->methods[ClassPolicy::PUBLIC].size() && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
 
+        /** @todo need to look for protected/private and deleted */
+        for(const FunctionSignaturePolicy::FunctionSignatureData * constructor : data->constructors[ClassPolicy::PUBLIC]) {
+
+            if(constructor->parameters.empty())
+                has_default_constructor = true;
+            else if(constructor->parameters.size() == 1) {
+                /** @todo need to check type name. */
+                has_copy_constructor = true;
+            }
+
+        }
+
        // if((overloaded_assignment && copy_constructor && default_constructor) || (!has_constructor && !overloaded_assignment && assignment_operator.function_name == "")) {
         if(!has_constructor && !has_method) {
 
             type = DATATYPE;
 
-        } else if(    !has_constructor
-            && !has_field
-            && !has_destructor
-            && only_public_methods
+        } else if( !has_constructor
+                && !has_field
+                && !has_destructor
+                && only_public_methods
             // && (assignment_operator.function_name == "" || (assignment_operator.pure_virtual && overloaded_assignment))
             ) {
 
