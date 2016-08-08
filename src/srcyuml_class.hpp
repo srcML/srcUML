@@ -32,6 +32,8 @@ private:
 
     const ClassPolicy::ClassData * data;
 
+    std::string name;
+
     bool has_field;
     bool has_constructor;
     bool has_default_constructor;
@@ -60,6 +62,8 @@ public:
 
     void analyze_data() {
 
+        name = data->name->SimpleName();
+
         has_field = data->fields[ClassPolicy::PUBLIC].size() || data->fields[ClassPolicy::PRIVATE].size() || data->fields[ClassPolicy::PROTECTED].size();
         has_constructor = data->constructors[ClassPolicy::PUBLIC].size() || data->constructors[ClassPolicy::PRIVATE].size() || data->constructors[ClassPolicy::PROTECTED].size();
         has_destructor = data->hasDestructor;
@@ -70,11 +74,20 @@ public:
         /** @todo need to look for protected/private and deleted */
         for(const FunctionSignaturePolicy::FunctionSignatureData * constructor : data->constructors[ClassPolicy::PUBLIC]) {
 
-            if(constructor->parameters.empty())
+            if(constructor->parameters.empty()) {
                 has_default_constructor = true;
-            else if(constructor->parameters.size() == 1) {
-                /** @todo need to check type name. */
-                has_copy_constructor = true;
+            } else if(constructor->parameters.size() == 1) {
+
+                for(const std::pair<void *, TypePolicy::TypeType> & p_type : constructor->parameters.back()->type->types) {
+
+                    if(p_type.second == TypePolicy::NAME && name == ((NamePolicy::NameData *)p_type.first)->SimpleName()) {
+
+                        has_copy_constructor = true;
+
+                    }
+
+                }
+
             }
 
         }
