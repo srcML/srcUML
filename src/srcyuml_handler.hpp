@@ -70,16 +70,7 @@ public:
         ClassPolicy class_policy{this};
         srcSAXEventDispatch::srcSAXSingleEventDispatcher<ClassPolicy> handler { &class_policy };
         controller.parse(&handler);
-        process_data();
         output_yuml();
-
-    }
-
-    void process_data() {
-
-        for(srcyuml_class & aclass : classes)
-            aclass.analyze_data();
-
 
     }
 

@@ -98,7 +98,7 @@ int main(int argc, char * argv[]) {
 
     // pointer
     tester.src2srcml("class foo { public: int * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
-    tester.src2srcml("class foo { public: size_t * bar; };").run().test("[«datatype»;foo|+ bar: numbe［*］;]\n");
+    tester.src2srcml("class foo { public: size_t * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
 
     tester.src2srcml("class foo { public: short * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
 

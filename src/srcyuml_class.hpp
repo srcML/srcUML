@@ -24,6 +24,8 @@
 
 #include <ClassPolicySingleEvent.hpp>
 
+#include <srcyuml_type.hpp>
+
 class srcyuml_class {
 
 private:
@@ -56,78 +58,13 @@ public:
         has_destructor(false),
         has_method(false),
         assignment(nullptr),
-        type(NONE) {}
+        type(NONE) {
+
+            analyze_data();
+
+        }
 
     ~srcyuml_class() { delete data; }
-
-    void analyze_data() {
-
-        name = data->name->SimpleName();
-
-        has_field = data->fields[ClassPolicy::PUBLIC].size() || data->fields[ClassPolicy::PRIVATE].size() || data->fields[ClassPolicy::PROTECTED].size();
-        has_constructor = data->constructors[ClassPolicy::PUBLIC].size() || data->constructors[ClassPolicy::PRIVATE].size() || data->constructors[ClassPolicy::PROTECTED].size();
-        has_destructor = data->hasDestructor;
-        has_method = data->methods[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PRIVATE].size() || data->methods[ClassPolicy::PROTECTED].size();
-
-        bool only_public_methods = data->methods[ClassPolicy::PUBLIC].size() && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
-
-        /** @todo need to look for protected/private and deleted */
-        for(const FunctionSignaturePolicy::FunctionSignatureData * constructor : data->constructors[ClassPolicy::PUBLIC]) {
-
-            if(constructor->parameters.empty()) {
-                has_default_constructor = true;
-            } else if(constructor->parameters.size() == 1) {
-
-                for(const std::pair<void *, TypePolicy::TypeType> & p_type : constructor->parameters.back()->type->types) {
-
-                    if(p_type.second == TypePolicy::NAME && name == ((NamePolicy::NameData *)p_type.first)->SimpleName()) {
-
-                        has_copy_constructor = true;
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        for(const FunctionSignaturePolicy::FunctionSignatureData * method : data->methods[ClassPolicy::PUBLIC]) {
-
-            if(method->name->SimpleName() == "operator" && !method->name->names.empty() && method->name->names.back()->ToString() == "=") {
-                
-                assignment = method;
-
-            }
-
-        }
-
-        if((!has_constructor && !assignment) || (has_default_constructor && has_copy_constructor && assignment)) {
-
-            type = DATATYPE;
-
-        } else if( !has_constructor
-                && !has_field
-                && !has_destructor
-                && only_public_methods
-                && (!assignment || assignment->isPureVirtual)) {
-
-            bool is_interface = true;
-            for(FunctionSignaturePolicy::FunctionSignatureData * function : data->methods[ClassPolicy::PUBLIC]) {
-
-                if(!function->isPureVirtual) {
-                    is_interface = false;
-                }
-
-            }
-
-            if(is_interface)
-                type = INTERFACE;
-
-        }
-
-
-    }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {
 
@@ -182,15 +119,131 @@ public:
 
 private:
 
+    void analyze_data() {
+
+        name = data->name->SimpleName();
+
+        has_field = data->fields[ClassPolicy::PUBLIC].size() || data->fields[ClassPolicy::PRIVATE].size() || data->fields[ClassPolicy::PROTECTED].size();
+        has_constructor = data->constructors[ClassPolicy::PUBLIC].size() || data->constructors[ClassPolicy::PRIVATE].size() || data->constructors[ClassPolicy::PROTECTED].size();
+        has_destructor = data->hasDestructor;
+        has_method = data->methods[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PRIVATE].size() || data->methods[ClassPolicy::PROTECTED].size();
+
+        bool only_public_methods = data->methods[ClassPolicy::PUBLIC].size() && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
+
+        /** @todo need to look for protected/private and deleted */
+        for(const FunctionSignaturePolicy::FunctionSignatureData * constructor : data->constructors[ClassPolicy::PUBLIC]) {
+
+            if(constructor->parameters.empty()) {
+                has_default_constructor = true;
+            } else if(constructor->parameters.size() == 1) {
+
+                for(const std::pair<void *, TypePolicy::TypeType> & p_type : constructor->parameters.back()->type->types) {
+
+                    if(p_type.second == TypePolicy::NAME && name == static_cast<NamePolicy::NameData *>(p_type.first)->SimpleName()) {
+
+                        has_copy_constructor = true;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        for(const FunctionSignaturePolicy::FunctionSignatureData * method : data->methods[ClassPolicy::PUBLIC]) {
+
+            if(method->name->SimpleName() == "operator" && !method->name->names.empty() && method->name->names.back()->ToString() == "=") {
+                
+                assignment = method;
+
+            }
+
+        }
+
+        if((!has_constructor && !assignment) || (has_default_constructor && has_copy_constructor && assignment)) {
+
+            type = DATATYPE;
+
+        } else if( !has_constructor
+                && !has_field
+                && !has_destructor
+                && only_public_methods
+                && (!assignment || assignment->isPureVirtual)) {
+
+            bool is_interface = true;
+            for(FunctionSignaturePolicy::FunctionSignatureData * function : data->methods[ClassPolicy::PUBLIC]) {
+
+                if(!function->isPureVirtual) {
+                    is_interface = false;
+                }
+
+            }
+
+            if(is_interface)
+                type = INTERFACE;
+
+        }
+
+    }
+
     static std::ostream & output_decl(std::ostream & out, const DeclTypePolicy::DeclTypeData & field) {
 
-        return out << *field.name << ": " << *field.type;
+        if(field.name)
+            out << *field.name;
+        out << ": "; srcyuml_type the_type(field.type);
+        out << the_type;
+
+        return out;
+
+    }
+
+    static std::ostream & output_parameter(std::ostream & out, const ParamTypePolicy::ParamTypeData & parameter) {
+
+        if(parameter.name)
+            out << *parameter.name;
+        out << ": ";
+
+        srcyuml_type the_type(parameter.type);
+        out << the_type;
+
+        return out;
+
+    }
+
+    static std::ostream & output_return_type(std::ostream & out, const TypePolicy::TypeData & type) {
+
+        if(type.types.size() == 1
+         && type.types.back().second == TypePolicy::NAME
+         && static_cast<NamePolicy::NameData *>(type.types.back().first)->ToString() == "void")
+            return out;
+
+        out << ": ";
+        srcyuml_type the_type(&type);
+        out << the_type;
+
+        return out;
 
     }
 
     static std::ostream & output_method(std::ostream & out, const FunctionSignaturePolicy::FunctionSignatureData & function) {
 
-        return out << function;
+        out << function.name->SimpleName();
+        out << '(';
+        for(std::size_t pos = 0; pos < function.parameters.size(); ++pos) {
+
+            if(pos != 0)
+                out << ", ";
+
+            output_parameter(out, *function.parameters[pos]);
+
+        }
+        out << ')';
+
+        if(function.returnType)
+            output_return_type(out, *function.returnType);
+
+        return out;
 
     }
 
