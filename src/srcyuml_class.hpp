@@ -24,6 +24,7 @@
 
 #include <ClassPolicySingleEvent.hpp>
 
+#include <srcyuml_attribute.hpp>
 #include <srcyuml_type.hpp>
 
 class srcyuml_class {
@@ -50,22 +51,23 @@ private:
     bool has_method;
 
     class_type type;
+    std::vector<srcyuml_attribute> attributes;
 
 public:
     srcyuml_class(const ClassPolicy::ClassData * data)
         : data(data),
-        has_field(false),
-        has_constructor(false),
-        has_default_constructor(false),
-        has_public_default_constructor(false),
-        has_public_copy_constructor(false),
-        has_copy_constructor(false),
-        has_destructor(false),
-        has_public_assignment(false),
-        assignment(nullptr),
-        has_operator(false),
-        has_method(false),
-        type(NONE) {
+          has_field(false),
+          has_constructor(false),
+          has_default_constructor(false),
+          has_public_default_constructor(false),
+          has_public_copy_constructor(false),
+          has_copy_constructor(false),
+          has_destructor(false),
+          has_public_assignment(false),
+          assignment(nullptr),
+          has_operator(false),
+          has_method(false),
+          type(NONE) {
 
             analyze_data();
 
@@ -91,17 +93,8 @@ public:
         if(aclass.has_field || aclass.has_method)
             out << '|';
 
-        for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PUBLIC]) {
-            out << "+ "; output_decl(out, *field) << ';';
-        }
-
-        for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PRIVATE]) {
-            out << "- "; output_decl(out, *field) << ';';
-        }
-
-        for(DeclTypePolicy::DeclTypeData * field : aclass.data->fields[ClassPolicy::PROTECTED]) {
-            out << "# "; output_decl(out, *field) << ';';
-        }
+        for(const srcyuml_attribute & attribute : aclass.attributes)
+            out << attribute;
 
         if(aclass.has_method)
             out << '|';
@@ -221,6 +214,17 @@ private:
                 type = INTERFACE;
 
         }
+
+        for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
+
+            for(const DeclTypePolicy::DeclTypeData * field : data->fields[access]) {
+
+                attributes.emplace_back(field, (ClassPolicy::AccessSpecifier)access);
+
+            }
+
+        }
+
 
     }
 

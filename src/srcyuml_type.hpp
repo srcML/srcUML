@@ -19,8 +19,8 @@
  * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_SRCYUML_Type_HPP
-#define INCLUDED_SRCYUML_Type_HPP
+#ifndef INCLUDED_SRCYUML_TYPE_HPP
+#define INCLUDED_SRCYUML_TYPE_HPP
 
 #include <TypePolicySingleEvent.hpp>
 
