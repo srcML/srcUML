@@ -28,8 +28,8 @@
 #include <srcSAXSingleEventDispatcher.hpp>
 #include <ClassPolicySingleEvent.hpp>
 
-
 #include <srcyuml_class.hpp>
+#include <srcyuml_relationship.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -47,7 +47,7 @@ private:
 
     std::ostream & out;
     std::vector<std::shared_ptr<srcyuml_class>> classes;
-    
+
 public:
 
     srcyuml_handler(const std::string & input_str, std::ostream & out) : out(out) {
@@ -71,6 +71,7 @@ public:
         ClassPolicy class_policy{this};
         srcSAXEventDispatch::srcSAXSingleEventDispatcher<ClassPolicy> handler { &class_policy };
         controller.parse(&handler);
+        srcyuml_relationships relationships(classes);
         output_yuml();
 
     }

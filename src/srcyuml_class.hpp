@@ -29,10 +29,10 @@
 
 class srcyuml_class {
 
-private:
-
+public:
     enum class_type { NONE, INTERFACE, ABSTRACT, DATATYPE };
 
+private:
     const ClassPolicy::ClassData * data;
 
     std::string name;
@@ -74,6 +74,30 @@ public:
     }
 
     ~srcyuml_class() { if(data) delete data; }
+
+    const ClassPolicy::ClassData & get_data() const {
+
+        return *data;
+
+    }
+
+    const std::string get_name() const {
+
+        return name;
+
+    }
+
+    void set_type(class_type type){
+
+        this->type = type;
+
+    }
+
+    const std::vector<srcyuml_attribute> & get_attributes() const {
+
+        return attributes;
+
+    }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {
 
@@ -225,17 +249,6 @@ private:
 
         }
 
-
-    }
-
-    static std::ostream & output_decl(std::ostream & out, const DeclTypePolicy::DeclTypeData & field) {
-
-        if(field.name)
-            out << *field.name;
-        out << ": "; srcyuml_type the_type(field.type);
-        out << the_type;
-
-        return out;
 
     }
 
