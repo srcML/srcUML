@@ -119,7 +119,7 @@ private:
                     resolve_inheritence_inner(class_map, parent->second);
 
                 /** @todo should this be abstract instead? */
-                if(!parent->second.second) {
+                if(!parent->second.first->get_is_interface()) {
                     class_pair.first->set_is_interface(false);
                     break;
                 }
