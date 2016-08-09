@@ -29,9 +29,6 @@
 
 class srcyuml_class {
 
-public:
-    enum class_type { NONE, INTERFACE, ABSTRACT, DATATYPE };
-
 private:
     const ClassPolicy::ClassData * data;
 
@@ -50,7 +47,10 @@ private:
     bool has_operator;
     bool has_method;
 
-    class_type type;
+    bool is_interface;
+    bool is_abstract;
+    bool is_datatype;
+
     std::vector<srcyuml_attribute> attributes;
 
 public:
@@ -67,7 +67,9 @@ public:
           assignment(nullptr),
           has_operator(false),
           has_method(false),
-          type(NONE) {
+          is_interface(false),
+          is_abstract(false),
+          is_datatype(false) {
 
             analyze_data();
 
@@ -90,29 +92,29 @@ public:
 
     const std::string get_srcyuml_name() const {
 
-       if(type == DATATYPE)
-            return "«datatype»;" + name;
-
-        if(type == INTERFACE)
+        if(is_interface)
             return "«interface»;" + name;
 
         // not sure if should be gulliments or {}
-        if(type == ABSTRACT)
+        if(is_abstract)
             return "«abstract»;" + name;
+
+        if(is_datatype)
+            return "«datatype»;" + name;
 
         return name;
 
     }
 
-    const class_type get_type() const {
+    bool get_is_interface() const {
 
-        return type;
+        return is_interface;
 
     }
 
-    void set_type(class_type type){
+    void set_is_interface(bool is_interface){
 
-        this->type = type;
+        this->is_interface = is_interface;
 
     }
 
@@ -168,8 +170,8 @@ private:
         has_method = data->methods[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PRIVATE].size() || data->methods[ClassPolicy::PROTECTED].size();
 
         bool only_public_methods = 
-            data->operators[ClassPolicy::PUBLIC].size() && data->operators[ClassPolicy::PRIVATE].empty() && data->operators[ClassPolicy::PROTECTED].empty()
-            && data->methods[ClassPolicy::PUBLIC].size() && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
+            (data->operators[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PUBLIC].size()) && data->operators[ClassPolicy::PRIVATE].empty() && data->operators[ClassPolicy::PROTECTED].empty()
+             && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
 
         for(std::size_t access = 0; access < ClassPolicy::PROTECTED; ++access) {
 
@@ -224,15 +226,17 @@ private:
         if((!has_constructor && !assignment)
             || (has_public_default_constructor && has_public_copy_constructor && has_public_assignment)) {
 
-            type = DATATYPE;
+            is_datatype = true;
 
-        } else if( !has_constructor
-                && !has_field
-                && !has_destructor
-                && only_public_methods
-                && (!assignment || assignment->isPureVirtual)) {
+        }
 
-            bool is_interface = true;
+        if(    !has_constructor
+            && !has_field
+            && !has_destructor
+            && only_public_methods
+            && (!assignment || assignment->isPureVirtual)) {
+
+            is_interface = true;
             for(FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[ClassPolicy::PUBLIC]) {
 
                 if(!op->isPureVirtual) {
@@ -248,9 +252,6 @@ private:
 
             }
 
-            if(is_interface)
-                type = INTERFACE;
-
         }
 
         for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
@@ -262,7 +263,6 @@ private:
             }
 
         }
-
 
     }
 

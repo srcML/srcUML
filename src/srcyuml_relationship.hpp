@@ -104,6 +104,11 @@ private:
 
     void resolve_inheritence_inner(std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>> & class_map, std::pair<std::shared_ptr<srcyuml_class>, bool> & class_pair) {
 
+        if(!class_pair.first->get_is_interface()) {
+            class_pair.second = true;
+            return;
+        }
+
         for(const ClassPolicy::ParentData & parent_data : class_pair.first->get_data().parents) {
 
             std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>>::iterator parent = class_map.find(parent_data.name);
@@ -115,7 +120,7 @@ private:
 
                 /** @todo should this be abstract instead? */
                 if(!parent->second.second) {
-                    class_pair.first->set_type(srcyuml_class::NONE);
+                    class_pair.first->set_is_interface(false);
                     break;
                 }
 
@@ -146,18 +151,18 @@ private:
             for(const ClassPolicy::ParentData & parent_data : aclass->get_data().parents) {
 
                 std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>>::iterator parent = class_map.find(parent_data.name);
+
+                /** @todo should I show these? */
+                if(parent == class_map.end()) continue;
+
                 relationship_type type = GENERALIZATION;
-                if(aclass->get_type() == srcyuml_class::INTERFACE
-                    || (parent != class_map.end() && parent->second.first->get_type() == srcyuml_class::INTERFACE)) {
+                if(aclass->get_is_interface() || parent->second.first->get_is_interface()) {
 
                     type = REALIZATION;
 
                 }
 
-                if(parent != class_map.end())
-                    relationships.emplace_back(parent->second.first->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
-                else
-                    relationships.emplace_back(parent_data.name, aclass->get_srcyuml_name(), type);
+                relationships.emplace_back(parent->second.first->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
 
             }
 
