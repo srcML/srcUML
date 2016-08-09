@@ -69,7 +69,14 @@ public:
         out << " " << attribute.name << ": " << attribute.type;
 
         if(attribute.is_array && !attribute.array_contents.empty()) {
-            out << "［" << attribute.array_contents << "］";
+
+            out << "［";
+            if(attribute.is_array && attribute.is_pointer)
+                out << "0..";
+            
+            out << attribute.array_contents;
+            out << "］";
+
         } else if(attribute.is_array || attribute.is_pointer) {
             out << "［*］";
         }
