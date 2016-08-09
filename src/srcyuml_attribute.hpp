@@ -38,6 +38,8 @@ private:
     std::string name;
 
     bool is_pointer;
+    bool is_array;
+    std::string array_contents;
 
 public:
     srcyuml_attribute(const DeclTypePolicy::DeclTypeData * data, ClassPolicy::AccessSpecifier visibility)
@@ -45,7 +47,13 @@ public:
           visibility(visibility),
           type(data->type),
           name(data->name ? data->name->ToString() : ""),
-          is_pointer(type.get_is_pointer()) {}
+          is_pointer(type.get_is_pointer()),
+          is_array(false),
+          array_contents() {
+
+            analyze_attribute();
+
+          }
 
     ~srcyuml_attribute() { if(data) delete data; }
 
@@ -58,9 +66,27 @@ public:
         else if(attribute.visibility == ClassPolicy::PROTECTED)
             out << '#';
 
-        out << " " << attribute.name << ": " << attribute.type << ';';
+        out << " " << attribute.name << ": " << attribute.type;
+
+        if(attribute.is_array && !attribute.array_contents.empty()) {
+            out << "［" << attribute.array_contents << "］";
+        } else if(attribute.is_array || attribute.is_pointer) {
+            out << "［*］";
+        }
+
+        out << ';';
 
         return out;
+
+    }
+
+private:
+    void analyze_attribute() {
+
+        if(!data->name->arrayIndices.empty()) {
+            is_array = true;
+            array_contents = data->name->arrayIndices[0];
+        }
 
     }
 

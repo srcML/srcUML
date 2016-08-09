@@ -34,6 +34,9 @@ private:
     bool is_numeric;
     bool is_pointer;
 
+    bool is_array;
+    std::string array_contents;
+
 public:
     srcyuml_type(const TypePolicy::TypeData * data)
         : data(data),
@@ -60,9 +63,6 @@ public:
             out << "number";
         else
             out << type.name;
-
-        if(type.is_pointer)
-            out << "［*］";
 
         return out;
 
@@ -100,8 +100,6 @@ private:
                 type_name = type_name->names.back();
 
             std::string type_str;
-
-            fprintf(stderr, "HERE: %s %s %d '%s'\n", __FILE__, __FUNCTION__, __LINE__, type_name->templateArguments.empty() ? "true" : "false");
 
             /** @todo what if template argument is pointer? */
             if(type_name->templateArguments.empty()) {
