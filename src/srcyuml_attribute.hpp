@@ -37,12 +37,15 @@ private:
     srcyuml_type type;
     std::string name;
 
+    bool is_pointer;
+
 public:
     srcyuml_attribute(const DeclTypePolicy::DeclTypeData * data, ClassPolicy::AccessSpecifier visibility)
         : data(data),
           visibility(visibility),
           type(data->type),
-          name(data->name ? data->name->ToString() : "") {}
+          name(data->name ? data->name->ToString() : ""),
+          is_pointer(type.get_is_pointer()) {}
 
     ~srcyuml_attribute() { if(data) delete data; }
 

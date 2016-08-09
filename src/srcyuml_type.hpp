@@ -49,6 +49,11 @@ public:
     ~srcyuml_type() { delete data; }
 
 
+    bool get_is_pointer() const {
+        return is_pointer;       
+    }
+
+
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_type & type) {
 
         if(type.is_numeric)
@@ -89,10 +94,14 @@ private:
                 continue;
 
             /** @todo need to look and see if using only last is valid */
+            /** @todo issue in srcML to simplify markup, should make this simpler possibly eliminate if condition */
             const NamePolicy::NameData * type_name = static_cast<const NamePolicy::NameData *>(citr->first);
-            if(!type_name->names.empty())
+            if(type_name->names.size() >= 2)
                 type_name = type_name->names.back();
+
             std::string type_str;
+
+            fprintf(stderr, "HERE: %s %s %d '%s'\n", __FILE__, __FUNCTION__, __LINE__, type_name->templateArguments.empty() ? "true" : "false");
 
             /** @todo what if template argument is pointer? */
             if(type_name->templateArguments.empty()) {
@@ -100,7 +109,6 @@ private:
             } else {
                 type_str = resolve_template_type(type_name);
             }
-
 
             name = type_str;
             break;
