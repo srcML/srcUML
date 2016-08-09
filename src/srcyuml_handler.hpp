@@ -71,15 +71,16 @@ public:
         ClassPolicy class_policy{this};
         srcSAXEventDispatch::srcSAXSingleEventDispatcher<ClassPolicy> handler { &class_policy };
         controller.parse(&handler);
-        srcyuml_relationships relationships(classes);
         output_yuml();
 
     }
 
     void output_yuml() {
 
+        srcyuml_relationships relationships(classes);
         for(const std::shared_ptr<srcyuml_class> & aclass : classes) 
             out << *aclass;
+        out << relationships;
 
     }
 

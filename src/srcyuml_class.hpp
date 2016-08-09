@@ -81,9 +81,32 @@ public:
 
     }
 
-    const std::string get_name() const {
+
+    const std::string & get_name() const {
 
         return name;
+
+    }
+
+    const std::string get_srcyuml_name() const {
+
+       if(type == DATATYPE)
+            return "«datatype»;" + name;
+
+        if(type == INTERFACE)
+            return "«interface»;" + name;
+
+        // not sure if should be gulliments or {}
+        if(type == ABSTRACT)
+            return "«abstract»;" + name;
+
+        return name;
+
+    }
+
+    const class_type get_type() const {
+
+        return type;
 
     }
 
@@ -103,16 +126,7 @@ public:
 
         out << '[';
 
-        if(aclass.type == DATATYPE)
-            out << "«datatype»;";
-        else if(aclass.type == INTERFACE)
-            out << "«interface»;";
-
-        // not sure if should be gulliments or {}
-        else if(aclass.type == ABSTRACT)
-            out << "«abstract»;";
-
-        out << aclass.name;
+        out << aclass.get_srcyuml_name();
 
         if(aclass.has_field || aclass.has_method)
             out << '|';

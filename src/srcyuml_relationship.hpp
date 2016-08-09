@@ -26,8 +26,41 @@
 
 #include <map>
 
-class srcyuml_relationship {
+enum relationship_type { DEPENDENCY, ASSOCIATION, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION };
+struct srcyuml_relationship {
 
+    srcyuml_relationship(const std::string & to, const std::string & from, relationship_type type)
+        : to(to),
+          from(from),
+          type(type) {}
+
+    std::string to;
+    std::string from;
+
+    relationship_type type;
+
+    friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationship & relationship) {
+
+        out << '[' << relationship.to << ']';
+
+        switch(relationship.type) {
+
+            case GENERALIZATION: {
+                out << "^-";
+                break;
+            }
+            case REALIZATION: {
+                out << "^-.-";
+                break;
+            }
+
+        }
+
+        out << '[' << relationship.from << "]\n";
+
+        return out;
+
+    }
 
 };
 
@@ -36,6 +69,7 @@ class srcyuml_relationships {
 private:
 
     std::vector<std::shared_ptr<srcyuml_class>> & classes;
+    std::vector<srcyuml_relationship> relationships;
 
 
 public:
@@ -49,6 +83,12 @@ public:
     ~srcyuml_relationships() {}
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationships & relationships) {
+
+        for(const srcyuml_relationship relationship : relationships.relationships) {
+
+            out << relationship;
+
+        }
 
         return out;
 
@@ -99,6 +139,28 @@ private:
 
         for(std::pair<const std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>> & map_pair : class_map) {
             resolve_inheritence_inner(class_map, map_pair.second);
+        }
+
+        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
+
+            for(const ClassPolicy::ParentData & parent_data : aclass->get_data().parents) {
+
+                std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>>::iterator parent = class_map.find(parent_data.name);
+                relationship_type type = GENERALIZATION;
+                if(aclass->get_type() == srcyuml_class::INTERFACE
+                    || (parent != class_map.end() && parent->second.first->get_type() == srcyuml_class::INTERFACE)) {
+
+                    type = REALIZATION;
+
+                }
+
+                if(parent != class_map.end())
+                    relationships.emplace_back(parent->second.first->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
+                else
+                    relationships.emplace_back(parent_data.name, aclass->get_srcyuml_name(), type);
+
+            }
+
         }
  
     }
