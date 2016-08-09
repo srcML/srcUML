@@ -34,6 +34,7 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <memory>
 
 /**
  * srcyuml_handler
@@ -45,7 +46,7 @@ class srcyuml_handler : public srcSAXEventDispatch::PolicyListener {
 private:
 
     std::ostream & out;
-    std::vector<srcyuml_class> classes;
+    std::vector<std::shared_ptr<srcyuml_class>> classes;
     
 public:
 
@@ -76,8 +77,8 @@ public:
 
     void output_yuml() {
 
-        for(const srcyuml_class & aclass : classes) 
-            out << aclass;
+        for(const std::shared_ptr<srcyuml_class> & aclass : classes) 
+            out << *aclass;
 
     }
 
@@ -85,7 +86,7 @@ public:
 
         if(typeid(ClassPolicy) == typeid(*policy)) {
 
-            classes.emplace_back(policy->Data<ClassPolicy::ClassData>());
+            classes.emplace_back(std::make_shared<srcyuml_class>(policy->Data<ClassPolicy::ClassData>()));
 
         }
 

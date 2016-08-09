@@ -69,9 +69,9 @@ public:
 
             analyze_data();
 
-        }
+    }
 
-    ~srcyuml_class() { delete data; }
+    ~srcyuml_class() { if(data) delete data; }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {
 
@@ -86,7 +86,7 @@ public:
         else if(aclass.type == ABSTRACT)
             out << "«abstract»;";
 
-        out << *aclass.data->name;
+        out << aclass.name;
 
         if(aclass.has_field || aclass.has_method)
             out << '|';
