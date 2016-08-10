@@ -211,7 +211,12 @@ private:
                 std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>>::iterator parent = class_map.find(attribute.get_type().get_type_name());
                 if(parent == class_map.end()) continue;
 
-                relationships.emplace_back(aclass->get_srcyuml_name(), parent->second.first->get_srcyuml_name(), ASSOCIATION);
+                relationship_type type = ASSOCIATION;
+                if(attribute.get_type().get_is_composite())
+                    type = COMPOSITION;
+                else if(attribute.get_type().get_is_aggregate())
+                    type = AGGREGATION;
+                relationships.emplace_back(aclass->get_srcyuml_name(), parent->second.first->get_srcyuml_name(), type);
 
             }
 

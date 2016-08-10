@@ -33,10 +33,27 @@ private:
     std::string name;
     bool is_numeric;
     bool is_pointer;
+    bool is_reference;
+    bool is_rvalue;
 
-    bool is_container;
-    bool is_ordered;
-    bool is_smart_pointer;
+    bool is_vector;
+    bool is_list;
+    bool is_deque;
+    bool is_forward_list;
+    bool is_stack;
+    bool is_queue;
+    bool is_priority_queue;
+    bool is_array;
+
+    bool is_set;
+    bool is_map;
+    bool is_unordered_set;
+    bool is_unordered_map;
+
+    bool is_auto_ptr;
+    bool is_shared_ptr;
+    bool is_unique_ptr;
+    bool is_scoped_ptr;
 
     bool has_index;
     std::string index;
@@ -46,10 +63,30 @@ public:
         : data(data),
         name(),
         is_numeric(false),
+
         is_pointer(false),
-        is_container(false),
-        is_ordered(false),
-        is_smart_pointer(false),
+        is_reference(false),
+        is_rvalue(false),
+
+        is_vector(false),
+        is_list(false),
+        is_deque(false),
+        is_forward_list(false),
+        is_stack(false),
+        is_queue(false),
+        is_priority_queue(false),
+        is_array(false),
+
+        is_set(false),
+        is_map(false),
+        is_unordered_set(false),
+        is_unordered_map(false),
+
+        is_auto_ptr(false),
+        is_shared_ptr(false),
+        is_unique_ptr(false),
+        is_scoped_ptr(false),
+
         has_index(false),
         index() {
 
@@ -68,16 +105,39 @@ public:
         return is_pointer;       
     }
 
+    bool get_is_reference() const {
+        return is_reference;       
+    }
+
+    bool get_is_rvalue() const {
+        return is_rvalue;       
+    }
+
     bool get_is_container() const {
-        return is_container;       
+        return is_vector || is_list || is_deque || is_forward_list
+            || is_stack || is_queue || is_priority_queue || is_array
+            || is_set || is_map || is_unordered_set || is_unordered_map;
     }
 
     bool get_is_ordered() const {
-        return is_ordered;       
+        return is_vector || is_list || is_deque || is_forward_list
+            || is_stack || is_queue || is_priority_queue || is_array;
     }
 
     bool get_is_smart_pointer() const {
-        return is_smart_pointer;       
+        return is_auto_ptr || is_shared_ptr || is_unique_ptr || is_scoped_ptr;       
+    }
+
+    bool get_is_composite() const {
+        return (!is_pointer && !is_reference && !is_rvalue)
+            || is_shared_ptr;
+            /** @todo unique_ptr? */
+    }
+
+    bool get_is_aggregate() const {
+        return is_pointer || is_reference || is_rvalue
+            || is_auto_ptr
+            || is_scoped_ptr;
     }
 
     bool get_has_index() const {
@@ -116,26 +176,40 @@ private:
 
     void check_template_base(const std::string & name) {
 
-        if(  name == "vector"
-          || name == "list"
-          || name == "deque"
-          || name == "forward_list"
-          || name == "stack"
-          || name == "queue"
-          || name == "priority_queue"
-          || name == "array") {
-            is_container = true;
-            is_ordered = true;
-        } else if( name == "set"
-                || name == "map"
-                || name == "unordered_set"
-                || name == "unordered_map") {
-            is_container = true;
-        } else if(name == "auto_ptr"
-               || name == "shared_ptr"
-               || name == "unique_ptr") {
-                is_smart_pointer = true;
-        }
+        if(name == "vector")
+            is_vector = true;
+        else if(name == "list")
+            is_list = true;
+        else if(name == "deque")
+            is_deque = true;
+        else if(name == "forward_list")
+            is_forward_list = true;
+        else if(name == "stack")
+            is_stack = true;
+        else if(name == "queue")
+            is_queue = true;
+        else if(name == "priority_queue")
+            is_priority_queue = true;
+        else if(name == "array")
+            is_array = true;
+
+        else if(name == "set")
+            is_set = true;
+        else if(name == "map")
+            is_map = true;
+        else if(name == "unordered_set")
+            is_unordered_set = true;
+        else if(name == "unordered_map")
+            is_unordered_map = true;
+
+        else if(name == "auto_ptr")
+            is_auto_ptr = true;
+        else if(name == "shared_ptr")
+            is_shared_ptr = true;
+        else if(name == "unique_ptr")
+            is_unique_ptr = true;
+        else if(name == "scoped_ptr")
+            is_scoped_ptr = true;
 
     }
 
@@ -145,6 +219,12 @@ private:
 
             if(citr->second == TypePolicy::POINTER)
                 is_pointer = true;
+
+            if(citr->second == TypePolicy::REFERENCE)
+                is_reference = true;
+
+            if(citr->second == TypePolicy::RVALUE)
+                is_rvalue = true;
 
             if(citr->second != TypePolicy::NAME)
                 continue;
@@ -188,6 +268,12 @@ private:
 
             if(citr->second == TemplateArgumentPolicy::POINTER)
                 is_pointer = true;
+
+            if(citr->second == TemplateArgumentPolicy::REFERENCE)
+                is_reference = true;
+
+            if(citr->second == TemplateArgumentPolicy::RVALUE)
+                is_rvalue = true;
 
             if(citr->second != TemplateArgumentPolicy::NAME)
                 continue;
