@@ -55,6 +55,10 @@ public:
 
     }
 
+    const srcyuml_type & get_type() const {
+        return type;
+    }
+
     // ~srcyuml_attribute() { if(data) delete data; }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_attribute & attribute) {

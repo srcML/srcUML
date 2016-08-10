@@ -26,7 +26,7 @@
 
 #include <map>
 
-enum relationship_type { DEPENDENCY, ASSOCIATION, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION };
+enum relationship_type { DEPENDENCY, ASSOCIATION, BIDIRECTIONAL, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION };
 struct srcyuml_relationship {
 
     srcyuml_relationship(const std::string & to, const std::string & from, relationship_type type)
@@ -43,8 +43,28 @@ struct srcyuml_relationship {
 
         out << '[' << relationship.to << ']';
 
+        if(relationship.type == BIDIRECTIONAL)
+            out << '<';
+
         switch(relationship.type) {
 
+            case DEPENDENCY: {
+                out << "-.=";
+                break;
+            }
+            case ASSOCIATION:
+            case BIDIRECTIONAL: {
+                out << '-';
+                break;
+            }
+            case AGGREGATION: {
+                out << "<>-";
+                break;
+            }
+            case COMPOSITION: {
+                out << "++-";
+                break;
+            }
             case GENERALIZATION: {
                 out << "^-";
                 break;
@@ -55,6 +75,9 @@ struct srcyuml_relationship {
             }
 
         }
+
+        if(relationship.type != GENERALIZATION && relationship.type != REALIZATION)
+            out << '>';
 
         out << '[' << relationship.from << "]\n";
 
@@ -69,6 +92,9 @@ class srcyuml_relationships {
 private:
 
     std::vector<std::shared_ptr<srcyuml_class>> & classes;
+
+    std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>> class_map;
+
     std::vector<srcyuml_relationship> relationships;
 
 
@@ -98,11 +124,21 @@ private:
 
     void analyze_classes() {
 
+        generate_class_map();
         resolve_inheritence();
+        generate_relationships();
 
     }
 
-    void resolve_inheritence_inner(std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>> & class_map, std::pair<std::shared_ptr<srcyuml_class>, bool> & class_pair) {
+    void generate_class_map() {
+
+        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
+            class_map[aclass->get_name()] = std::make_pair(aclass, false);
+        } 
+
+    }
+
+    void resolve_inheritence_inner(std::pair<std::shared_ptr<srcyuml_class>, bool> & class_pair) {
 
         if(!class_pair.first->get_is_interface()) {
             class_pair.second = true;
@@ -116,7 +152,7 @@ private:
             if(parent != class_map.end()) {
 
                 if(!parent->second.second)
-                    resolve_inheritence_inner(class_map, parent->second);
+                    resolve_inheritence_inner(parent->second);
 
                 /** @todo should this be abstract instead? */
                 if(!parent->second.first->get_is_interface()) {
@@ -134,16 +170,10 @@ private:
 
     }
 
-
     void resolve_inheritence() {
-        std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>> class_map;
-
-        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
-            class_map[aclass->get_name()] = std::make_pair(aclass, false);
-        }
 
         for(std::pair<const std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>> & map_pair : class_map) {
-            resolve_inheritence_inner(class_map, map_pair.second);
+            resolve_inheritence_inner(map_pair.second);
         }
 
         for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
@@ -168,6 +198,25 @@ private:
 
         }
  
+    }
+
+    void generate_relationships() {
+
+        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
+
+            /** @todo may want set so same type not added twice */
+
+            for(const srcyuml_attribute & attribute : aclass->get_attributes()) {
+
+                std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>>::iterator parent = class_map.find(attribute.get_type().get_type_name());
+                if(parent == class_map.end()) continue;
+
+                relationships.emplace_back(aclass->get_srcyuml_name(), parent->second.first->get_srcyuml_name(), ASSOCIATION);
+
+            }
+
+        }
+
     }
 
 };

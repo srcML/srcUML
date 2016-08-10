@@ -60,6 +60,9 @@ public:
 
     // ~srcyuml_type() { delete data; }
 
+    const std::string & get_type_name() const {
+        return name;        
+    }
 
     bool get_is_pointer() const {
         return is_pointer;       
