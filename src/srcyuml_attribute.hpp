@@ -38,6 +38,7 @@ private:
     std::string name;
 
     bool is_pointer;
+    bool has_index;
     std::string index;
 
 public:
@@ -47,6 +48,7 @@ public:
           type(data->type),
           name(data->name ? data->name->ToString() : ""),
           is_pointer(type.get_is_pointer()),
+          has_index(false),
           index() {
 
             analyze_attribute();
@@ -74,9 +76,9 @@ public:
             out << attribute.index;
             out << "］";
 
-        } else if(attribute.is_pointer) {
-            out << "［*］";
-        } else if(attribute.type.get_is_container()) {
+        } else if(attribute.is_pointer
+            || attribute.has_index
+            || attribute.type.get_is_container()) {
             out << "［*］";
         }
 
@@ -90,8 +92,10 @@ private:
     void analyze_attribute() {
 
         if(!data->name->arrayIndices.empty()) {
+            has_index = true;
             index = data->name->arrayIndices[0];
-        } else if(!type.get_index().empty()) {
+        } else if(type.get_has_index()) {
+            has_index = true;
             index = type.get_index();
         }
 

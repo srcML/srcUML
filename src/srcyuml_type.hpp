@@ -38,6 +38,7 @@ private:
     bool is_ordered;
     bool is_smart_pointer;
 
+    bool has_index;
     std::string index;
 
 public:
@@ -49,6 +50,7 @@ public:
         is_container(false),
         is_ordered(false),
         is_smart_pointer(false),
+        has_index(false),
         index() {
 
             resolve_type();
@@ -73,6 +75,10 @@ public:
 
     bool get_is_smart_pointer() const {
         return is_smart_pointer;       
+    }
+
+    bool get_has_index() const {
+        return has_index;       
     }
 
     const std::string get_index() const {
@@ -117,7 +123,10 @@ private:
           || name == "array") {
             is_container = true;
             is_ordered = true;
-        } else if(name == "set") {
+        } else if( name == "set"
+                || name == "map"
+                || name == "unordered_set"
+                || name == "unordered_map") {
             is_container = true;
         } else if(name == "auto_ptr"
                || name == "shared_ptr"
@@ -152,6 +161,10 @@ private:
                 check_template_base(type_name->SimpleName());
                 type_str = resolve_template_type(type_name);
             }
+
+            has_index = !type_name->arrayIndices.empty();
+            if(has_index)
+                index = type_name->arrayIndices[0];
 
             name = type_str;
             break;
