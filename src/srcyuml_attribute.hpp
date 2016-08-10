@@ -38,8 +38,7 @@ private:
     std::string name;
 
     bool is_pointer;
-    bool is_array;
-    std::string array_contents;
+    std::string index;
 
 public:
     srcyuml_attribute(const DeclTypePolicy::DeclTypeData * data, ClassPolicy::AccessSpecifier visibility)
@@ -48,12 +47,11 @@ public:
           type(data->type),
           name(data->name ? data->name->ToString() : ""),
           is_pointer(type.get_is_pointer()),
-          is_array(false),
-          array_contents() {
+          index() {
 
             analyze_attribute();
 
-          }
+    }
 
     ~srcyuml_attribute() { if(data) delete data; }
 
@@ -68,16 +66,17 @@ public:
 
         out << " " << attribute.name << ": " << attribute.type;
 
-        if(attribute.is_array && !attribute.array_contents.empty()) {
+        if(!attribute.index.empty()) {
 
             out << "［";
-            if(attribute.is_array && attribute.is_pointer)
+            if(attribute.is_pointer)
                 out << "0..";
-            
-            out << attribute.array_contents;
+            out << attribute.index;
             out << "］";
 
-        } else if(attribute.is_array || attribute.is_pointer) {
+        } else if(attribute.is_pointer) {
+            out << "［*］";
+        } else if(attribute.type.get_is_container()) {
             out << "［*］";
         }
 
@@ -91,8 +90,9 @@ private:
     void analyze_attribute() {
 
         if(!data->name->arrayIndices.empty()) {
-            is_array = true;
-            array_contents = data->name->arrayIndices[0];
+            index = data->name->arrayIndices[0];
+        } else if(!type.get_index().empty()) {
+            index = type.get_index();
         }
 
     }

@@ -34,20 +34,27 @@ private:
     bool is_numeric;
     bool is_pointer;
 
-    bool is_array;
-    std::string array_contents;
+    bool is_container;
+    bool is_ordered;
+    bool is_smart_pointer;
+
+    std::string index;
 
 public:
     srcyuml_type(const TypePolicy::TypeData * data)
         : data(data),
         name(),
         is_numeric(false),
-        is_pointer(false) {
+        is_pointer(false),
+        is_container(false),
+        is_ordered(false),
+        is_smart_pointer(false),
+        index() {
 
             resolve_type();
             check_is_numeric();
 
-        }
+    }
 
     ~srcyuml_type() { delete data; }
 
@@ -56,6 +63,21 @@ public:
         return is_pointer;       
     }
 
+    bool get_is_container() const {
+        return is_container;       
+    }
+
+    bool get_is_ordered() const {
+        return is_ordered;       
+    }
+
+    bool get_is_smart_pointer() const {
+        return is_smart_pointer;       
+    }
+
+    const std::string get_index() const {
+        return index;       
+    }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_type & type) {
 
@@ -69,7 +91,6 @@ public:
     }
 
 private:
-
     void check_is_numeric() {
         if(    name == "int"
             || name == "double"
@@ -78,8 +99,31 @@ private:
             || name == "short"
             || name == "float"
             || name == "signed"
-            || name == "unsigned")
+            || name == "unsigned"
+          )
             is_numeric = true;
+
+    }
+
+    void check_template_base(const std::string & name) {
+
+        if(  name == "vector"
+          || name == "list"
+          || name == "deque"
+          || name == "forward_list"
+          || name == "stack"
+          || name == "queue"
+          || name == "priority_queue"
+          || name == "array") {
+            is_container = true;
+            is_ordered = true;
+        } else if(name == "set") {
+            is_container = true;
+        } else if(name == "auto_ptr"
+               || name == "shared_ptr"
+               || name == "unique_ptr") {
+                is_smart_pointer = true;
+        }
 
     }
 
@@ -105,6 +149,7 @@ private:
             if(type_name->templateArguments.empty()) {
                 type_str = type_name->SimpleName();
             } else {
+                check_template_base(type_name->SimpleName());
                 type_str = resolve_template_type(type_name);
             }
 
