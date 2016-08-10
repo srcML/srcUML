@@ -161,7 +161,10 @@ private:
 
     void analyze_data() {
 
-        name = data->name->SimpleName();
+        if(data->name)
+            name = data->name->SimpleName();
+        else
+            name = "FIXanonymous_class";
 
         has_field = data->fields[ClassPolicy::PUBLIC].size() || data->fields[ClassPolicy::PRIVATE].size() || data->fields[ClassPolicy::PROTECTED].size();
         has_constructor = data->constructors[ClassPolicy::PUBLIC].size() || data->constructors[ClassPolicy::PRIVATE].size() || data->constructors[ClassPolicy::PROTECTED].size();
@@ -257,9 +260,7 @@ private:
         for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
 
             for(const DeclTypePolicy::DeclTypeData * field : data->fields[access]) {
-
                 attributes.emplace_back(field, (ClassPolicy::AccessSpecifier)access);
-
             }
 
         }

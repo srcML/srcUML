@@ -58,7 +58,7 @@ public:
 
     }
 
-    ~srcyuml_type() { delete data; }
+    // ~srcyuml_type() { delete data; }
 
 
     bool get_is_pointer() const {

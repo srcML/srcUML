@@ -55,7 +55,7 @@ public:
 
     }
 
-    ~srcyuml_attribute() { if(data) delete data; }
+    // ~srcyuml_attribute() { if(data) delete data; }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_attribute & attribute) {
 
@@ -92,6 +92,8 @@ public:
 
 private:
     void analyze_attribute() {
+
+        if(!data->name) return;
 
         if(!data->name->arrayIndices.empty()) {
             has_index = true;
