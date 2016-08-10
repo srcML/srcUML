@@ -32,9 +32,12 @@ private:
 
     std::string name;
     bool is_numeric;
+
     bool is_pointer;
     bool is_reference;
     bool is_rvalue;
+
+    bool is_const;
 
     bool is_vector;
     bool is_list;
@@ -67,6 +70,8 @@ public:
         is_pointer(false),
         is_reference(false),
         is_rvalue(false),
+
+        is_const(false),
 
         is_vector(false),
         is_list(false),
@@ -111,6 +116,10 @@ public:
 
     bool get_is_rvalue() const {
         return is_rvalue;       
+    }
+
+    bool get_is_const() const {
+        return is_const;       
     }
 
     bool get_is_container() const {
@@ -215,7 +224,8 @@ private:
 
     void resolve_type() {
 
-        for(std::vector<std::pair<void *, TypePolicy::TypeType>>::const_reverse_iterator citr = data->types.rbegin(); citr != data->types.rend(); ++citr) {
+        std::vector<std::pair<void *, TypePolicy::TypeType>>::const_reverse_iterator citr;
+        for(citr = data->types.rbegin(); citr != data->types.rend(); ++citr) {
 
             if(citr->second == TypePolicy::POINTER)
                 is_pointer = true;
@@ -251,6 +261,23 @@ private:
 
             name = type_str;
             break;
+
+        }
+
+        for(; citr != data->types.rend(); ++citr) {
+
+            if(citr->second != TypePolicy::SPECIFIER)
+                continue;
+
+            const std::string & specifier = *static_cast<const std::string *>(citr->first);
+
+            if(specifier == "const") {
+
+                is_const = true;
+                break;
+
+            }
+
 
         }
 

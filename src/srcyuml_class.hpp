@@ -269,11 +269,16 @@ private:
 
     static std::ostream & output_parameter(std::ostream & out, const ParamTypePolicy::ParamTypeData & parameter) {
 
+        srcyuml_type the_type(parameter.type);
+
+        /** @todo rvalue? it as Foo * twice for different things */
+        if(!the_type.get_is_const() && (the_type.get_is_pointer() || the_type.get_is_reference()))
+            out << "inout";
+
         if(parameter.name)
             out << *parameter.name;
         out << ": ";
 
-        srcyuml_type the_type(parameter.type);
         out << the_type;
 
         return out;
@@ -287,9 +292,11 @@ private:
          && static_cast<NamePolicy::NameData *>(type.types.back().first)->ToString() == "void")
             return out;
 
-        out << ": ";
         srcyuml_type the_type(&type);
-        out << the_type;
+        if(the_type.get_type_name() != "void") {
+            out << ": ";
+            out << the_type;
+        }
 
         return out;
 
