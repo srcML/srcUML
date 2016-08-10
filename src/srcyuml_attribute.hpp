@@ -80,6 +80,8 @@ public:
             || attribute.has_index
             || attribute.type.get_is_container()) {
             out << "［*］";
+        } else if(attribute.type.get_is_smart_pointer()) {
+            out << "［0..1］";
         }
 
         out << ';';

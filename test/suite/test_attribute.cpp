@@ -96,8 +96,8 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " object { public: std::priority_queue<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［*］;]\n");
 
         // auto_ptr
-        tester.src2srcml(class_type + " object { public: auto_ptr<foo> bar; };").run().test("[«datatype»;object|+ bar: foo;]\n");
-        tester.src2srcml(class_type + " object { public: std::auto_ptr<foo> bar; };").run().test("[«datatype»;object|+ bar: foo;]\n");
+        tester.src2srcml(class_type + " object { public: auto_ptr<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［0..1］;]\n");
+        tester.src2srcml(class_type + " object { public: std::auto_ptr<foo> bar; };").run().test("[«datatype»;object|+ bar: foo［0..1］;]\n");
 
         /** @todo tests for map, multi*?, ordering on items */
 
