@@ -53,7 +53,7 @@ private:
 
     bool is_type_finalized;
 
-    // std::map<std::string, FunctionSignaturePolicy::FunctionSignatureData *> function_map;
+    std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> pure_virtual_function_map;
 
     std::vector<srcyuml_attribute> attributes;
 
@@ -280,18 +280,20 @@ private:
 
         }
 
-        // for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
+        for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
 
-        //     for(const FunctionSignaturePolicy::FunctionSignatureData * methods : data->methods[access]) {
-        //         std::string signature = method->name.ToString();
+            for(const FunctionSignaturePolicy::FunctionSignatureData * method : data->methods[access]) {
+                if(!method->isPureVirtual) continue;
+                pure_virtual_function_map[method->ToString()] = method;
 
-        //     }
+            }
 
-        //     for(const FunctionSignaturePolicy::FunctionSignatureData * operations : data->operations[access]) {
+            for(const FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[access]) {
+                if(!op->isPureVirtual) continue;
+                pure_virtual_function_map[op->ToString()] = op;
+            }
 
-        //     }
-
-        // }
+        }
 
     }
 
