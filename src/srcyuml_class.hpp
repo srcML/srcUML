@@ -26,6 +26,7 @@
 
 #include <srcyuml_attribute.hpp>
 #include <srcyuml_type.hpp>
+#include <srcyuml_parameter.hpp>
 #include <static_outputter.hpp>
 
 class srcyuml_class {
@@ -338,17 +339,8 @@ private:
 
     static std::ostream & output_parameter(std::ostream & out, const ParamTypePolicy::ParamTypeData & parameter) {
 
-        srcyuml_type the_type(parameter.type);
-
-        /** @todo rvalue? it as Foo * twice for different things */
-        if(!the_type.get_is_const() && (the_type.get_is_pointer() || the_type.get_is_reference()))
-            out << "inout";
-
-        if(parameter.name)
-            out << *parameter.name;
-        out << ": ";
-
-        out << the_type;
+        srcyuml_parameter the_parameter(&parameter);
+        out << the_parameter;
 
         return out;
 
