@@ -186,7 +186,7 @@ private:
                 if(parent == class_map.end()) continue;
 
                 relationship_type type = GENERALIZATION;
-                if(!aclass->get_is_interface() && !aclass->get_is_abstract() && parent->second.first->get_is_interface()) {
+                if(!aclass->get_is_abstract() && parent->second.first->get_is_abstract()) {
                     type = REALIZATION;
                 }
 
