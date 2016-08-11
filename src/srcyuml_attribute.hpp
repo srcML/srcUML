@@ -38,6 +38,9 @@ private:
     std::string name;
 
     bool is_pointer;
+
+    bool is_static;
+
     bool has_index;
     std::string index;
 
@@ -48,6 +51,7 @@ public:
           type(data->type),
           name(data->name ? data->name->ToString() : ""),
           is_pointer(type.get_is_pointer()),
+          is_static(data->isStatic),
           has_index(false),
           index() {
 
@@ -61,6 +65,10 @@ public:
 
     const srcyuml_type & get_type() const {
         return type;
+    }
+
+    bool get_is_static() const {
+        return is_static;
     }
 
     const std::string get_multiplicity() const {
@@ -105,8 +113,6 @@ public:
         out << " " << attribute.name << ": " << attribute.type;
 
         out << attribute.get_multiplicity();
-
-        out << ';';
 
         return out;
 

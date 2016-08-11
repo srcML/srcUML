@@ -26,6 +26,7 @@
 
 #include <srcyuml_attribute.hpp>
 #include <srcyuml_type.hpp>
+#include <static_outputter.hpp>
 
 class srcyuml_class {
 
@@ -158,8 +159,12 @@ public:
         if(aclass.has_field || aclass.has_method)
             out << '|';
 
-        for(const srcyuml_attribute & attribute : aclass.attributes)
-            out << attribute;
+        for(const srcyuml_attribute & attribute : aclass.attributes) {
+            if(attribute.get_is_static())
+                static_outputter::output(out, attribute);
+            else
+                out << attribute << ';';
+        }
 
         if(aclass.has_method)
             out << '|';
