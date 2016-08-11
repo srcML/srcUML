@@ -68,7 +68,7 @@ public:
           has_operator(false),
           has_method(false),
           is_interface(false),
-          is_abstract(false),
+          is_abstract(data->hasPureVirtual),
           is_datatype(false) {
 
             analyze_data();
@@ -97,7 +97,7 @@ public:
 
         // not sure if should be gulliments or {}
         if(is_abstract)
-            return "«abstract»;" + name;
+            return "{abstract};" + name;
 
         if(is_datatype)
             return "«datatype»;" + name;
