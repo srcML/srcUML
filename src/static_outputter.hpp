@@ -26,10 +26,19 @@
 #include <ostream>
 #include <sstream>
 
-class static_outputter {
 #define COMBINING_LOW_LINE "\u0332"
+class static_outputter {
 
 public:
+
+    static std::size_t num_utf_bytes(const unsigned char & character) {
+
+        if(character > 0xC0 && character <= 0xdf) return 2;
+        if(character > 0xE0 && character <= 0xef) return 3;
+        if(character > 0xF0 && character <= 0xf4) return 4;
+
+        return 1;
+    }
 
     template <typename T>
     static std::ostream & output(std::ostream & out, const T & t) {
@@ -37,16 +46,45 @@ public:
         std::ostringstream str_out;
         str_out << t;
 
-        for(char character : str_out.str()) {
-            out << character << COMBINING_LOW_LINE;
+        const std::string & str = str_out.str();
+        std::size_t size = str.size();
+        for(std::size_t pos = 0; pos < size;) {
+
+            std::size_t num_bytes = num_utf_bytes(str[pos]);
+
+            while(num_bytes--)
+               out << str[pos++];
+
+            out << COMBINING_LOW_LINE;
+
         }
 
         return out;
 
     }
 
-#undef COMBINING_LOW_LINE
 };
 
+
+template <>
+std::ostream & static_outputter::output<std::string>(std::ostream & out, const std::string & t) {
+
+    const std::string & str = t;
+    std::size_t size = str.size();
+    for(std::size_t pos = 0; pos < size;) {
+
+        std::size_t num_bytes = static_outputter::num_utf_bytes(str[pos]);
+
+        while(num_bytes--)
+           out << str[pos++];
+
+        out << COMBINING_LOW_LINE;
+
+    }
+
+    return out;
+
+}
+#undef COMBINING_LOW_LINE
 #endif
 

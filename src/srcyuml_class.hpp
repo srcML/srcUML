@@ -163,22 +163,44 @@ public:
             if(attribute.get_is_static())
                 static_outputter::output(out, attribute);
             else
-                out << attribute << ';';
+                out << attribute;
+            out << ';';
         }
 
         if(aclass.has_method)
             out << '|';
 
         for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PUBLIC]) {
-            out << "+ "; output_method(out, *function) << ';';
+            if(function->isStatic) {
+                std::ostringstream str_out;
+                str_out << "+ "; output_method(str_out, *function);
+                static_outputter::output(out, str_out.str());
+            } else {
+                out << "+ "; output_method(out, *function);
+            }
+            out << ';';
         }
 
         for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PRIVATE]) {
-            out << "- "; output_method(out, *function) << ';';
+            if(function->isStatic) {
+                std::ostringstream str_out;
+                str_out << "- "; output_method(str_out, *function);
+                static_outputter::output(out, str_out.str());
+            } else {
+                out << "- "; output_method(out, *function);
+            }
+            out << ';';
         }
 
         for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PROTECTED]) {
-            out << "# "; output_method(out, *function) << ';';
+            if(function->isStatic) {
+                std::ostringstream str_out;
+                str_out << "# "; output_method(str_out, *function);
+                static_outputter::output(out, str_out.str());
+            } else {
+                out << "# "; output_method(out, *function);
+            }
+            out << ';';
         }
 
         out << "]\n";
