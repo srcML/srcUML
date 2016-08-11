@@ -2,7 +2,7 @@
 * A tool for efficiently reverse engineering accurate UML class diagrams.
 
 ### Cloning
-* The project uses srcSAX as a submodule.  The repo most be cloned with the `--recursive` option to clone the submodule.  The following is an example command:
+* The project uses srcSAX and srcSAXEventDispatch as submodules.  The repo most be cloned with the `--recursive` option to clone the submodule.  The following is an example command:
 ```bash
 git clone --recursive https://github.com/srcML/srcYUML.git
 ```
