@@ -51,7 +51,7 @@ private:
     bool is_abstract;
     bool is_datatype;
 
-    bool is_type_finalized;
+    bool is_finalized;
 
     std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> pure_virtual_function_map;
 
@@ -74,7 +74,7 @@ public:
           is_interface(false),
           is_abstract(data->hasPureVirtual),
           is_datatype(false),
-          is_type_finalized(false) {
+          is_finalized(false) {
 
             analyze_data();
 
@@ -127,12 +127,12 @@ public:
         this->is_abstract = is_abstract;
     }
 
-    bool get_is_type_finalized() const {
-        return is_type_finalized;
+    bool get_is_finalized() const {
+        return is_finalized;
     }
 
-    void set_is_type_finalized(bool is_type_finalized) {
-        this->is_type_finalized = is_type_finalized;
+    void set_is_finalized(bool is_finalized) {
+        this->is_finalized = is_finalized;
     }
 
     const std::vector<srcyuml_attribute> & get_attributes() const {

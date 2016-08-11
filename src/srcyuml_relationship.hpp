@@ -136,7 +136,7 @@ private:
     void resolve_inheritence_inner(std::shared_ptr<srcyuml_class> & aclass) {
 
         if(!aclass->get_is_interface()) {
-            aclass->set_is_type_finalized(true);
+            aclass->set_is_finalized(true);
             return;
         }
 
@@ -146,7 +146,7 @@ private:
 
             if(parent != class_map.end()) {
 
-                if(!parent->second->get_is_type_finalized())
+                if(!parent->second->get_is_finalized())
                     resolve_inheritence_inner(parent->second);
 
                 /** @todo should this be abstract instead? */
@@ -161,7 +161,7 @@ private:
                 
         }
 
-        aclass->set_is_type_finalized(true);
+        aclass->set_is_finalized(true);
 
     }
 
