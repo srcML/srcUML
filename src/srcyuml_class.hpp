@@ -112,6 +112,12 @@ public:
 
     }
 
+    bool get_is_abstract() const {
+
+        return is_abstract;
+
+    }
+
     void set_is_interface(bool is_interface){
 
         this->is_interface = is_interface;
