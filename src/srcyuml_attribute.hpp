@@ -55,8 +55,40 @@ public:
 
     }
 
+    const std::string & get_name() const {
+        return name;
+    }
+
     const srcyuml_type & get_type() const {
         return type;
+    }
+
+    const std::string get_multiplicity() const {
+
+        if(!index.empty()) {
+
+            std::string multiplicity = "［";
+            if(is_pointer)
+                multiplicity += "0..";
+            multiplicity += index;
+            multiplicity += "］";
+
+            return multiplicity;
+
+        } 
+
+        if(is_pointer
+            || has_index
+            || type.get_is_container()) {
+            return "［*］";
+        }
+
+        if(type.get_is_smart_pointer()) {
+            return "［0..1］";
+        }
+
+        return "";
+
     }
 
     // ~srcyuml_attribute() { if(data) delete data; }
@@ -72,21 +104,7 @@ public:
 
         out << " " << attribute.name << ": " << attribute.type;
 
-        if(!attribute.index.empty()) {
-
-            out << "［";
-            if(attribute.is_pointer)
-                out << "0..";
-            out << attribute.index;
-            out << "］";
-
-        } else if(attribute.is_pointer
-            || attribute.has_index
-            || attribute.type.get_is_container()) {
-            out << "［*］";
-        } else if(attribute.type.get_is_smart_pointer()) {
-            out << "［0..1］";
-        }
+        out << attribute.get_multiplicity();
 
         out << ';';
 

@@ -29,22 +29,37 @@
 enum relationship_type { DEPENDENCY, ASSOCIATION, BIDIRECTIONAL, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION };
 struct srcyuml_relationship {
 
-    srcyuml_relationship(const std::string & to, const std::string & from, relationship_type type)
-        : to(to),
-          from(from),
+    srcyuml_relationship(const std::string & source,
+                         const std::string & source_label,
+                         const std::string & destination,
+                         const std::string & destination_label,
+                         relationship_type type)
+        : source(source),
+          source_label(source_label),
+          destination(destination),
+          destination_label(destination_label),
           type(type) {}
 
-    std::string to;
-    std::string from;
+    srcyuml_relationship(const std::string & source,
+                         const std::string & destination,
+                         relationship_type type)
+        : srcyuml_relationship(source, "", destination, "", type) {}
+
+    std::string source;
+    std::string source_label;
+    std::string destination;
+    std::string destination_label;
 
     relationship_type type;
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationship & relationship) {
 
-        out << '[' << relationship.to << ']';
+        out << '[' << relationship.source << ']';
 
         if(relationship.type == BIDIRECTIONAL)
             out << '<';
+
+        out << relationship.source_label;
 
         switch(relationship.type) {
 
@@ -76,10 +91,12 @@ struct srcyuml_relationship {
 
         }
 
+        out << relationship.destination_label;
+
         if(relationship.type != GENERALIZATION && relationship.type != REALIZATION)
             out << '>';
 
-        out << '[' << relationship.from << "]\n";
+        out << '[' << relationship.destination << "]\n";
 
         return out;
 
@@ -135,11 +152,14 @@ private:
 
     void resolve_inheritence_inner(std::shared_ptr<srcyuml_class> & aclass) {
 
+        bool has_found_parents = false;
         for(const ClassPolicy::ParentData & parent_data : aclass->get_data().parents) {
 
             std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator parent = class_map.find(parent_data.name);
 
             if(parent != class_map.end()) {
+
+                has_found_parents = true;
 
                 if(!parent->second->get_is_finalized())
                     resolve_inheritence_inner(parent->second);
@@ -166,7 +186,7 @@ private:
         }
 
         aclass->set_is_abstract(!aclass->get_pure_virtual_functions_map().empty());
-        if(aclass->get_data().parents.empty()
+        if(!has_found_parents
             && aclass->get_implemented_functions_map().empty()
             && aclass->get_pure_virtual_functions_map().empty())
             aclass->set_is_interface(false);
@@ -220,7 +240,9 @@ private:
                     type = COMPOSITION;
                 else if(attribute.get_type().get_is_aggregate())
                     type = AGGREGATION;
-                relationships.emplace_back(aclass->get_srcyuml_name(), parent->second->get_srcyuml_name(), type);
+
+                std::string relationship_label = attribute.get_name() + attribute.get_multiplicity();
+                relationships.emplace_back(aclass->get_srcyuml_name(), "", parent->second->get_srcyuml_name(), relationship_label, type);
 
             }
 
