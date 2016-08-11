@@ -38,9 +38,12 @@ include_directories(src
                     ${CMAKE_SOURCE_DIR}/srcSAX/src/srcsax
                     ${CMAKE_SOURCE_DIR}/srcSAX/src/cpp
                     ${CMAKE_SOURCE_DIR}/srcSAX/src/windows
+                    ${CMAKE_SOURCE_DIR}/srcSAXEventDispatch/src/dispatcher
+                    ${CMAKE_SOURCE_DIR}/srcSAXEventDispatch/src/policy_classes
                     test/driver)
 
 add_subdirectory(srcSAX/src)
+add_subdirectory(srcSAXEventDispatch/src)
 add_subdirectory(src)
 
 add_subdirectory(test)

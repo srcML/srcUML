@@ -46,6 +46,8 @@ int main(int argc, char * argv[]) {
         tester.src2srcml(class_type + " foo { protected: foo(const foo & bar); };").run().test("[foo]\n");
         tester.src2srcml(class_type + " foo { private: foo & operator=(foo bar); };").run().test("[foo]\n");
         tester.src2srcml(class_type + " foo { protected: foo & operator=(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo { private: foo & operator =(foo bar); };").run().test("[foo]\n");
+        tester.src2srcml(class_type + " foo { protected: foo & operator =(foo bar); };").run().test("[foo]\n");
 
         tester.src2srcml(class_type + " foo { private: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[foo]\n");
         tester.src2srcml(class_type + " foo { protected: foo(); foo(const foo & bar); foo & operator=(foo bar); };").run().test("[foo]\n");

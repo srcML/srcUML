@@ -22,4 +22,4 @@ file(GLOB SRCYUML_SOURCE *.cpp)
 file(GLOB SRCYUML_HEADER *.hpp)
 
 add_executable(srcyuml ${SRCYUML_SOURCE} ${SRCYUML_HEADER})
-target_link_libraries(srcyuml srcsax_static ${LIBXML2_LIBRARIES})
+target_link_libraries(srcyuml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES})
