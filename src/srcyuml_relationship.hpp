@@ -135,11 +135,6 @@ private:
 
     void resolve_inheritence_inner(std::shared_ptr<srcyuml_class> & aclass) {
 
-        // if(!aclass->get_is_interface()) {
-        //     aclass->set_is_finalized(true);
-        //     return;
-        // }
-
         for(const ClassPolicy::ParentData & parent_data : aclass->get_data().parents) {
 
             std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator parent = class_map.find(parent_data.name);
