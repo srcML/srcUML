@@ -93,27 +93,22 @@ private:
 
     std::vector<std::shared_ptr<srcyuml_class>> & classes;
 
-    std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>> class_map;
+    std::map<std::string, std::shared_ptr<srcyuml_class>> class_map;
 
     std::vector<srcyuml_relationship> relationships;
-
 
 public:
     srcyuml_relationships(std::vector<std::shared_ptr<srcyuml_class>> & classes)
         : classes(classes) {
-
             analyze_classes();
-
-        }
+    }
 
     ~srcyuml_relationships() {}
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationships & relationships) {
 
         for(const srcyuml_relationship relationship : relationships.relationships) {
-
             out << relationship;
-
         }
 
         return out;
@@ -133,30 +128,30 @@ private:
     void generate_class_map() {
 
         for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
-            class_map[aclass->get_name()] = std::make_pair(aclass, false);
+            class_map[aclass->get_name()] = aclass;
         } 
 
     }
 
-    void resolve_inheritence_inner(std::pair<std::shared_ptr<srcyuml_class>, bool> & class_pair) {
+    void resolve_inheritence_inner(std::shared_ptr<srcyuml_class> & aclass) {
 
-        if(!class_pair.first->get_is_interface()) {
-            class_pair.second = true;
+        if(!aclass->get_is_interface()) {
+            aclass->set_is_type_finalized(true);
             return;
         }
 
-        for(const ClassPolicy::ParentData & parent_data : class_pair.first->get_data().parents) {
+        for(const ClassPolicy::ParentData & parent_data : aclass->get_data().parents) {
 
-            std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>>::iterator parent = class_map.find(parent_data.name);
+            std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator parent = class_map.find(parent_data.name);
 
             if(parent != class_map.end()) {
 
-                if(!parent->second.second)
+                if(!parent->second->get_is_type_finalized())
                     resolve_inheritence_inner(parent->second);
 
                 /** @todo should this be abstract instead? */
-                if(!parent->second.first->get_is_interface()) {
-                    class_pair.first->set_is_interface(false);
+                if(!parent->second->get_is_interface()) {
+                    aclass->set_is_interface(false);
                     break;
                 }
 
@@ -166,13 +161,13 @@ private:
                 
         }
 
-        class_pair.second = true;
+        aclass->set_is_type_finalized(true);
 
     }
 
     void resolve_inheritence() {
 
-        for(std::pair<const std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>> & map_pair : class_map) {
+        for(std::pair<const std::string, std::shared_ptr<srcyuml_class>> & map_pair : class_map) {
             resolve_inheritence_inner(map_pair.second);
         }
 
@@ -180,17 +175,17 @@ private:
 
             for(const ClassPolicy::ParentData & parent_data : aclass->get_data().parents) {
 
-                std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>>::iterator parent = class_map.find(parent_data.name);
+                std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator parent = class_map.find(parent_data.name);
 
                 /** @todo should I show these? */
                 if(parent == class_map.end()) continue;
 
                 relationship_type type = GENERALIZATION;
-                // if(!aclass->get_is_abstract() && parent->second.first->get_is_abstract()) {
-                //     type = REALIZATION;
-                // }
+                if(!aclass->get_is_abstract() && parent->second->get_is_abstract()) {
+                    type = REALIZATION;
+                }
 
-                relationships.emplace_back(parent->second.first->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
+                relationships.emplace_back(parent->second->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
 
             }
 
@@ -206,7 +201,7 @@ private:
 
             for(const srcyuml_attribute & attribute : aclass->get_attributes()) {
 
-                std::map<std::string, std::pair<std::shared_ptr<srcyuml_class>, bool>>::iterator parent = class_map.find(attribute.get_type().get_type_name());
+                std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator parent = class_map.find(attribute.get_type().get_type_name());
                 if(parent == class_map.end()) continue;
 
                 relationship_type type = ASSOCIATION;
@@ -214,7 +209,7 @@ private:
                     type = COMPOSITION;
                 else if(attribute.get_type().get_is_aggregate())
                     type = AGGREGATION;
-                relationships.emplace_back(aclass->get_srcyuml_name(), parent->second.first->get_srcyuml_name(), type);
+                relationships.emplace_back(aclass->get_srcyuml_name(), parent->second->get_srcyuml_name(), type);
 
             }
 

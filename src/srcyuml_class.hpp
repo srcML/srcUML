@@ -51,6 +51,10 @@ private:
     bool is_abstract;
     bool is_datatype;
 
+    bool is_type_finalized;
+
+    // std::map<std::string, FunctionSignaturePolicy::FunctionSignatureData *> function_map;
+
     std::vector<srcyuml_attribute> attributes;
 
 public:
@@ -69,7 +73,8 @@ public:
           has_method(false),
           is_interface(false),
           is_abstract(data->hasPureVirtual),
-          is_datatype(false) {
+          is_datatype(false),
+          is_type_finalized(false) {
 
             analyze_data();
 
@@ -107,27 +112,27 @@ public:
     }
 
     bool get_is_interface() const {
-
         return is_interface;
-
     }
 
     void set_is_interface(bool is_interface){
-
         this->is_interface = is_interface;
-
     }
 
     bool get_is_abstract() const {
-
         return is_abstract;
-
     }
 
     void set_is_abstract(bool is_abstract){
-
         this->is_abstract = is_abstract;
+    }
 
+    bool get_is_type_finalized() const {
+        return is_type_finalized;
+    }
+
+    void set_is_type_finalized(bool is_type_finalized) {
+        this->is_type_finalized = is_type_finalized;
     }
 
     const std::vector<srcyuml_attribute> & get_attributes() const {
@@ -240,9 +245,7 @@ private:
 
         if((!has_constructor && !assignment)
             || (has_public_default_constructor && has_public_copy_constructor && has_public_assignment)) {
-
             is_datatype = true;
-
         }
 
         if(    !has_constructor
@@ -276,6 +279,19 @@ private:
             }
 
         }
+
+        // for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
+
+        //     for(const FunctionSignaturePolicy::FunctionSignatureData * methods : data->methods[access]) {
+        //         std::string signature = method->name.ToString();
+
+        //     }
+
+        //     for(const FunctionSignaturePolicy::FunctionSignatureData * operations : data->operations[access]) {
+
+        //     }
+
+        // }
 
     }
 
