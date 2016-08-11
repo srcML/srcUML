@@ -197,8 +197,8 @@ private:
         has_method = data->operators[ClassPolicy::PUBLIC].size() || data->operators[ClassPolicy::PRIVATE].size() || data->operators[ClassPolicy::PROTECTED].size();
         has_method = data->methods[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PRIVATE].size() || data->methods[ClassPolicy::PROTECTED].size();
 
-        bool only_public_methods = 
-            (data->operators[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PUBLIC].size()) && data->operators[ClassPolicy::PRIVATE].empty() && data->operators[ClassPolicy::PROTECTED].empty()
+        bool no_private_or_protected_methods
+            = data->operators[ClassPolicy::PRIVATE].empty() && data->operators[ClassPolicy::PROTECTED].empty()
              && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
 
         for(std::size_t access = 0; access < ClassPolicy::PROTECTED; ++access) {
@@ -259,7 +259,7 @@ private:
         if(    !has_constructor
             && !has_field
             && !has_destructor
-            && only_public_methods
+            && no_private_or_protected_methods
             && (!assignment || assignment->isPureVirtual)) {
 
             is_interface = true;

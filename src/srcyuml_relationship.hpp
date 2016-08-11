@@ -166,6 +166,10 @@ private:
         }
 
         aclass->set_is_abstract(!aclass->get_pure_virtual_functions_map().empty());
+        if(aclass->get_data().parents.empty()
+            && aclass->get_implemented_functions_map().empty()
+            && aclass->get_pure_virtual_functions_map().empty())
+            aclass->set_is_interface(false);
 
         // check if pure virtual are overriden
         aclass->set_is_finalized(true);
