@@ -186,9 +186,9 @@ private:
                 if(parent == class_map.end()) continue;
 
                 relationship_type type = GENERALIZATION;
-                if(!aclass->get_is_abstract() && parent->second.first->get_is_abstract()) {
-                    type = REALIZATION;
-                }
+                // if(!aclass->get_is_abstract() && parent->second.first->get_is_abstract()) {
+                //     type = REALIZATION;
+                // }
 
                 relationships.emplace_back(parent->second.first->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
 
