@@ -40,6 +40,7 @@ private:
     bool has_public_default_constructor;
     bool has_copy_constructor;
     bool has_public_copy_constructor;
+    // handle if pure virtual destructor
     bool has_destructor;
     bool has_public_assignment;
     const FunctionSignaturePolicy::FunctionSignatureData * assignment;
@@ -50,6 +51,11 @@ private:
     bool is_interface;
     bool is_abstract;
     bool is_datatype;
+
+    bool is_finalized;
+
+    std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> implemented_functions_map;
+    std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> pure_virtual_functions_map;
 
     std::vector<srcyuml_attribute> attributes;
 
@@ -69,7 +75,8 @@ public:
           has_method(false),
           is_interface(false),
           is_abstract(data->hasPureVirtual),
-          is_datatype(false) {
+          is_datatype(false),
+          is_finalized(false) {
 
             analyze_data();
 
@@ -107,33 +114,39 @@ public:
     }
 
     bool get_is_interface() const {
-
         return is_interface;
-
     }
 
     void set_is_interface(bool is_interface){
-
         this->is_interface = is_interface;
-
     }
 
     bool get_is_abstract() const {
-
         return is_abstract;
-
     }
 
     void set_is_abstract(bool is_abstract){
-
         this->is_abstract = is_abstract;
+    }
 
+    bool get_is_finalized() const {
+        return is_finalized;
+    }
+
+    void set_is_finalized(bool is_finalized) {
+        this->is_finalized = is_finalized;
+    }
+
+    const std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> & get_implemented_functions_map() const {
+        return implemented_functions_map;
+    }
+
+    std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> & get_pure_virtual_functions_map() {
+        return pure_virtual_functions_map;
     }
 
     const std::vector<srcyuml_attribute> & get_attributes() const {
-
         return attributes;
-
     }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {
@@ -184,8 +197,8 @@ private:
         has_method = data->operators[ClassPolicy::PUBLIC].size() || data->operators[ClassPolicy::PRIVATE].size() || data->operators[ClassPolicy::PROTECTED].size();
         has_method = data->methods[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PRIVATE].size() || data->methods[ClassPolicy::PROTECTED].size();
 
-        bool only_public_methods = 
-            (data->operators[ClassPolicy::PUBLIC].size() || data->methods[ClassPolicy::PUBLIC].size()) && data->operators[ClassPolicy::PRIVATE].empty() && data->operators[ClassPolicy::PROTECTED].empty()
+        bool no_private_or_protected_methods
+            = data->operators[ClassPolicy::PRIVATE].empty() && data->operators[ClassPolicy::PROTECTED].empty()
              && data->methods[ClassPolicy::PRIVATE].empty() && data->methods[ClassPolicy::PROTECTED].empty();
 
         for(std::size_t access = 0; access < ClassPolicy::PROTECTED; ++access) {
@@ -240,31 +253,30 @@ private:
 
         if((!has_constructor && !assignment)
             || (has_public_default_constructor && has_public_copy_constructor && has_public_assignment)) {
-
             is_datatype = true;
-
         }
 
         if(    !has_constructor
             && !has_field
             && !has_destructor
-            && only_public_methods
+            && no_private_or_protected_methods
             && (!assignment || assignment->isPureVirtual)) {
 
             is_interface = true;
             for(FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[ClassPolicy::PUBLIC]) {
-
                 if(!op->isPureVirtual) {
                     is_interface = false;
+                    break;
                 }
-
             }
-            for(FunctionSignaturePolicy::FunctionSignatureData * function : data->methods[ClassPolicy::PUBLIC]) {
+            if(is_interface ) {
+                for(FunctionSignaturePolicy::FunctionSignatureData * function : data->methods[ClassPolicy::PUBLIC]) {
+                    if(!function->isPureVirtual) {
+                        is_interface = false;
+                        break;
+                    }
 
-                if(!function->isPureVirtual) {
-                    is_interface = false;
                 }
-
             }
 
         }
@@ -273,6 +285,24 @@ private:
 
             for(const DeclTypePolicy::DeclTypeData * field : data->fields[access]) {
                 attributes.emplace_back(field, (ClassPolicy::AccessSpecifier)access);
+            }
+
+        }
+
+        for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
+
+            for(const FunctionSignaturePolicy::FunctionSignatureData * method : data->methods[access]) {
+                if(method->isPureVirtual)
+                    pure_virtual_functions_map[method->ToString()] = method;
+                else
+                    implemented_functions_map[method->ToString()] = method;
+            }
+
+            for(const FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[access]) {
+               if(op->isPureVirtual)
+                    pure_virtual_functions_map[op->ToString()] = op;
+                else
+                    implemented_functions_map[op->ToString()] = op;
             }
 
         }
