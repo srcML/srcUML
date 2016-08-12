@@ -296,6 +296,9 @@ private:
             if(citr->second == TemplateArgumentPolicy::POINTER)
                 is_pointer = true;
 
+            if(citr->second == TemplateArgumentPolicy::OPERATOR && (*static_cast<std::string *>(citr->first)) == "*")
+                is_pointer = true;
+
             if(citr->second == TemplateArgumentPolicy::REFERENCE)
                 is_reference = true;
 

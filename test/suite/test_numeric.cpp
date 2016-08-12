@@ -97,13 +97,13 @@ int main(int argc, char * argv[]) {
     tester.src2srcml("class foo { public: signed long long long const bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
 
     // pointer
-    tester.src2srcml("class foo { public: int * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
-    tester.src2srcml("class foo { public: size_t * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
+    tester.src2srcml("class foo { public: int * bar; };").run().test("[«datatype»;foo|+ bar: number［*］ ｛ordered｝;]\n");
+    tester.src2srcml("class foo { public: size_t * bar; };").run().test("[«datatype»;foo|+ bar: number［*］ ｛ordered｝;]\n");
 
-    tester.src2srcml("class foo { public: short * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
+    tester.src2srcml("class foo { public: short * bar; };").run().test("[«datatype»;foo|+ bar: number［*］ ｛ordered｝;]\n");
 
-    tester.src2srcml("class foo { public: long long * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
-    tester.src2srcml("class foo { public: long long long * bar; };").run().test("[«datatype»;foo|+ bar: number［*］;]\n");
+    tester.src2srcml("class foo { public: long long * bar; };").run().test("[«datatype»;foo|+ bar: number［*］ ｛ordered｝;]\n");
+    tester.src2srcml("class foo { public: long long long * bar; };").run().test("[«datatype»;foo|+ bar: number［*］ ｛ordered｝;]\n");
 
     // reference
     tester.src2srcml("class foo { public: int & bar; };").run().test("[«datatype»;foo|+ bar: number;]\n");
@@ -124,7 +124,7 @@ int main(int argc, char * argv[]) {
     tester.src2srcml("class foo { public: std::shared_ptr<long long long> bar; };").run().test("[«datatype»;foo|+ bar: number［0..1］;]\n");
 
     // complex
-    tester.src2srcml("class foo { public: std::shared_ptr<const unsigned int const * const> bar; };").run().test("[«datatype»;foo|+ bar: number［0..1］;]\n");
+    tester.src2srcml("class foo { public: std::shared_ptr<const unsigned int const * const> bar; };").run().test("[«datatype»;foo|+ bar: number［*］ ｛ordered｝;]\n");
 
     return tester.results();
 
