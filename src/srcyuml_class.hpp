@@ -25,8 +25,7 @@
 #include <ClassPolicySingleEvent.hpp>
 
 #include <srcyuml_attribute.hpp>
-#include <srcyuml_type.hpp>
-#include <srcyuml_parameter.hpp>
+#include <srcyuml_operation.hpp>
 #include <static_outputter.hpp>
 
 class srcyuml_class {
@@ -161,47 +160,27 @@ public:
             out << '|';
 
         for(const srcyuml_attribute & attribute : aclass.attributes) {
-            if(attribute.get_is_static())
+            if(attribute.get_is_static()) {
                 static_outputter::output(out, attribute);
-            else
+            } else {
                 out << attribute;
+            }
             out << ';';
         }
 
         if(aclass.has_method)
             out << '|';
 
-        for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PUBLIC]) {
-            if(function->isStatic) {
-                std::ostringstream str_out;
-                str_out << "+ "; output_method(str_out, *function);
-                static_outputter::output(out, str_out.str());
-            } else {
-                out << "+ "; output_method(out, *function);
+        for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
+            for(const FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[access]) {
+                srcyuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
+                if(function->isStatic) {
+                    static_outputter::output(out, op);
+                } else {
+                    out << op;
+                }
+                out << ';';
             }
-            out << ';';
-        }
-
-        for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PRIVATE]) {
-            if(function->isStatic) {
-                std::ostringstream str_out;
-                str_out << "- "; output_method(str_out, *function);
-                static_outputter::output(out, str_out.str());
-            } else {
-                out << "- "; output_method(out, *function);
-            }
-            out << ';';
-        }
-
-        for(FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[ClassPolicy::PROTECTED]) {
-            if(function->isStatic) {
-                std::ostringstream str_out;
-                str_out << "# "; output_method(str_out, *function);
-                static_outputter::output(out, str_out.str());
-            } else {
-                out << "# "; output_method(out, *function);
-            }
-            out << ';';
         }
 
         out << "]\n";

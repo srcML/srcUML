@@ -110,7 +110,9 @@ public:
         else if(attribute.visibility == ClassPolicy::PROTECTED)
             out << '#';
 
-        out << " " << attribute.name << ": " << attribute.type;
+        out << ' ';
+
+        out << attribute.name << ": " << attribute.type;
 
         out << attribute.get_multiplicity();
 
