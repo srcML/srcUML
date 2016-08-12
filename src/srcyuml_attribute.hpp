@@ -116,6 +116,10 @@ public:
 
         out << attribute.get_multiplicity();
 
+        if(attribute.has_index || attribute.is_pointer || (attribute.type.get_is_container() && attribute.type.get_is_ordered())) {
+            out << " ｛ordered｝";
+        }
+
         return out;
 
     }
