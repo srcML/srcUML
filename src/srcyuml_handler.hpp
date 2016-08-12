@@ -68,8 +68,7 @@ public:
 
     void run(srcSAXController & controller) {
 
-        ClassPolicy class_policy{this};
-        srcSAXEventDispatch::srcSAXSingleEventDispatcher<ClassPolicy> handler { &class_policy };
+        srcSAXEventDispatch::srcSAXSingleEventDispatcher<ClassPolicy> handler(this);
         controller.parse(&handler);
         output_yuml();
 
