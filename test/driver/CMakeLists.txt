@@ -1,7 +1,7 @@
 ##
 # CMakeLists.txt
 #
-# Copyright (C) 2015-2016 srcML, LLC. (www.srcML.org)
+# Copyright (C) 2016 srcML, LLC. (www.srcML.org)
 #
 # This file is part of srcYUML.
 #
@@ -18,8 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
 
-file(GLOB SRCYUML_SOURCE *.cpp)
-file(GLOB SRCYUML_HEADER *.hpp)
-
-add_executable(srcyuml ${SRCYUML_SOURCE} ${SRCYUML_HEADER})
-target_link_libraries(srcyuml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES})
+add_library(tester STATIC tester.cpp tester.hpp)

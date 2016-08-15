@@ -1,7 +1,7 @@
 /**
- * @file srcyuml.hpp
+ * @file test_empty.cpp
  *
- * @copyright Copyright (C) 2015-2016 srcML, LLC. (www.srcML.org)
+ * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
  * This file is part of srcYUML.
  *
@@ -19,44 +19,18 @@
  * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- /*
+#include <tester.hpp>
 
-  Count each the occurrences of each srcML element.
-
-  Input: input_file.xml
-  Useage: srcyuml input_file.xml
-  
-  */
-
-#include <srcyuml_handler.hpp>
-
-#include <iostream>
-#include <fstream>
-
-/**
- * main
- * @param argc number of arguments
- * @param argv the provided arguments (array of C strings)
- * 
- * Invoke srcSAX handler to generate yUML.
- */
 int main(int argc, char * argv[]) {
 
-  if(argc < 2) {
+    tester_t tester("empty");
 
-    std::cerr << "Usage: srcyuml input_file.xml\n";
-    exit(1);
+    for(const std::string & class_type : { "class", "struct" }) {
 
-  }
+        tester.src2srcml(class_type + " foo {};").run().test("[«datatype»;foo]\n");
 
-  std::ostream * out = &std::cout;
-  if(argc == 3)
-    out = new std::ofstream(argv[2]);
+    }
 
-  srcyuml_handler handler(argv[1],*out);
+    return tester.results();
 
-  if(argc == 3)
-    delete out;
-
-  return 0;
 }
