@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
 
-import codecs
 from antlr4 import *
 from antlr4.tree.Trees import Trees
 from srcYUMLrelay import Relay
@@ -40,7 +39,7 @@ def main(argv):
 	output.write("edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\"]\n")
 	
 
-	file = codecs.open(argv[1], encoding='utf-8') #rb is R-read and B-binary
+	file = open(argv[1], "rb") #rb is R-read and B-binary
 	input_str = to_unicode(file.read())
 	file.close()
 	input = InputStream(input_str)
