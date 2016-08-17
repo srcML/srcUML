@@ -27,16 +27,23 @@
 #include <srcyuml_type.hpp>
 #include <srcyuml_parameter.hpp>
 
+#include <srcyuml_utilities.hpp>
+
 class srcyuml_operation {
 
 private:
     const FunctionSignaturePolicy::FunctionSignatureData * data;
     const ClassPolicy::AccessSpecifier visibility;
 
+    std::string stereotype;
+
 public:
     srcyuml_operation(const FunctionSignaturePolicy::FunctionSignatureData * data, ClassPolicy::AccessSpecifier visibility)
         : data(data),
-          visibility(visibility) {
+          visibility(visibility),
+          stereotype(data->stereotype) {
+
+            srcyuml::trim(stereotype);
             analyze_operation();
     }
 
@@ -86,7 +93,7 @@ public:
         if(!operation.data->stereotype.empty()) {
 
             out << " ｛";
-            out << operation.data->stereotype;
+            out << operation.stereotype;
             out << "｝";
 
         }

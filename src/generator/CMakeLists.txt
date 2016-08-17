@@ -1,7 +1,7 @@
 ##
 # CMakeLists.txt
 #
-# Copyright (C) 2015-2016 srcML, LLC. (www.srcML.org)
+# Copyright (C) 2016 srcML, LLC. (www.srcML.org)
 #
 # This file is part of srcYUML.
 #

@@ -19,7 +19,9 @@
  * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- #include <srcyuml_utilities.hpp>
+#include <srcyuml_utilities.hpp>
+
+namespace srcyuml {
 
 std::string & trim(std::string & str) {
 
@@ -28,5 +30,7 @@ std::string & trim(std::string & str) {
         str.pop_back();
 
     return str;
+
+}
 
 }
