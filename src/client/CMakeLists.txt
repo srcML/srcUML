@@ -18,9 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
 
-file(GLOB SRCYUML_SOURCE *.cpp)
-file(GLOB SRCYUML_HEADER *.hpp)
+file(GLOB CLIENT_SOURCE *.cpp)
+file(GLOB CLIENT_HEADER *.hpp)
 
-
-add_subdirectory(generator)
-add_subdirectory(client)
+add_executable(srcyuml $<TARGET_OBJECTS:generator> ${CLIENT_SOURCE} ${CLIENT_HEADER})
+target_link_libraries(srcyuml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES})

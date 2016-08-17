@@ -83,6 +83,14 @@ public:
 
         }
 
+        if(!operation.data->stereotype.empty()) {
+
+            out << " ｛";
+            out << operation.data->stereotype;
+            out << "｝";
+
+        }
+
         return out;
 
     }

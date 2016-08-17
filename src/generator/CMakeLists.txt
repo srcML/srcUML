@@ -18,9 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
 
-file(GLOB SRCYUML_SOURCE *.cpp)
-file(GLOB SRCYUML_HEADER *.hpp)
+file(GLOB GENERATOR_SOURCE *.cpp)
+file(GLOB GENERATOR_HEADER *.hpp)
 
-
-add_subdirectory(generator)
-add_subdirectory(client)
+add_library(generator OBJECT ${GENERATOR_HEADERS} ${GENERATOR_SOURCE})
