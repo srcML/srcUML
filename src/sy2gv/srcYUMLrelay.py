@@ -41,6 +41,7 @@ class Relay(srcYUML2graphVizListener):
 	#======================================================Yuml - (node | relationship | NEWLINE)+ EOF
 	def enterYuml(self, ctx):
 		print("----------------yumlStart")
+		print(ctx.getText())
 		##################
 
 		#print(dir(ctx))
@@ -168,6 +169,7 @@ class Relay(srcYUML2graphVizListener):
 	#====================================================ClassID
 	def enterClassID(self, ctx):
 		print("--------IDStart")
+		print(ctx.getText())
 		##################
 		if self.inRelation == True:
 			self.output.write(to_bytes(self.label2class[ctx.getText()]))
