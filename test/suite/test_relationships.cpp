@@ -25,10 +25,7 @@ int main(int argc, char * argv[]) {
 
     tester_t tester("numeric");
 
-	tester.src2srcml(/*code*/).run().test(/*yUML*/);
 	tester.src2srcml("class Parent{}; class Child: public Parent{};").run().test("[Parent]^-[Child]");
-
-
 
     return tester.results();
 
