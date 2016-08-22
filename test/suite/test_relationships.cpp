@@ -1,5 +1,5 @@
 /**
- * @file srcyuml_utilities.cpp
+ * @file test_numeric.cpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
@@ -19,20 +19,14 @@
  * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <srcyuml_utilities.hpp>
+#include <tester.hpp>
 
-#include <algorithm>
+int main(int argc, char * argv[]) {
 
-namespace srcyuml {
+    tester_t tester("numeric");
 
-std::string & trim(std::string & str) {
+	tester.src2srcml("class Parent{}; class Child: public Parent{};").run().test("[Parent]^-[Child]");
 
-    str.erase(str.begin(), std::find_if_not(str.begin(), str.end(), isspace));
-    while(!str.empty() && isspace(str.back()))
-        str.pop_back();
-
-    return str;
-
-}
+    return tester.results();
 
 }
