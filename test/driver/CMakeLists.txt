@@ -18,4 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
 
-add_library(tester STATIC tester.cpp tester.hpp)
+add_library(tester OBJECT tester.cpp tester.hpp)

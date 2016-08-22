@@ -31,8 +31,8 @@ macro(add_srcyuml_test TEST_FILE)
     string(FIND ${TEST_NAME_WITH_EXTENSION} "." EXTENSION_BEGIN)
     string(SUBSTRING ${TEST_NAME_WITH_EXTENSION} 0 ${EXTENSION_BEGIN} TEST_NAME)
 
-    add_executable(${TEST_NAME} ${TEST_FILE})
-    target_link_libraries(${TEST_NAME} tester srcml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES} ${ARGN})
+    add_executable(${TEST_NAME} ${TEST_FILE} $<TARGET_OBJECTS:generator> $<TARGET_OBJECTS:tester>)
+    target_link_libraries(${TEST_NAME} srcml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES} ${ARGN})
     add_test(NAME ${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}>)
     set_target_properties(${TEST_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 

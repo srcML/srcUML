@@ -105,7 +105,7 @@ public:
 
         // not sure if should be gulliments or {}
         if(is_abstract)
-            return "{abstract};" + name;
+            return " ｛abstract｝;" + name;
 
         if(is_datatype)
             return "«datatype»;" + name;
