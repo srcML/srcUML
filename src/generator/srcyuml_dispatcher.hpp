@@ -34,9 +34,7 @@ public:
 
    srcyuml_dispatcher(srcSAXEventDispatch::PolicyListener * listener)
         : srcSAXEventDispatch::srcSAXSingleEventDispatcher<policies...>(listener) {
-
-        RemoveEvents({"if", "for", "while", "typedef", "call" });
-
+       srcSAXEventDispatch::srcSAXEventDispatcher<policies...>::RemoveEvents({"if", "for", "while", "typedef", "call" });
    }
 
 };
