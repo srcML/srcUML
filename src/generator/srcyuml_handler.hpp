@@ -25,7 +25,7 @@
 #include <srcSAXEventDispatchUtilities.hpp>
 #include <srcSAXController.hpp>
 
-#include <srcSAXSingleEventDispatcher.hpp>
+#include <srcyuml_dispatcher.hpp>
 #include <ClassPolicySingleEvent.hpp>
 
 #include <srcyuml_class.hpp>
@@ -68,7 +68,7 @@ public:
 
     void run(srcSAXController & controller) {
 
-        srcSAXEventDispatch::srcSAXSingleEventDispatcher<ClassPolicy> handler(this);
+        srcyuml_dispatcher<ClassPolicy> handler(this);
         controller.parse(&handler);
         output_yuml();
 
