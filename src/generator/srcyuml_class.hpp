@@ -193,10 +193,7 @@ private:
 
     void analyze_data() {
 
-        if(data->name)
-            name = data->name->SimpleName();
-        else
-            name = "FIXanonymous_class";
+        name = data->name->SimpleName();
 
         has_field = data->fields[ClassPolicy::PUBLIC].size() || data->fields[ClassPolicy::PRIVATE].size() || data->fields[ClassPolicy::PROTECTED].size();
         has_constructor = data->constructors[ClassPolicy::PUBLIC].size() || data->constructors[ClassPolicy::PRIVATE].size() || data->constructors[ClassPolicy::PROTECTED].size();

@@ -87,7 +87,9 @@ public:
 
         if(typeid(ClassPolicy) == typeid(*policy)) {
 
-            classes.emplace_back(std::make_shared<srcyuml_class>(policy->Data<ClassPolicy::ClassData>()));
+            ClassPolicy::ClassData * class_data = policy->Data<ClassPolicy::ClassData>();
+            if(class_data && class_data->name)
+                classes.emplace_back(std::make_shared<srcyuml_class>(class_data));
 
         }
 
