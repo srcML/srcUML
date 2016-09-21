@@ -237,7 +237,6 @@ private:
             }
         }
 
-
         for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
 
             for(const FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[access]) {
@@ -310,53 +309,6 @@ private:
             }
 
         }
-
-    }
-
-    static std::ostream & output_parameter(std::ostream & out, const ParamTypePolicy::ParamTypeData & parameter) {
-
-        srcyuml_parameter the_parameter(&parameter);
-        out << the_parameter;
-
-        return out;
-
-    }
-
-    static std::ostream & output_return_type(std::ostream & out, const TypePolicy::TypeData & type) {
-
-        if(type.types.size() == 1
-         && type.types.back().second == TypePolicy::NAME
-         && static_cast<NamePolicy::NameData *>(type.types.back().first)->ToString() == "void")
-            return out;
-
-        srcyuml_type the_type(&type);
-        if(the_type.get_type_name() != "void") {
-            out << ": ";
-            out << the_type;
-        }
-
-        return out;
-
-    }
-
-    static std::ostream & output_method(std::ostream & out, const FunctionSignaturePolicy::FunctionSignatureData & function) {
-
-        out << function.name->SimpleName();
-        out << '(';
-        for(std::size_t pos = 0; pos < function.parameters.size(); ++pos) {
-
-            if(pos != 0)
-                out << ", ";
-
-            output_parameter(out, *function.parameters[pos]);
-
-        }
-        out << ')';
-
-        if(function.returnType)
-            output_return_type(out, *function.returnType);
-
-        return out;
 
     }
 
