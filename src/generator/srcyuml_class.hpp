@@ -98,7 +98,7 @@ public:
 
     }
 
-    const std::string get_srcyuml_name() const {
+    std::string get_srcyuml_name() const {
 
         if(is_interface)
             return "«interface»;" + name;
@@ -194,6 +194,7 @@ private:
     void analyze_data() {
 
         name = data->name->SimpleName();
+        // if(data->isGeneric) name += "<>";
 
         has_field = data->fields[ClassPolicy::PUBLIC].size() || data->fields[ClassPolicy::PRIVATE].size() || data->fields[ClassPolicy::PROTECTED].size();
         has_constructor = data->constructors[ClassPolicy::PUBLIC].size() || data->constructors[ClassPolicy::PRIVATE].size() || data->constructors[ClassPolicy::PROTECTED].size();
