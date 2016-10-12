@@ -28,3 +28,6 @@ cd srcyuml_build
 cmake -DCMAKE_BUILD_TYPE=Release path_to_srcYUML_repo
 make
 ```
+
+### Note
+* The current build is dependent on srcML 1.0 (not yet publicly released).
