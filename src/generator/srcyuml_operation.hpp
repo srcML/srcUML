@@ -22,7 +22,7 @@
 #ifndef INCLUDED_SRCYUML_OPERATION_HPP
 #define INCLUDED_SRCYUML_OPERATION_HPP
 
-#include <FunctionSignaturePolicySingleEvent.hpp>
+#include <FunctionPolicySingleEvent.hpp>
 
 #include <srcyuml_type.hpp>
 #include <srcyuml_parameter.hpp>
@@ -32,13 +32,13 @@
 class srcyuml_operation {
 
 private:
-    const FunctionSignaturePolicy::FunctionSignatureData * data;
+    const FunctionPolicy::FunctionData * data;
     const ClassPolicy::AccessSpecifier visibility;
 
     std::string stereotype;
 
 public:
-    srcyuml_operation(const FunctionSignaturePolicy::FunctionSignatureData * data, ClassPolicy::AccessSpecifier visibility)
+    srcyuml_operation(const FunctionPolicy::FunctionData * data, ClassPolicy::AccessSpecifier visibility)
         : data(data),
           visibility(visibility),
           stereotype(data->stereotype) {
@@ -49,7 +49,7 @@ public:
 
     // ~srcyuml_operation() { if(data) delete data; }
 
-    const FunctionSignaturePolicy::FunctionSignatureData & get_data() const {
+    const FunctionPolicy::FunctionData & get_data() const {
 
         return *data;
 

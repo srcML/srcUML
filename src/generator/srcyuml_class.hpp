@@ -44,7 +44,7 @@ private:
     // handle if pure virtual destructor
     bool has_destructor;
     bool has_public_assignment;
-    const FunctionSignaturePolicy::FunctionSignatureData * assignment;
+    const FunctionPolicy::FunctionData * assignment;
 
     bool has_operator;
     bool has_method;
@@ -55,8 +55,8 @@ private:
 
     bool is_finalized;
 
-    std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> implemented_functions_map;
-    std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> pure_virtual_functions_map;
+    std::map<std::string, const FunctionPolicy::FunctionData *> implemented_functions_map;
+    std::map<std::string, const FunctionPolicy::FunctionData *> pure_virtual_functions_map;
 
     std::vector<srcyuml_attribute> attributes;
 
@@ -138,11 +138,11 @@ public:
         this->is_finalized = is_finalized;
     }
 
-    const std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> & get_implemented_functions_map() const {
+    const std::map<std::string, const FunctionPolicy::FunctionData *> & get_implemented_functions_map() const {
         return implemented_functions_map;
     }
 
-    std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> & get_pure_virtual_functions_map() {
+    std::map<std::string, const FunctionPolicy::FunctionData *> & get_pure_virtual_functions_map() {
         return pure_virtual_functions_map;
     }
 
@@ -172,7 +172,7 @@ public:
             out << '|';
 
         for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
-            for(const FunctionSignaturePolicy::FunctionSignatureData * function : aclass.data->methods[access]) {
+            for(const FunctionPolicy::FunctionData * function : aclass.data->methods[access]) {
                 srcyuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
                 if(function->isStatic) {
                     static_outputter::output(out, op);
@@ -208,7 +208,7 @@ private:
 
         for(std::size_t access = 0; access < ClassPolicy::PROTECTED; ++access) {
 
-            for(const FunctionSignaturePolicy::FunctionSignatureData * constructor : data->constructors[access]) {
+            for(const FunctionPolicy::FunctionData * constructor : data->constructors[access]) {
 
                 if(constructor->isDelete)
                     continue;
@@ -240,7 +240,7 @@ private:
 
         for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
 
-            for(const FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[access]) {
+            for(const FunctionPolicy::FunctionData * op : data->operators[access]) {
 
                 if(!op->isDelete && !op->name->names.empty() && op->name->names.back()->ToString() == "=") {
                     
@@ -267,14 +267,14 @@ private:
             && (!assignment || assignment->isPureVirtual)) {
 
             is_interface = true;
-            for(FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[ClassPolicy::PUBLIC]) {
+            for(FunctionPolicy::FunctionData * op : data->operators[ClassPolicy::PUBLIC]) {
                 if(!op->isPureVirtual) {
                     is_interface = false;
                     break;
                 }
             }
             if(is_interface ) {
-                for(FunctionSignaturePolicy::FunctionSignatureData * function : data->methods[ClassPolicy::PUBLIC]) {
+                for(FunctionPolicy::FunctionData * function : data->methods[ClassPolicy::PUBLIC]) {
                     if(!function->isPureVirtual) {
                         is_interface = false;
                         break;
@@ -295,14 +295,14 @@ private:
 
         for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
 
-            for(const FunctionSignaturePolicy::FunctionSignatureData * method : data->methods[access]) {
+            for(const FunctionPolicy::FunctionData * method : data->methods[access]) {
                 if(method->isPureVirtual)
                     pure_virtual_functions_map[method->ToString()] = method;
                 else
                     implemented_functions_map[method->ToString()] = method;
             }
 
-            for(const FunctionSignaturePolicy::FunctionSignatureData * op : data->operators[access]) {
+            for(const FunctionPolicy::FunctionData * op : data->operators[access]) {
                if(op->isPureVirtual)
                     pure_virtual_functions_map[op->ToString()] = op;
                 else

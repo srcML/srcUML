@@ -169,10 +169,10 @@ private:
                 }
 
                 // add pure virtual from parents
-                for(const std::pair<std::string, const FunctionSignaturePolicy::FunctionSignatureData *> & function_pair
+                for(const std::pair<std::string, const FunctionPolicy::FunctionData *> & function_pair
                         : parent->second->get_pure_virtual_functions_map()) {
 
-                    std::map<std::string, const FunctionSignaturePolicy::FunctionSignatureData *>::const_iterator implemented_function
+                    std::map<std::string, const FunctionPolicy::FunctionData *>::const_iterator implemented_function
                         = aclass->get_implemented_functions_map().find(function_pair.first);
                     if(implemented_function == aclass->get_implemented_functions_map().end())
                         aclass->get_pure_virtual_functions_map()[function_pair.first] = function_pair.second;
