@@ -68,8 +68,8 @@ public:
 
     void run(srcSAXController & controller) {
 
-        srcyuml_dispatcher<ClassPolicy> handler(this);
-        controller.parse(&handler);
+        srcyuml_dispatcher<ClassPolicy> dispatcher(this);
+        controller.parse(&dispatcher);
         output_yuml();
 
     }
