@@ -64,7 +64,7 @@ struct srcyuml_relationship {
         switch(relationship.type) {
 
             case DEPENDENCY: {
-                out << "-.=";
+                out << "-.-";
                 break;
             }
             case ASSOCIATION:
@@ -142,6 +142,10 @@ private:
 
     }
 
+    void add_relationship(const srcyuml_relationship & relationship) {
+        relationships.emplace_back(relationship);
+    }
+
     void generate_class_map() {
 
         for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
@@ -216,7 +220,8 @@ private:
                     type = REALIZATION;
                 }
 
-                relationships.emplace_back(parent->second->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
+                srcyuml_relationship relationship(parent->second->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
+                add_relationship(relationship);
 
             }
 
@@ -242,7 +247,8 @@ private:
                     type = AGGREGATION;
 
                 std::string relationship_label = attribute.get_name() + attribute.get_multiplicity();
-                relationships.emplace_back(aclass->get_srcyuml_name(), "", parent->second->get_srcyuml_name(), relationship_label, type);
+                srcyuml_relationship relationship(aclass->get_srcyuml_name(), "", parent->second->get_srcyuml_name(), relationship_label, type);
+                add_relationship(relationship);
 
             }
 
