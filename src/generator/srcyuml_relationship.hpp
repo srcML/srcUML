@@ -138,7 +138,7 @@ private:
 
         generate_class_map();
         resolve_inheritence();
-        generate_relationships();
+        generate_attribute_relationships();
 
     }
 
@@ -229,7 +229,7 @@ private:
  
     }
 
-    void generate_relationships() {
+    void generate_attribute_relationships() {
 
         for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
 
