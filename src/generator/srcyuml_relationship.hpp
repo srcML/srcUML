@@ -139,6 +139,7 @@ private:
         generate_class_map();
         resolve_inheritence();
         generate_attribute_relationships();
+        generate_depenency_relationships();
 
     }
 
@@ -254,6 +255,9 @@ private:
 
         }
 
+    }
+
+    void generate_dependency_relationships() {
     }
 
 };
