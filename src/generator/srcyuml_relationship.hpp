@@ -139,7 +139,7 @@ private:
         generate_class_map();
         resolve_inheritence();
         generate_attribute_relationships();
-        generate_depenency_relationships();
+        generate_dependency_relationships();
 
     }
 
