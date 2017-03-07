@@ -1,0 +1,17 @@
+digraph hierarchy {
+size="5, 5"
+node[shape=record,style=filled,fillcolor=gray95]
+edge[dir="both", arrowtail="empty", arrowhead="empty"]
+0[label = "{ «interface»\nString|}"]
+1[label = "{ «interface»\nWindow||+ draw()\n+ minimize()\n+ maximize()\n}"]
+2[label = "{ «interface»\nMyOperatingSystemWindow|- name: String\n- ID: WindowID\n}"]
+3[label = "{ «interface»\nMyApplicationWindow|- myApplicationContent: Content\n}"]
+4[label = "{ «interface»\nWindowID|- cool: \n}"]
+5[label = "{ «interface»\nContent|- currentContent: String\n|+ setContent(inout newContent: String)\n+ displayContent()\n}"]
+1->2[arrowhead="none"]
+2->3[arrowhead="none"]
+2->0[arrowhead="vee", arrowtail="diamond"]
+2->4[arrowhead="vee", arrowtail="diamond"]
+3->5[arrowhead="vee", arrowtail="diamond"]
+5->0[arrowhead="vee", arrowtail="diamond"]
+}
