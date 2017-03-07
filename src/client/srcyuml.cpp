@@ -44,7 +44,7 @@ int main(int argc, char * argv[]) {
 
   if(argc < 2) {
 
-    std::cerr << "Usage: srcyuml input_file.xml\n";
+    std::cerr << "Usage: srcyuml input_file.xml [output_file]\n";
     exit(1);
 
   }
