@@ -28,15 +28,21 @@ from kitchen.text.converters import to_unicode
 
 def main(argv):
 	if len(argv) == 3:
-		print("Worked")
+		print("Working...")
 		output = open(argv[2], 'w')
-	else:
-		print("defaultFile Used")
+
+	elif len(argv) == 2:
+		print("Default output file used: \"output.txt\"")
 		output = open("output.txt", 'w')
+
+	else:
+		print("Usage: python2 srcYUML2graphViz.py [inputFile] [outputFile]")
+		exit(1)
+
 
 	output.write("digraph hierarchy {\nsize=\"5, 5\"\n")
 	output.write("node[shape=record,style=filled,fillcolor=gray95]\n")
-	output.write("edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\"]\n")
+	output.write("edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\", labeldistance=\"2.0\"]\n")
 	
 
 	file = open(argv[1], "rb") #rb is R-read and B-binary
