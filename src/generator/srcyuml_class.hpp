@@ -122,7 +122,7 @@ public:
         this->is_interface = is_interface;
     }
 
-    bool get_is_abstract() const {
+    bool get_is_abstract()   const {
         return is_abstract;
     }
 
