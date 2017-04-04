@@ -28,7 +28,7 @@ class srcyuml_type {
 
 private:
 
-    const TypePolicy::TypeData * data;
+    std::shared_ptr<TypePolicy::TypeData> data;
 
     std::string name;
     bool is_numeric;
@@ -62,7 +62,10 @@ private:
     std::string index;
 
 public:
-    srcyuml_type(const TypePolicy::TypeData * data)
+
+    srcyuml_type(TypePolicy::TypeData * data) : srcyuml_type(std::shared_ptr<TypePolicy::TypeData>(data)) {}
+
+    srcyuml_type(std::shared_ptr<TypePolicy::TypeData> data)
         : data(data),
         name(),
         is_numeric(false),
