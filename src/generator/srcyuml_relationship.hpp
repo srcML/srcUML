@@ -262,9 +262,8 @@ private:
             for(const std::pair<std::string, const FunctionPolicy::FunctionData *> func : aclass->get_implemented_functions_map()){
                 for(const ParamTypePolicy::ParamTypeData* aparam : func.second->parameters){
                     //iterate over parameters
-                    srcyuml_type temp = aparam->type;
-                    std::string param_type = temp.get_type_name();
-                    //if(param_type in class_map)
+                    srcyuml_type* temp = new srcyuml_type(aparam->type);
+                    std::string param_type = temp->get_type_name();
                     std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator relatedclass = class_map.find(param_type);
                     if(relatedclass == class_map.end())
                         continue;
@@ -272,9 +271,16 @@ private:
                     srcyuml_relationship relationship(aclass->get_srcyuml_name(), relatedclass->second->get_srcyuml_name(), DEPENDENCY);
                     add_relationship(relationship);                   
                 }   
-                //for(const std::shared_ptr<DeclTypePolicy::DeclTypeData *>& arelation : func.second->relations){
-                    //iterate over relations via declerations in functions
-                //}
+                for(const DeclTypePolicy::DeclTypeData* arelation : func.second->relations){
+                    srcyuml_type* temp = new srcyuml_type(arelation->type);
+                    std::string relate_type = temp->get_type_name();
+                    std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator relatedclass = class_map.find(relate_type);
+                    if(relatedclass == class_map.end())
+                        continue;
+
+                    srcyuml_relationship relationship(aclass->get_srcyuml_name(), relatedclass->second->get_srcyuml_name(), DEPENDENCY);
+                    add_relationship(relationship);
+                }
             } 
         }
     }
