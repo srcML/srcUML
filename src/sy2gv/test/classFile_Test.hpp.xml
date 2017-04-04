@@ -32,7 +32,7 @@
 <comment type="line">//====================================================</comment>
 <class>class <name>WindowID</name> <block>{<private type="default">
 </private><private>private:
-    <decl_stmt><decl><type><name>String</name></type> <name>ID</name></decl>, <decl><type ref="prev"/><name>name</name></decl>, <decl><type ref="prev"/><name>cool</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>String</name></type> <name>cool</name></decl>;</decl_stmt>
 </private>}</block>;</class>
 <comment type="line">//====================================================</comment>
 <class>class <name>Content</name> <block>{<private type="default">

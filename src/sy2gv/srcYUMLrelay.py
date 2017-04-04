@@ -41,7 +41,7 @@ class Relay(srcYUML2graphVizListener):
 	#======================================================Yuml - (node | relationship | NEWLINE)+ EOF
 	def enterYuml(self, ctx):
 		print("----------------yumlStart")
-		print(ctx.getText())
+		#print(ctx.getText())
 		##################
 
 		#print(dir(ctx))
@@ -49,7 +49,7 @@ class Relay(srcYUML2graphVizListener):
 		# self.output.write( to_bytes(ctx.getText()) ) # THIS IS IT!!!
 		####################################
 	def exitYuml(self, ctx):
-		print("----------------yumlExit")
+		#print("----------------yumlExit")
 		#################
 		self.output.write("}\n")
 
@@ -59,14 +59,14 @@ class Relay(srcYUML2graphVizListener):
 		################## 
 
 	def exitClassDef(self, ctx):
-		print("------------classExit")
+		#print("------------classExit")
 		###################
 		if self.inRelation == False :
 			self.output.write("}\"]\n")
 
 	#======================================================Relationship - (node (a|c|r|g) node)
 	def enterRelationship(self, ctx):
-		print("------------relationStart")
+		#print("------------relationStart")
 		######################
 		self.inRelation = True
 
@@ -74,7 +74,7 @@ class Relay(srcYUML2graphVizListener):
 		#print("--" + ctx.getRuleContext())
 
 	def exitRelationship(self, ctx):
-		print("------------relationExit")
+		#print("------------relationExit")
 		#####################
 		self.inRelation = False
 		self.inReal = False
@@ -84,50 +84,50 @@ class Relay(srcYUML2graphVizListener):
 
 	#======================================================Realization - the use of an 
 	def enterRealization(self, ctx):                      #interface, the realization
-		print("--------realizationStart")                         #of an interface
+		#print("--------realizationStart")                         #of an interface
 		#########################
 		self.inReal = True
 		self.output.write("->")
-		print("----" + ctx.getText())
+		#print("----" + ctx.getText())
 
 	def exitRealization(self, ctx):
-		print("--------realizationExit")
+		#print("--------realizationExit")
 		########################
 		self.secondRelationPart = True
 
 	#=====================================================Aggregation - child can exist 
 	def enterAggregation(self, ctx):                     #independently of the parent
-		print("--------aggregationStart")
+		#print("--------aggregationStart")
 		#########################
 		self.inAgg = True
 		self.output.write("->")
 
 	def exitAggregation(self, ctx):
-		print("--------aggregationExit")
+		#print("--------aggregationExit")
 		########################
 		self.secondRelationPart = True
 
 	#=====================================================Composition - without parent child
 	def enterComposition(self, ctx):                     #can not exist
-		print("--------compositionStart")
+		#print("--------compositionStart")
 		#########################
 		self.inComp = True
 		self.output.write("->")
 
 	def exitComposition(self, ctx):
-		print("--------compositionExit")
+		#print("--------compositionExit")
 		########################
 		self.secondRelationPart = True
 
 	#====================================================Generalization - the generalization of
 	def enterGeneralization(self, ctx):                 #children, children inherit the parent
-		print("--------generalizationStart")
+		#print("--------generalizationStart")
 		############################
 		self.inGen = True
 		self.output.write("->")
 
 	def exitGeneralization(self, ctx):
-		print("--------generalizationExit")
+		#print("--------generalizationExit")
 		############################
 		self.secondRelationPart = True
 
@@ -136,7 +136,7 @@ class Relay(srcYUML2graphVizListener):
 		print("----textStart")
 		##################
 
-		print(ctx.getText())
+		#print(ctx.getText())
 
 	def exitText(self, ctx):
 		print("----textExit")
@@ -145,6 +145,7 @@ class Relay(srcYUML2graphVizListener):
 	#====================================================relationText
 	def enterRelationText(self, ctx):
 		print("----reltextStart")
+		#print(ctx.getText())
 		##################
 
 
@@ -156,7 +157,7 @@ class Relay(srcYUML2graphVizListener):
 	def enterVmText(self, ctx):
 		print("----vmTextStart")
 		##################
-		print(ctx.getText())
+		#print(ctx.getText())
 		if self.inMethod == True :
 			self.output.write( "|" + to_bytes(ctx.getText().replace(";", "\\" + "n")) )
 			return
@@ -188,7 +189,7 @@ class Relay(srcYUML2graphVizListener):
 		if ctx.getText() in self.label2class.keys():
 			return
 		toPlace = ctx.getText()
-		if toPlace.find(';') > -1:
+		if toPlace.find(';') > -1:#find word before semicolon. (Define based on switch statement?)
 			indx = toPlace.find(';')
 			toPlace = " " + unichr(171) + "interface" + unichr(187) + "\\" + "n" + toPlace[indx + 1:]
 		self.output.write(to_bytes(str(self.labeler) + "[label = \"{" + toPlace + "|"))
@@ -201,12 +202,12 @@ class Relay(srcYUML2graphVizListener):
 
 	#=====================================================
 	def enterMethods(self, ctx):                     
-		print("--------methodsStart")
+		#print("--------methodsStart")
 		#########################
 		self.inMethod = True
 
 	def exitMethods(self, ctx):
-		print("--------methodsExit")
+		#print("--------methodsExit")
 		########################
 		self.inMethod = False
 

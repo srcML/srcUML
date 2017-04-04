@@ -42,7 +42,7 @@ def main(argv):
 
 	output.write("digraph hierarchy {\nsize=\"5, 5\"\n")
 	output.write("node[shape=record,style=filled,fillcolor=gray95]\n")
-	output.write("edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\"]\n")
+	output.write("edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\", labeldistance=\"2.0\"]\n")
 	
 
 	file = open(argv[1], "rb") #rb is R-read and B-binary

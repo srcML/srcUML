@@ -31,7 +31,7 @@ private:
 //====================================================
 class WindowID {
 private:
-    String ID, name, cool;
+    String cool;
 };
 //====================================================
 class Content {
