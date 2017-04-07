@@ -25,16 +25,20 @@ yuml
 	: ( classDef | relationship | NEWLINE )+ EOF
 	;
 
-classDef
-	: '[' classID ( '|' variables ('|' methods )? )? ']'
+relationship
+	: classDef relation classDef 
 	;
 
-relationship
-	: classDef ( aggregation | composition | realization | generalization ) classDef 
+classDef
+	: '[' classID ( '|' variables ('|' methods )? )? ']' 
+	;
+
+relation
+	: aggregation | composition | realization | generalization | dependency
 	;
 
 aggregation
-	: relationText '+' relationText '-' relationText '>' relationText
+	: relationText '+' relationText '-' relationText '>'
 	;
 
 composition
@@ -46,8 +50,12 @@ realization
  	;
  
 generalization
-	: relationText '^' relationText '-' relationText
+	: relationText '^' relationText '-'
  	; 
+
+dependency
+	: relationText '-' relationText '.' relationText '-' relationText '>' 
+	;
 
 classID
 	: text

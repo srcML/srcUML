@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # srcYUML2graphViz.py
 #
 # Copyright (C) 2015-2016 srcML, LLC. (www.srcML.org)
