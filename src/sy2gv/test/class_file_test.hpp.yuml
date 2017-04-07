@@ -11,3 +11,4 @@
 [ ｛abstract｝;MyApplicationWindow]++-myApplicationContent>[«datatype»;Content]
 [«datatype»;WindowID]++-cool>[«datatype»;String]
 [«datatype»;Content]++-currentContent>[«datatype»;String]
+[«datatype»;Content]-.->[«datatype»;String]
