@@ -25,6 +25,7 @@
 #include <srcyuml_class.hpp>
 
 #include <map>
+#include <set>
 
 enum relationship_type { DEPENDENCY, ASSOCIATION, BIDIRECTIONAL, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION };
 struct srcyuml_relationship {
@@ -258,27 +259,39 @@ private:
     }
 
     void generate_dependency_relationships(){//dependency is local variables or parameters
+        //make map to store already cataloged dependencies
+        std::set<std::string> cataloged_dependencies;
+        bool alreadyCataloged = true;
         for(const std::shared_ptr<srcyuml_class>& aclass : classes){
             for(const std::pair<std::string, const FunctionPolicy::FunctionData *> func : aclass->get_implemented_functions_map()){
                 for(const ParamTypePolicy::ParamTypeData* aparam : func.second->parameters){
                     //iterate over parameters
+                    //obtain param_type which is a nice string form of the type
                     srcyuml_type* temp = new srcyuml_type(aparam->type);
                     std::string param_type = temp->get_type_name();
-                    std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator relatedclass = class_map.find(param_type);
-                    if(relatedclass == class_map.end())
+
+                    std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(param_type);
+                    std::set<std::string>::iterator cataloged_class = cataloged_dependencies.find(param_type);
+                    
+                    if(related_class == class_map.end() || cataloged_class != cataloged_dependencies.end())
                         continue;
 
-                    srcyuml_relationship relationship(aclass->get_srcyuml_name(), relatedclass->second->get_srcyuml_name(), DEPENDENCY);
+                    srcyuml_relationship relationship(aclass->get_srcyuml_name(), related_class->second->get_srcyuml_name(), DEPENDENCY);
+                    cataloged_dependencies.insert(param_type); //add param_type is std::string 
                     add_relationship(relationship);                   
                 }   
                 for(const DeclTypePolicy::DeclTypeData* arelation : func.second->relations){
                     srcyuml_type* temp = new srcyuml_type(arelation->type);
                     std::string relate_type = temp->get_type_name();
-                    std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator relatedclass = class_map.find(relate_type);
-                    if(relatedclass == class_map.end())
+
+                    std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(relate_type);
+                    std::set<std::string>::iterator cataloged_class = cataloged_dependencies.find(relate_type);
+
+                    if(related_class == class_map.end() || cataloged_class != cataloged_dependencies.end())
                         continue;
 
-                    srcyuml_relationship relationship(aclass->get_srcyuml_name(), relatedclass->second->get_srcyuml_name(), DEPENDENCY);
+                    srcyuml_relationship relationship(aclass->get_srcyuml_name(), related_class->second->get_srcyuml_name(), DEPENDENCY);
+                    cataloged_dependencies.insert(relate_type);
                     add_relationship(relationship);
                 }
             } 
