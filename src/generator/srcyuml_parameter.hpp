@@ -95,9 +95,9 @@ public:
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_parameter & parameter) {
 
         if(!parameter.type.get_is_const() && (parameter.type.get_is_pointer() || parameter.type.get_is_reference()))
-            out << "inout";
+            out << "inout ";
 
-        out << " " << parameter.name << ": " << parameter.type;
+        out << parameter.name << ": " << parameter.type;
 
         // out << parameter.get_multiplicity();
 
