@@ -23,9 +23,9 @@
 
 int main(int argc, char * argv[]) {
 
-    tester_t tester("numeric");
+    tester_t tester("relationships");
 
-	tester.src2srcml("class Parent{}; class Child: public Parent{};").run().test("[Parent]^-[Child]");
+	//tester.src2srcml("class Parent{}; class Child: public Parent{};").run().test("[][Parent]^-[Child]");
 	//tester.src2srcml("class Parent{}; class Child: public Parent{}; class Grandchild: public Child{};lass Parent{}; class Child: public Parent{}; class Grandchild: public Child{};").run().test("")
 
     return tester.results();
