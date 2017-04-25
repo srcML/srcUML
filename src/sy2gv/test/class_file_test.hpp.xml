@@ -1,12 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<unit xmlns="http://www.srcML.org/srcML/src" xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="0.9.5" language="C++" filename="taco.hpp"><class>class <name>taco</name><block>{<private type="default">
-	<constructor_decl><name>taco</name><parameter_list>()</parameter_list>;</constructor_decl>
-	<function_decl><type><name>void</name></type> <name>cheese</name><parameter_list>(<parameter><decl><type><name>Cheese</name></type> <name>a</name></decl></parameter>)</parameter_list>;</function_decl>
-	<function_decl><type><name>void</name></type> <name>meat</name><parameter_list>(<parameter><decl><type><name>Meat</name></type> <name>a</name></decl></parameter>)</parameter_list>;</function_decl>
+<unit xmlns="http://www.srcML.org/srcML/src" xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="0.9.5" language="C++" filename="example.hpp"><comment type="block">/*#include &lt;iostream&gt;
+class foo{
+	foo operator+(const foo&amp;);
+	foo operator+(const int&amp;);
+	foo operator+(const std::string&amp;);
+};
+
+class bar: foo{
+	foo operator+(const bar&amp;);
+	foo operator+(const bar&amp;, const int&amp;);
+	foo operator+(const bar&amp;, const foo&amp;);
+	foo operator+(const bar&amp;, const std::string&amp;);
+};*/</comment>
+
+<class>class <name>String</name><block>{<private type="default">
+	<function_decl type="operator"><type><name>bool</name></type> <name>operator<name>+</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl type="operator"><type><name>bool</name></type> <name>operator<name>+</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>int</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl type="operator"><type><name>bool</name></type> <name>operator<name>+</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name><name>std</name><operator>::</operator><name>string</name></name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl type="operator"><type><name>bool</name></type> <name>operator<name>+</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>float</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
 </private>}</block>;</class>
 
-<class>class <name>Cheese</name><block>{<private type="default"/>}</block>;</class>
-
-<class>class <name>Meat</name><block>{<private type="default"/>}</block>;</class>
-
-</unit>
+<class>class <name>Person</name><block>{<private type="default">
+</private><public>public:
+	<constructor_decl><name>Person</name><parameter_list>()</parameter_list>;</constructor_decl>
+	<function_decl><type><name>String</name></type> <name>getFirst</name><parameter_list>()</parameter_list>;</function_decl>
+	<function_decl><type><name>String</name></type> <name>getMiddle</name><parameter_list>()</parameter_list>;</function_decl>
+	<function_decl><type><name>String</name></type> <name>getLast</name><parameter_list>()</parameter_list>;</function_decl>
+	<function_decl><type><name>bool</name></type>   <name>setFirst</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl><type><name>bool</name></type>   <name>setMiddle</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl><type><name>bool</name></type>   <name>setLast</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+</public><private>private:
+	<decl_stmt><decl><type><name>String</name></type> <name>first</name></decl>, <decl><type ref="prev"/><name>middle</name></decl>, <decl><type ref="prev"/><name>last</name></decl>;</decl_stmt>
+</private>}</block>;</class></unit>

@@ -279,7 +279,7 @@ private:
                     std::string working_dep = related_class->second->get_srcyuml_name();
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
                     
-                    if(related_class == class_map.end() || catalogued_class != catalogued_dependencies.end())
+                    if(related_class == class_map.end() || current_class_type == working_dep)// || catalogued_class != catalogued_dependencies.end())
                         continue;
 
                     srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
@@ -294,13 +294,27 @@ private:
                     std::string working_dep = related_class->second->get_srcyuml_name();//get heuristic version of dependency name
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 
-                    if(related_class == class_map.end() || catalogued_class != catalogued_dependencies.end())
+                    if(related_class == class_map.end() || current_class_type == working_dep)// || catalogued_class != catalogued_dependencies.end())
                         continue;
 
                     srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
                     catalogued_dependencies.insert(working_dep);
                     add_relationship(relationship);
                 }
+                //Return type dependency
+                srcyuml_type* temp = new srcyuml_type(func.second->returnType);
+                std::string return_type = temp->get_type_name();
+
+                std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(return_type);
+                std::string working_dep = related_class->second->get_srcyuml_name();
+                std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
+
+                if(related_class == class_map.end() || current_class_type == working_dep)// || catalogued_class != catalogued_dependencies.end())
+                    continue;
+
+                srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
+                catalogued_dependencies.insert(working_dep);
+                add_relationship(relationship);
             } 
         }
     }
