@@ -36,7 +36,7 @@ def main(argv):
 		output = open("output.txt", 'w')
 
 	else:
-		print("Usage: python2 srcYUML2graphViz.py [inputFile] [outputFile]")
+		print("Usage: ./srcYUML2graphViz.py [inputFile] [outputFile]")
 		exit(1)
 
 

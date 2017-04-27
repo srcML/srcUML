@@ -1,5 +1,0 @@
-[taco||- cheese( a: Cheese);- meat( a: Meat);]
-[«datatype»;Cheese]
-[«datatype»;Meat]
-[taco]-.->[«datatype»;Cheese]
-[taco]-.->[«datatype»;Meat]
