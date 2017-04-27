@@ -1,4 +1,4 @@
-##
+#
 # srcYUML2graphViz.py
 #
 # Copyright (C) 2015-2016 srcML, LLC. (www.srcML.org)
@@ -41,26 +41,27 @@ class Relay(srcYUML2graphVizListener):
 
 	#======================================================Yuml - (classDef | relationship | NEWLINE)+ EOF
 	def enterYuml(self, ctx):
-		print("-yumlStart")
+		#print("-yumlStart")
 		#print(ctx.getText())
+		return
 		##################
-
 		#print(dir(ctx))
 		####################################
 		# self.output.write( to_bytes(ctx.getText()) ) # THIS IS IT!!!
 		####################################
 	def exitYuml(self, ctx):
-		print("-yumlExit")
+		#print("-yumlExit")
 		#################
 		self.output.write("}\n")
 
 	#======================================================classDef
 	def enterClassDef(self, ctx):
-		print("----classDefStart")
+		#print("----classDefStart")
+		return
 		################## 
 
 	def exitClassDef(self, ctx):
-		print("----classDefExit")
+		#print("----classDefExit")
 		##################
 		if self.inFirstRelationPart == False:
 			self.output.write("}\"]\n")
@@ -76,12 +77,12 @@ class Relay(srcYUML2graphVizListener):
 
 	#======================================================Relationship - (node (a|c|r|g) node)
 	def enterRelationship(self, ctx):
-		print("--relationStart")
+		#print("--relationStart")
 		##################
 		self.inFirstRelationPart = True
 
 	def exitRelationship(self, ctx):
-		print("--relationExit")
+		#print("--relationExit")
 		##################
 		self.inFirstRelationPart = False
 		self.inReal = False
@@ -147,12 +148,11 @@ class Relay(srcYUML2graphVizListener):
 
 	def exitDependency(self, ctx):
 		self.inSecondRelationPart = True
-		return
 		##################
 
 	#====================================================ClassID
 	def enterClassID(self, ctx):
-		print("--------IDStart")
+		#print("--------IDStart")
 		#print(ctx.getText())
 		##################
 		#============================================Relations
@@ -191,7 +191,8 @@ class Relay(srcYUML2graphVizListener):
 		self.labeler += 1
 
 	def exitClassID(self, ctx):
-		print("--------IDExit")
+		#print("--------IDExit")
+		return
 		###################
 
 	#====================================================Text

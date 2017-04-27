@@ -50,12 +50,12 @@ int main(int argc, char * argv[]) {
   }
 
   std::ostream * out = &std::cout;
-  if(argc == 3)
+  if(argc > 2)
     out = new std::ofstream(argv[2]);
 
-  srcyuml_handler handler(argv[1],*out);
+  srcyuml_handler handler(argv[1], *out);
 
-  if(argc == 3)
+  if(argc > 2)
     delete out;
 
   return 0;

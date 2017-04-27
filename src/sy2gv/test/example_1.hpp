@@ -15,5 +15,7 @@ public:
 	bool   setMiddle(const String&);
 	bool   setLast(const String&);
 private:
-	String first, middle, last;
+	String first;
+	String middle;
+	String &last;
 };

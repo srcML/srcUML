@@ -267,6 +267,7 @@ private:
             catalogued_dependencies.insert(current_class_type);
 
             for(const std::pair<std::string, const FunctionPolicy::FunctionData *> func : aclass->get_implemented_functions_map()){
+                //Parameter dependencies
                 for(const ParamTypePolicy::ParamTypeData* aparam : func.second->parameters){
                     //iterate over parameters
                     //obtain param_type which is a nice string form of the type
@@ -276,6 +277,7 @@ private:
                     //==================================================
 
                     std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(param_type);
+                    if(related_class == class_map.end()) continue;
                     std::string working_dep = related_class->second->get_srcyuml_name();
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
                     
@@ -285,12 +287,14 @@ private:
                     srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
                     catalogued_dependencies.insert(working_dep); //add param_type is std::string 
                     add_relationship(relationship);                   
-                }   
+                }
+                //decleration dependencies   
                 for(const DeclTypePolicy::DeclTypeData* arelation : func.second->relations){
                     srcyuml_type* temp = new srcyuml_type(arelation->type);
                     std::string relate_type = temp->get_type_name();
 
                     std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(relate_type);
+                    if(related_class == class_map.end()) continue;
                     std::string working_dep = related_class->second->get_srcyuml_name();//get heuristic version of dependency name
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 
@@ -306,6 +310,7 @@ private:
                 std::string return_type = temp->get_type_name();
 
                 std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(return_type);
+                if(related_class == class_map.end()) continue;
                 std::string working_dep = related_class->second->get_srcyuml_name();
                 std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 

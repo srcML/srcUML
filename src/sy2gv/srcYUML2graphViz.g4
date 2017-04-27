@@ -38,7 +38,7 @@ relation
 	;
 
 aggregation
-	: relationText '+' relationText '-' relationText '>'
+	: relationText '<' relationText '>' relationText '-' relationText '>'
 	;
 
 composition
