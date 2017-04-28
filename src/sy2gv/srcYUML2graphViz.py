@@ -28,7 +28,6 @@ from kitchen.text.converters import to_unicode
 
 def main(argv):
 	if len(argv) == 3:
-		print("Working...")
 		output = open(argv[2], 'w')
 
 	elif len(argv) == 2:

@@ -281,7 +281,8 @@ private:
                     std::string working_dep = related_class->second->get_srcyuml_name();
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
                     
-                    if(related_class == class_map.end() || current_class_type == working_dep)// || catalogued_class != catalogued_dependencies.end())
+                    //remove last condition to re-add multi dependencies
+                    if(related_class == class_map.end() || current_class_type == working_dep || catalogued_class != catalogued_dependencies.end())
                         continue;
 
                     srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
@@ -298,7 +299,8 @@ private:
                     std::string working_dep = related_class->second->get_srcyuml_name();//get heuristic version of dependency name
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 
-                    if(related_class == class_map.end() || current_class_type == working_dep)// || catalogued_class != catalogued_dependencies.end())
+                    //remove last condition to re-add multi dependencies
+                    if(related_class == class_map.end() || current_class_type == working_dep || catalogued_class != catalogued_dependencies.end())
                         continue;
 
                     srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
@@ -314,7 +316,8 @@ private:
                 std::string working_dep = related_class->second->get_srcyuml_name();
                 std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 
-                if(related_class == class_map.end() || current_class_type == working_dep)// || catalogued_class != catalogued_dependencies.end())
+                //remove last condition to re-add multi dependencies
+                if(related_class == class_map.end() || current_class_type == working_dep || catalogued_class != catalogued_dependencies.end())
                     continue;
 
                 srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
