@@ -174,6 +174,8 @@ public:
         for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
             for(const FunctionPolicy::FunctionData * function : aclass.data->methods[access]) {
                 srcyuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
+                if(op.get_stereotypes().count("set") > 0){continue;}
+                if(op.get_stereotypes().count("get") > 0){continue;}
                 if(function->isStatic) {
                     static_outputter::output(out, op);
                 } else {

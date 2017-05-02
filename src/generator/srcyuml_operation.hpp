@@ -29,21 +29,27 @@
 
 #include <srcyuml_utilities.hpp>
 
+#include <sstream>
+#include <iterator>
+#include <string>
+#include <set>
+
 class srcyuml_operation {
 
 private:
     const FunctionPolicy::FunctionData * data;
     const ClassPolicy::AccessSpecifier visibility;
 
-    std::string stereotype;
+    std::set<std::string> stereotypes;
 
 public:
     srcyuml_operation(const FunctionPolicy::FunctionData * data, ClassPolicy::AccessSpecifier visibility)
         : data(data),
-          visibility(visibility),
-          stereotype(data->stereotype) {
+          visibility(visibility) {
 
-            srcyuml::trim(stereotype);
+            std::istringstream stream(data->stereotype);
+            stereotypes = std::set<std::string>(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
+
             analyze_operation();
     }
 
@@ -54,6 +60,14 @@ public:
         return *data;
 
     }
+
+    const std::set<std::string> & get_stereotypes() const {
+
+        return stereotypes;
+
+    }
+
+    const std::string
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_operation & operation) {
 
