@@ -8,6 +8,7 @@ def parse_args():
 	parser.add_argument('-o', '--output', default = 'pic.pdf', help = 'Define an output file')
 	parser.add_argument('-t', '--type', default = 'pdf', help = 'Must be either: [pdf, jpg, png]')
 	parser.add_argument('-c', '--cmd', default = 'evince', help = 'Specify a cmd to run the result with')
+	#parser.add_argument('-k', '--keep', default = 'True', help = 'keep extra files')
 
 	return parser.parse_args()
 
@@ -30,7 +31,8 @@ def main(argv):
 		options.cmd = 'eog'
 
 	print "[=	Finished picture..."
-	sp.call(['rm', 'class_file_test.hpp.xml', 'class_file_test.hpp.yuml', 'class_file_test.outxt'])
+	#sp.call(['rm', 'class_file_test.hpp.xml', 'class_file_test.hpp.yuml', 'class_file_test.outxt'])
+
 	print "[=	Removed extra files..."
 	print "[=	Completed!"
 	sp.call([options.cmd, options.output])
