@@ -67,8 +67,6 @@ public:
 
     }
 
-    const std::string
-
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_operation & operation) {
 
         if(operation.visibility == ClassPolicy::PUBLIC)
@@ -107,7 +105,7 @@ public:
         if(!operation.data->stereotype.empty()) {
 
             out << " ｛";
-            out << operation.stereotype;
+            out << operation.data->stereotype;
             out << "｝";
 
         }
