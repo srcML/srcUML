@@ -1,3 +1,0 @@
-[«interface»;taco||+ make();+ eat();+ addCheese();+ addMeat();]
-[«datatype»;myTaco|- cheese: string;- meat: string;- count: string;- eaten: bool;|+ make();+ eat();+ addCheese();+ addMeat();]
-[«interface»;taco]^-.-[«datatype»;myTaco]
