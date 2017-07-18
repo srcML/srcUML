@@ -1,0 +1,8 @@
+digraph hierarchy {
+size="5, 5"
+node[shape=record,style=filled,fillcolor=gray95]
+edge[dir="both", arrowtail="empty", arrowhead="empty", labeldistance="2.0"]
+0[label = "{ «interface»\ntaco||+ make()\n+ eat()\n+ addCheese()\n+ addMeat()\n}"]
+1[label = "{ «datatype»\nmyTaco|- cheese: string\n- meat: string\n- count: string\n- eaten: bool\n|+ make()\n+ eat()\n+ addCheese()\n+ addMeat()\n}"]
+0->1[arrowhead="none", style="dashed"]
+}
