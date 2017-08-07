@@ -2,7 +2,15 @@ digraph hierarchy {
 size="5, 5"
 node[shape=record,style=filled,fillcolor=gray95]
 edge[dir="both", arrowtail="empty", arrowhead="empty", labeldistance="2.0"]
-0[label = "{ «interface»\ntaco||+ make()\n+ eat()\n+ addCheese()\n+ addMeat()\n}"]
-1[label = "{ «datatype»\nmyTaco|- cheese: string\n- meat: string\n- count: string\n- eaten: bool\n|+ make()\n+ eat()\n+ addCheese()\n+ addMeat()\n}"]
-0->1[arrowhead="none", style="dashed"]
+0[label = "{ «datatype»\nString|}"]
+1[label = "{Person|- first: String\n- middle: String\n- last: String\n|+ getFirst(): String\n+ getMiddle(): String\n+ getLast(): String\n+ setFirst(: String): bool\n+ setMiddle(: String): bool\n+ setLast(: String): bool\n}"]
+1->0[arrowhead="vee", arrowtail="diamond"]
+1->0[arrowhead="vee", arrowtail="diamond"]
+1->0[arrowhead="none", arrowtail="odiamond"]
+1->0[arrowhead="vee", arrowtail="none", style="dashed"]
+1->0[arrowhead="vee", arrowtail="none", style="dashed"]
+1->0[arrowhead="vee", arrowtail="none", style="dashed"]
+1->0[arrowhead="vee", arrowtail="none", style="dashed"]
+1->0[arrowhead="vee", arrowtail="none", style="dashed"]
+1->0[arrowhead="vee", arrowtail="none", style="dashed"]
 }
