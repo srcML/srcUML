@@ -50,8 +50,8 @@ struct srcyuml_relationship {
 
     relationship_type type;
 
-    friend bool output_relation(std::ostream & out, const srcyuml_relationship & relationship, std::map & class_number_map) {
-
+    friend bool output_relation(std::ostream & out, const srcyuml_relationship & relationship, std::map<std::string, int> & class_number_map) {
+        return true;
     }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationship & relationship) {
@@ -124,11 +124,14 @@ public:
 
     ~srcyuml_relationships() {}
 
-    friend bool output_relations(std::ostream & out, const srcyuml_relationships & relationships, std::map & class_number_map) {
+    friend bool output_dot_relations(std::ostream & out, const srcyuml_relationships & relationships, std::map<std::string, int> & class_number_map) {
 
         for(const srcyuml_relationship relationship : relationships.relationships) {
             output_relation(&out, &relationship, &class_number_map);
         }
+
+        return true;
+
     }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationships & relationships) {

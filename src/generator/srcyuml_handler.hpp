@@ -73,7 +73,7 @@ public:
 
         srcyuml_dispatcher<ClassPolicy> dispatcher(this);
         controller.parse(&dispatcher);
-        outputter.output(classes); // ouputs using the outputters function
+        outputter.output(&classes); // outputs using the outputters function
 
     }
 

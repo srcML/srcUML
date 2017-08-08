@@ -153,8 +153,8 @@ public:
         return attributes;
     }
 
-    friend bool output_aclass(std::ostream & out, const srcyuml_class & aclass, std::map & class_number_map){
-    	
+    friend bool output_dot_aclass(std::ostream & out, const srcyuml_class & aclass, std::map<std::string, int> & class_number_map){
+    	return true;
     }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {

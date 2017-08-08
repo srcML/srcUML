@@ -30,7 +30,7 @@ private:
 
 	std::string output_type;
 	std::ostream & out;
-	std::vector<std::shared_ptr<srcyuml_class>>* classes;
+	std::vector<std::shared_ptr<srcyuml_class>> * classes;
 
 public:
 
@@ -44,15 +44,15 @@ public:
         out << "node[shape=record,style=filled,fillcolor=gray95]\n";
         out << "edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\", labeldistance=\"2.0\"]\n";
 
-        std::map class_number_map;
+        std::map<std::string, int> class_number_map;
 
         srcyuml_relationships relationships(*classes);
 
         for(const std::shared_ptr<srcyuml_class> & aclass : *classes) {
-            srcyuml_class::output_aclass(&out, &aclass, &class_number_map);
+            srcyuml_class::output_dot_aclass(&out, &aclass, &class_number_map);
         }
 
-        srcyuml_relationships::output_relations(&out, &relationships, &class_number_map);
+        srcyuml_relationships::output_dot_relations(&out, &relationships, &class_number_map);
 
 	}
 
@@ -64,7 +64,7 @@ public:
 	}
 
 
-	bool output(std::vector<std::shared_ptr<srcyuml_class>> & clss){
+	bool output(std::vector<std::shared_ptr<srcyuml_class>> * clss){
 
 		classes = clss;
 
@@ -82,6 +82,6 @@ public:
 		return true;
 
 	}
-}
+};
 
 #endif
