@@ -50,6 +50,7 @@ int main(int argc, char * argv[]) {
   }
 
   std::ostream * out = &std::cout;
+  
   if(argc > 2)
     out = new std::ofstream(argv[2]);
 

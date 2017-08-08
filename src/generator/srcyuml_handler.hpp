@@ -30,6 +30,7 @@
 
 #include <srcyuml_class.hpp>
 #include <srcyuml_relationship.hpp>
+#include <srcyuml_output.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -46,50 +47,33 @@ class srcyuml_handler : public srcSAXEventDispatch::PolicyListener {
 
 private:
 
-    std::ostream & out;
     std::vector<std::shared_ptr<srcyuml_class>> classes;
 
 public:
 
-    srcyuml_handler(const std::string & input_str, std::ostream & out) : out(out) {
+    srcyuml_handler(const std::string & input_str, std::ostream & out) {
 
+        srcyuml_output outputter(out);
         srcSAXController controller(input_str);
-        run(controller);
+        run(controller, outputter);
 
     }
 
-    srcyuml_handler(const char * input_filename, std::ostream & out) : out(out) {
+    srcyuml_handler(const char * input_filename, std::ostream & out) {
 
+        srcyuml_output outputter(out);
         srcSAXController controller(input_filename);
-        run(controller);
+        run(controller, outputter);
 
     }
 
     ~srcyuml_handler() {}
 
-    void run(srcSAXController & controller) {
+    void run(srcSAXController & controller, srcyuml_output & outputter) {
 
         srcyuml_dispatcher<ClassPolicy> dispatcher(this);
         controller.parse(&dispatcher);
-        output_yuml();
-
-    }
-
-    void output_yuml() {//counter for classes. Relationship use. Rewrite to functions. 
-
-        out << "digraph hierarchy {\nsize=\"5, 5\"\n";
-        out << "node[shape=record,style=filled,fillcolor=gray95]\n";
-        out << "edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\", labeldistance=\"2.0\"]\n";
-
-        std::map class_number_map;
-
-        srcyuml_relationships relationships(classes);
-        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
-            //out << *aclass; // rewrote
-            srcyuml_class::output_aclass(&out, &aclass, &class_number_map);
-        }
-        //out << relationships; // rewrote
-        srcyuml_relationships::output_relations(&out, &relationships, &class_number_map);
+        outputter.output(classes); // ouputs using the outputters function
 
     }
 

@@ -127,7 +127,7 @@ public:
     friend bool output_relations(std::ostream & out, const srcyuml_relationships & relationships, std::map & class_number_map) {
 
         for(const srcyuml_relationship relationship : relationships.relationships) {
-            output_relation(&out, &realtion, &class_number_map);
+            output_relation(&out, &relationship, &class_number_map);
         }
     }
 
