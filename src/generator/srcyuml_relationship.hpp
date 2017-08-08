@@ -24,9 +24,6 @@
 
 #include <srcyuml_class.hpp>
 
-#include <map>
-#include <set>
-
 enum relationship_type { DEPENDENCY, ASSOCIATION, BIDIRECTIONAL, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION };
 struct srcyuml_relationship {
 
@@ -52,6 +49,10 @@ struct srcyuml_relationship {
     std::string destination_label;
 
     relationship_type type;
+
+    friend bool output_relation(std::ostream & out, const srcyuml_relationship & relationship, std::map & class_number_map) {
+
+    }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationship & relationship) {
 
@@ -122,6 +123,13 @@ public:
     }
 
     ~srcyuml_relationships() {}
+
+    friend bool output_relations(std::ostream & out, const srcyuml_relationships & relationships, std::map & class_number_map) {
+
+        for(const srcyuml_relationship relationship : relationships.relationships) {
+            output_relation(&out, &realtion, &class_number_map);
+        }
+    }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationships & relationships) {
 

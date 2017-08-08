@@ -1,7 +1,13 @@
+//Classes==============================================================================================================
+
 [ ｛abstract｝;Component||+ operation();+ Add(inout : Component);+ Remove(inout : Component);+ GetChild(: number);]
 [«datatype»;Leaf||+ operation();]
 [«datatype»;Composite|- _components: Component［*］ ｛ordered｝;|+ operation();+ Add(inout c: Component);+ Remove(inout : Component);+ GetChild(: number);]
 [Client|- _component: Component［*］ ｛ordered｝;|+ do_something();]
+
+
+//Relationships========================================================================================================
+
 [ ｛abstract｝;Component]^-.-[«datatype»;Leaf]
 [ ｛abstract｝;Component]^-.-[«datatype»;Composite]
 [«datatype»;Composite]<>-_components［*］>[ ｛abstract｝;Component]

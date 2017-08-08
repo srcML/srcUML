@@ -28,6 +28,9 @@
 #include <srcyuml_operation.hpp>
 #include <static_outputter.hpp>
 
+#include <map>
+#include <set>
+
 class srcyuml_class {
 
 private:
@@ -148,6 +151,10 @@ public:
 
     const std::vector<srcyuml_attribute> & get_attributes() const {
         return attributes;
+    }
+
+    friend bool output_aclass(std::ostream & out, const srcyuml_class & aclass, std::map & ){
+
     }
 
     friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {

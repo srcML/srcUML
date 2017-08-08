@@ -1,23 +1,96 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<unit xmlns="http://www.srcML.org/srcML/src" xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="0.9.5" language="C++" filename="example_1.hpp"><class>class <name>String</name><block>{<private type="default">
-	<function_decl type="operator"><type><name>bool</name></type> <name>operator<name>+</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
-	<function_decl type="operator"><type><name>bool</name></type> <name>operator<name>+</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>int</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
-	<function_decl type="operator"><type><name>bool</name></type> <name>operator<name>+</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name><name>std</name><operator>::</operator><name>string</name></name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
-	<function_decl type="operator"><type><name>bool</name></type> <name>operator<name>+</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>float</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+<unit xmlns="http://www.srcML.org/srcML/src" xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="0.9.5" language="C++" filename="example_3.hpp"><comment type="block">/* Composite Design Pattern example.
+ *
+ *    * Compose objects into tree structures to represent
+ *      whole-part hierarchies in a manner that lets clients
+ *      treat objects and compositions uniformly.
+ */</comment>
+
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;iostream&gt;</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;vector&gt;</cpp:file></cpp:include>
+<using>using <name><name>std</name><operator>::</operator><name>cout</name></name>;</using>
+<using>using <name><name>std</name><operator>::</operator><name>vector</name></name>;</using>
+
+<comment type="line">//===========================================================================</comment>
+<comment type="line">// Class definitions</comment>
+
+<comment type="line">//---------------------------------------------------------------------------</comment>
+<class>class <name>Component</name>
+<block>{<private type="default">
+  </private><public>public:
+      <destructor><specifier>virtual</specifier> <name>~<name>Component</name></name><parameter_list>()</parameter_list> <block>{}</block></destructor>
+      <function_decl><specifier>virtual</specifier> <type><name>void</name></type> <name>operation</name><parameter_list>()</parameter_list> = <literal type="number">0</literal>;</function_decl> <comment type="line">//       {cout &lt;&lt; "Override in all.\n"; }</comment>
+      <function><specifier>virtual</specifier> <type><name>void</name></type> <name>Add</name><parameter_list>(<parameter><decl><type><name>Component</name><modifier>*</modifier></type></decl></parameter>)</parameter_list>    <block>{<expr_stmt><expr><name>cout</name> <operator>&lt;&lt;</operator> <literal type="string">"Implement in Composite.\n"</literal></expr>;</expr_stmt> }</block></function>
+      <function><specifier>virtual</specifier> <type><name>void</name></type> <name>Remove</name><parameter_list>(<parameter><decl><type><name>Component</name><modifier>*</modifier></type></decl></parameter>)</parameter_list> <block>{<expr_stmt><expr><name>cout</name> <operator>&lt;&lt;</operator> <literal type="string">"Implement in Composite.\n"</literal></expr>;</expr_stmt> }</block></function>
+      <function><specifier>virtual</specifier> <type><name>void</name></type> <name>GetChild</name><parameter_list>(<parameter><decl><type><name>int</name></type></decl></parameter>)</parameter_list>      <block>{<expr_stmt><expr><name>cout</name> <operator>&lt;&lt;</operator> <literal type="string">"Implement in Composite.\n"</literal></expr>;</expr_stmt> }</block></function>
+</public>}</block>;</class>
+
+<comment type="line">//---------------------------------------------------------------------------</comment>
+<comment type="line">// Leaf class.</comment>
+<class>class <name>Leaf</name><super_list>: <super><specifier>public</specifier> <name>Component</name></super></super_list>
+<block>{<private type="default">
+  </private><public>public:
+      <function><specifier>virtual</specifier> <type><name>void</name></type> <name>operation</name><parameter_list>()</parameter_list>
+          <block>{ <expr_stmt><expr><name>cout</name> <operator>&lt;&lt;</operator> <literal type="string">"Leaf operation.\n"</literal></expr>;</expr_stmt> }</block></function>
+</public>}</block>;</class>
+
+<comment type="line">//---------------------------------------------------------------------------</comment>
+<comment type="line">// Composite class.</comment>
+<class>class <name>Composite</name><super_list>: <super><specifier>public</specifier> <name>Component</name></super></super_list>
+<block>{<private type="default">
+  </private><public>public:
+      <function><specifier>virtual</specifier> <type><name>void</name></type> <name>operation</name><parameter_list>()</parameter_list>       
+      <block>{
+          <for>for <control>(<init><decl><type><name>int</name></type> <name>idx</name> <init>= <expr><literal type="number">0</literal></expr></init></decl>;</init> <condition><expr><name>idx</name> <operator>&lt;</operator> <call><name><name>_components</name><operator>.</operator><name>size</name></name><argument_list>()</argument_list></call></expr>;</condition> <incr><expr><operator>++</operator><name>idx</name></expr></incr>)</control><block type="pseudo">
+              <expr_stmt><expr><name><name>_components</name><index>[<expr><name>idx</name></expr>]</index></name><operator>-&gt;</operator><call><name>operation</name><argument_list>()</argument_list></call></expr>;</expr_stmt></block></for>
+          <expr_stmt><expr><name>cout</name> <operator>&lt;&lt;</operator> <literal type="string">"Composite operation.\n"</literal></expr>;</expr_stmt>
+      }</block></function>
+      <function><specifier>virtual</specifier> <type><name>void</name></type> <name>Add</name><parameter_list>(<parameter><decl><type><name>Component</name><modifier>*</modifier></type> <name>c</name></decl></parameter>)</parameter_list>  <block>{ <expr_stmt><expr><call><name><name>_components</name><operator>.</operator><name>push_back</name></name><argument_list>(<argument><expr><name>c</name></expr></argument>)</argument_list></call></expr>;</expr_stmt> }</block></function>
+      <function><specifier>virtual</specifier> <type><name>void</name></type> <name>Remove</name><parameter_list>(<parameter><decl><type><name>Component</name><modifier>*</modifier></type></decl></parameter>)</parameter_list>  <block>{ }</block></function> <comment type="line">// Implement</comment>
+      <function><specifier>virtual</specifier> <type><name>void</name></type> <name>GetChild</name><parameter_list>(<parameter><decl><type><name>int</name></type></decl></parameter>)</parameter_list>      <block>{ }</block></function> <comment type="line">// Implement</comment>
+
+  </public><private>private:
+     <decl_stmt><decl><type><name><name>vector</name> <argument_list type="generic">&lt;<argument><expr><name>Component</name><modifier>*</modifier></expr></argument>&gt;</argument_list></name></type> <name>_components</name></decl>;</decl_stmt>
 </private>}</block>;</class>
 
-<class>class <name>Person</name><block>{<private type="default">
-</private><public>public:
-	<constructor_decl><name>Person</name><parameter_list>()</parameter_list>;</constructor_decl>
-	<function_decl><type><name>String</name></type> <name>getFirst</name><parameter_list>()</parameter_list>;</function_decl>
-	<function_decl><type><name>String</name></type> <name>getMiddle</name><parameter_list>()</parameter_list>;</function_decl>
-	<function_decl><type><name>String</name></type> <name>getLast</name><parameter_list>()</parameter_list>;</function_decl>
-	<function_decl><type><name>bool</name></type>   <name>setFirst</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
-	<function_decl><type><name>bool</name></type>   <name>setMiddle</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
-	<function_decl><type><name>bool</name></type>   <name>setLast</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
-</public><private>private:
-	<decl_stmt><decl><type><name>String</name></type> <name>first</name></decl>;</decl_stmt>
-	<decl_stmt><decl><type><name>String</name></type> <name>middle</name></decl>;</decl_stmt>
-	<decl_stmt><decl><type><name>String</name> <modifier>&amp;</modifier></type><name>last</name></decl>;</decl_stmt>
+<comment type="line">//---------------------------------------------------------------------------</comment>
+<comment type="line">// Client class.</comment>
+<class>class <name>Client</name>
+<block>{<private type="default">
+  </private><public>public:
+     <constructor><name>Client</name><parameter_list>()</parameter_list>  <block>{ <expr_stmt><expr><name>_component</name> <operator>=</operator><operator>new</operator> <call><name>Composite</name><argument_list>()</argument_list></call></expr>;</expr_stmt> }</block></constructor>
+     <destructor><name>~<name>Client</name></name><parameter_list>()</parameter_list> <block>{ <expr_stmt><expr><operator>delete</operator> <name>_component</name></expr>;</expr_stmt>                }</block></destructor>
+
+     <function><type><name>void</name></type> <name>do_something</name><parameter_list>()</parameter_list>
+     <block>{
+         <comment type="line">// Create some leaf nodes</comment>
+         <decl_stmt><decl><type><name>Component</name> <modifier>*</modifier></type><name>leaf1</name>      <init>= <expr><operator>new</operator> <call><name>Leaf</name><argument_list>()</argument_list></call></expr></init></decl>;</decl_stmt>
+         <decl_stmt><decl><type><name>Component</name> <modifier>*</modifier></type><name>leaf2</name>      <init>= <expr><operator>new</operator> <call><name>Leaf</name><argument_list>()</argument_list></call></expr></init></decl>;</decl_stmt>
+         <decl_stmt><decl><type><name>Component</name> <modifier>*</modifier></type><name>leaf3</name>      <init>= <expr><operator>new</operator> <call><name>Leaf</name><argument_list>()</argument_list></call></expr></init></decl>;</decl_stmt>
+
+         <comment type="line">// Interior node</comment>
+         <decl_stmt><decl><type><name>Component</name> <modifier>*</modifier></type><name>composite1</name> <init>= <expr><operator>new</operator> <call><name>Composite</name><argument_list>()</argument_list></call></expr></init></decl>;</decl_stmt>
+         <expr_stmt><expr><call><name><name>composite1</name><operator>-&gt;</operator><name>Add</name></name><argument_list>(<argument><expr><name>leaf1</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+         <expr_stmt><expr><call><name><name>composite1</name><operator>-&gt;</operator><name>Add</name></name><argument_list>(<argument><expr><name>leaf2</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+         <expr_stmt><expr><call><name><name>composite1</name><operator>-&gt;</operator><name>Add</name></name><argument_list>(<argument><expr><name>leaf3</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+
+         <comment type="line">// Root</comment>
+         <decl_stmt><decl><type><name>Component</name> <modifier>*</modifier></type><name>leaf4</name>      <init>= <expr><operator>new</operator> <call><name>Leaf</name><argument_list>()</argument_list></call></expr></init></decl>;</decl_stmt>
+         <expr_stmt><expr><call><name><name>_component</name><operator>-&gt;</operator><name>Add</name></name><argument_list>(<argument><expr><name>composite1</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+         <expr_stmt><expr><call><name><name>_component</name><operator>-&gt;</operator><name>Add</name></name><argument_list>(<argument><expr><name>leaf4</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+         <expr_stmt><expr><call><name><name>_component</name><operator>-&gt;</operator><name>operation</name></name><argument_list>()</argument_list></call></expr>;</expr_stmt>
+     }</block></function>
+
+  </public><private>private:
+     <decl_stmt><decl><type><name>Component</name><modifier>*</modifier></type> <name>_component</name></decl>;</decl_stmt>
 </private>}</block>;</class>
-</unit>
+
+<comment type="line">//===========================================================================</comment>
+<comment type="line">// Using the classes</comment>
+
+<function><type><name>int</name></type> <name>main</name><parameter_list>()</parameter_list>
+<block>{
+    <decl_stmt><decl><type><name>Client</name></type> <name>client</name></decl>;</decl_stmt>
+
+    <expr_stmt><expr><call><name><name>client</name><operator>.</operator><name>do_something</name></name><argument_list>()</argument_list></call></expr>;</expr_stmt>
+}</block></function></unit>

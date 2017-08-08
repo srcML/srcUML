@@ -1,11 +1,26 @@
 digraph hierarchy {
+
+
+//Base=================================================================================================================
+
 size="5, 5"
 node[shape=record,style=filled,fillcolor=gray95]
 edge[dir="both", arrowtail="empty", arrowhead="empty", labeldistance="2.0"]
+
+
+//Classes==============================================================================================================
+
 0[label = "{ Component||+ operation()\n+ Add(inout : Component)\n+ Remove(inout : Component)\n+ GetChild(: number)\n}"]
+
 1[label = "{ «datatype»\nLeaf||+ operation()\n}"]
+
 2[label = "{ «datatype»\nComposite|- _components: Component［*］ ｛ordered｝\n|+ operation()\n+ Add(inout c: Component)\n+ Remove(inout : Component)\n+ GetChild(: number)\n}"]
+
 3[label = "{Client|- _component: Component［*］ ｛ordered｝\n|+ do_something()\n}"]
+
+
+//Relationships========================================================================================================
+
 0->1[arrowhead="none", style="dashed"]
 0->2[arrowhead="none", style="dashed"]
 2->0[arrowhead="none", arrowtail="odiamond"]

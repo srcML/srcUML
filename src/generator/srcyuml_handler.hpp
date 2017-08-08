@@ -35,6 +35,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <memory>
+#include <map>
 
 /**
  * srcyuml_handler
@@ -74,12 +75,21 @@ public:
 
     }
 
-    void output_yuml() {
+    void output_yuml() {//counter for classes. Relationship use. Rewrite to functions. 
+
+        out << "digraph hierarchy {\nsize=\"5, 5\"\n";
+        out << "node[shape=record,style=filled,fillcolor=gray95]\n";
+        out << "edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\", labeldistance=\"2.0\"]\n";
+
+        std::map class_number_map;
 
         srcyuml_relationships relationships(classes);
-        for(const std::shared_ptr<srcyuml_class> & aclass : classes) 
-            out << *aclass;
-        out << relationships;
+        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
+            //out << *aclass; // rewrote
+            srcyuml_class::output_aclass(&out, &aclass, &class_number_map);
+        }
+        //out << relationships; // rewrote
+        srcyuml_relationships::output_relations(&out, &relationships, &class_number_map);
 
     }
 
