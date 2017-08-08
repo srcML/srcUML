@@ -28,31 +28,38 @@
 class srcyuml_output{
 private:
 
-	std::string output_type;
-	std::ostream & out;
-	std::vector<std::shared_ptr<srcyuml_class>> * classes;
+	int output_type = 0;
+	std::ostream * out;
+	std::vector<std::shared_ptr<srcyuml_class>> classes;
 
 public:
 
-	srcyuml_output()                                  { output_type = "dot"; }
-	srcyuml_output(std::ostream & os)                 { out = os; output_type = "dot"; }
-	srcyuml_output(std::ostream & os, std::string ot) { output_type = ot;, out = os; }
+	srcyuml_output()                                  { output_type = 0; }
+	srcyuml_output(std::ostream & os)                 { out = &os; output_type = 0; }
+	srcyuml_output(std::ostream & os, int ot)         { output_type = ot; out = &os; }
 
 	bool output_dot(){
 
-		out << "digraph hierarchy {\nsize=\"5, 5\"\n";
-        out << "node[shape=record,style=filled,fillcolor=gray95]\n";
-        out << "edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\", labeldistance=\"2.0\"]\n";
+		*out << "digraph hierarchy {\nsize=\"5, 5\"\n";
+        *out << "node[shape=record,style=filled,fillcolor=gray95]\n";
+        *out << "edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\", labeldistance=\"2.0\"]\n";
 
         std::map<std::string, int> class_number_map;
 
-        srcyuml_relationships relationships(*classes);
+        srcyuml_relationships relationships(classes);
 
-        for(const std::shared_ptr<srcyuml_class> & aclass : *classes) {
-            srcyuml_class::output_dot_aclass(&out, &aclass, &class_number_map);
+        int class_num = 0;
+
+        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
+            output_dot_aclass(*out, *aclass, class_number_map, class_num);
+            class_num++;
         }
 
-        srcyuml_relationships::output_dot_relations(&out, &relationships, &class_number_map);
+        output_dot_relations(*out, relationships, class_number_map);
+
+        *out << '}';
+
+        return true;
 
 	}
 
@@ -64,16 +71,16 @@ public:
 	}
 
 
-	bool output(std::vector<std::shared_ptr<srcyuml_class>> * clss){
+	bool output(std::vector<std::shared_ptr<srcyuml_class>> & clss){
 
-		classes = clss;
+		classes = clss; // inefficent, I know
 
 		switch(output_type){
-			case "dot":
+			case 0:
 				output_dot();
 				break;
 
-			case "yuml":
+			case 1:
 				output_yuml();
 				break;
 

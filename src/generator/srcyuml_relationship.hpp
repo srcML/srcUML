@@ -50,7 +50,43 @@ struct srcyuml_relationship {
 
     relationship_type type;
 
-    friend bool output_relation(std::ostream & out, const srcyuml_relationship & relationship, std::map<std::string, int> & class_number_map) {
+    friend bool output_relation(std::ostream & out, const srcyuml_relationship & relationship, const std::map<std::string, int> & class_number_map) {
+
+        const std::map<std::string, int>::const_iterator current_class = class_number_map.find(relationship.source);
+        out << current_class->second << "->";
+        const std::map<std::string, int>::const_iterator second_class = class_number_map.find(relationship.destination);
+        out << second_class->second;
+
+        switch(relationship.type) {
+
+            case DEPENDENCY: {
+                out << "[arrowhead=\"vee\", arrowtail=\"none\", style=\"dashed\"]\n";
+                break;
+            }
+            case ASSOCIATION:
+            case BIDIRECTIONAL: {
+                out << "[arrowhead=\"none\"]\n"; //currently same as generalization
+                break;
+            }
+            case AGGREGATION: {
+                out << "[arrowhead=\"none\", arrowtail=\"odiamond\"]\n";
+                break;
+            }
+            case COMPOSITION: {
+                out << "[arrowhead=\"vee\", arrowtail=\"diamond\"]\n";
+                break;
+            }
+            case GENERALIZATION: {
+                out << "[arrowhead=\"none\"]\n";
+                break;
+            }
+            case REALIZATION: {
+                out << "[arrowhead=\"none\", style=\"dashed\"]\n";
+                break;
+            }
+
+        }
+
         return true;
     }
 
@@ -124,10 +160,10 @@ public:
 
     ~srcyuml_relationships() {}
 
-    friend bool output_dot_relations(std::ostream & out, const srcyuml_relationships & relationships, std::map<std::string, int> & class_number_map) {
+    friend bool output_dot_relations(std::ostream & out, const srcyuml_relationships & relationships, const std::map<std::string, int> & class_number_map) {
 
         for(const srcyuml_relationship relationship : relationships.relationships) {
-            output_relation(&out, &relationship, &class_number_map);
+            output_relation(out, relationship, class_number_map);
         }
 
         return true;

@@ -18,16 +18,16 @@ def main(argv):
 
 	sp.call(['srcml', '--register-ext', 'h=C++', options.input, '-o', 'class_file_test.hpp.xml'])# '--register-ext', 'h=C++',
 	print "[=	Finished srcml..."
-	sp.call(['srcyuml', 'class_file_test.hpp.xml', 'class_file_test.hpp.yuml'])
+	sp.call(['srcyuml', 'class_file_test.hpp.xml', 'class_file_test.dot'])
 	print "[=	Finished srcyuml..."
-	sp.call(['srcYUML2graphViz.py', 'class_file_test.hpp.yuml', 'class_file_test.outxt'])
-	print "[=	Finished conversion..."
+	#sp.call(['srcYUML2graphViz.py', 'class_file_test.hpp.yuml', 'class_file_test.outxt'])
+	#print "[=	Finished conversion..."
 
 	if options.type == 'pdf':
-		sp.call(['dot', '-T', options.type, 'class_file_test.outxt', '-o', options.output])
+		sp.call(['dot', '-T', options.type, 'class_file_test.dot', '-o', options.output])
 
 	else:
-		sp.call(['dot', '-T', options.type, '-Gdpi=1500', 'class_file_test.outxt', '-o', options.output])
+		sp.call(['dot', '-T', options.type, '-Gdpi=1500', 'class_file_test.dot', '-o', options.output])
 		options.cmd = 'eog'
 
 	print "[=	Finished picture..."
