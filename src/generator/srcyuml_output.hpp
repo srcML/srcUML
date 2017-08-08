@@ -25,18 +25,26 @@
 #include <srcyuml_class.hpp>
 #include <srcyuml_relationship.hpp>
 
+enum output_type {DOT, YUML, NONE};
+
 class srcyuml_output{
 private:
 
-	int output_type = 0;
+	output_type type = NONE;
 	std::ostream * out;
 	std::vector<std::shared_ptr<srcyuml_class>> classes;
 
 public:
 
-	srcyuml_output()                                  { output_type = 0; }
-	srcyuml_output(std::ostream & os)                 { out = &os; output_type = 0; }
-	srcyuml_output(std::ostream & os, int ot)         { output_type = ot; out = &os; }
+	srcyuml_output()                                  {}
+	srcyuml_output(std::ostream & os)                 { out = &os; }
+	srcyuml_output(std::ostream & os, std::string ot) { 
+		if(ot == "dot" || ot == "DOT")
+			type = DOT;
+		else if(ot == "yuml" || ot == "YUML")
+			type = YUML;
+		out = &os; 
+	}
 
 	bool output_dot(){
 
@@ -66,6 +74,13 @@ public:
 
 	bool output_yuml(){
 
+		srcyuml_relationships relationships(classes);
+
+        for(const std::shared_ptr<srcyuml_class> & aclass : classes) 
+            *out << *aclass;
+
+		*out << relationships;
+
 		return true;
 
 	}
@@ -75,13 +90,17 @@ public:
 
 		classes = clss; // inefficent, I know
 
-		switch(output_type){
-			case 0:
+		switch(type){
+			case DOT:
 				output_dot();
 				break;
 
-			case 1:
+			case YUML:
 				output_yuml();
+				break;
+
+			default:
+				output_dot();
 				break;
 
 		}
