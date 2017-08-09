@@ -1,40 +1,40 @@
 /**
- * @file srcyuml_operation.hpp
+ * @file srcuml_operation.hpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
- * This file is part of srcYUML.
+ * This file is part of srcUML.
  *
- * srcYUML is free software: you can redistribute it and/or modify
+ * srcUML is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * srcYUML is distributed in the hope that it will be useful,
+ * srcUML is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_SRCYUML_OPERATION_HPP
-#define INCLUDED_SRCYUML_OPERATION_HPP
+#ifndef INCLUDED_SRCUML_OPERATION_HPP
+#define INCLUDED_SRCUML_OPERATION_HPP
 
 #include <FunctionPolicySingleEvent.hpp>
 
-#include <srcyuml_type.hpp>
-#include <srcyuml_parameter.hpp>
+#include <srcuml_type.hpp>
+#include <srcuml_parameter.hpp>
 
-#include <srcyuml_utilities.hpp>
+#include <srcuml_utilities.hpp>
 
 #include <sstream>
 #include <iterator>
 #include <string>
 #include <set>
 
-class srcyuml_operation {
+class srcuml_operation {
 
 private:
     const FunctionPolicy::FunctionData * data;
@@ -43,7 +43,7 @@ private:
     std::set<std::string> stereotypes;
 
 public:
-    srcyuml_operation(const FunctionPolicy::FunctionData * data, ClassPolicy::AccessSpecifier visibility)
+    srcuml_operation(const FunctionPolicy::FunctionData * data, ClassPolicy::AccessSpecifier visibility)
         : data(data),
           visibility(visibility) {
 
@@ -53,7 +53,7 @@ public:
             analyze_operation();
     }
 
-    // ~srcyuml_operation() { if(data) delete data; }
+    // ~srcuml_operation() { if(data) delete data; }
 
     const FunctionPolicy::FunctionData & get_data() const {
 
@@ -67,7 +67,7 @@ public:
 
     }
 
-    friend std::ostream & operator<<(std::ostream & out, const srcyuml_operation & operation) {
+    friend std::ostream & operator<<(std::ostream & out, const srcuml_operation & operation) {
 
         if(operation.visibility == ClassPolicy::PUBLIC)
             out << '+';
@@ -86,7 +86,7 @@ public:
             if(pos != 0)
                 out << ", ";
 
-            srcyuml_parameter the_parameter(operation.data->parameters[pos]);
+            srcuml_parameter the_parameter(operation.data->parameters[pos]);
             out << the_parameter;
 
         }
@@ -94,7 +94,7 @@ public:
 
         if(operation.data->returnType) {
 
-            srcyuml_type the_type(operation.data->returnType);
+            srcuml_type the_type(operation.data->returnType);
             if(the_type.get_type_name() != "void") {
                 out << ": ";
                 out << the_type;

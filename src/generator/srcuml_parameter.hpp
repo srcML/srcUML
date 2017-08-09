@@ -1,61 +1,56 @@
 /**
- * @file srcyuml_attribute.hpp
+ * @file srcuml_parameter.hpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
- * This file is part of srcYUML.
+ * This file is part of srcUML.
  *
- * srcYUML is free software: you can redistribute it and/or modify
+ * srcUML is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * srcYUML is distributed in the hope that it will be useful,
+ * srcUML is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_SRCYUML_ATTRIBUTE_HPP
-#define INCLUDED_SRCYUML_ATTRIBUTE_HPP
+#ifndef INCLUDED_SRCUML_PARAMETER_HPP
+#define INCLUDED_SRCUML_PARAMETER_HPP
 
-#include <DeclTypePolicySingleEvent.hpp>
+#include <ParamTypePolicySingleEvent.hpp>
 
-#include <srcyuml_type.hpp>
+#include <srcuml_type.hpp>
 #include <string>
 
-class srcyuml_attribute {
+class srcuml_parameter {
 
 private:
 
-    const DeclTypePolicy::DeclTypeData * data;
-    const ClassPolicy::AccessSpecifier visibility;
+    const ParamTypePolicy::ParamTypeData * data;
 
-    srcyuml_type type;
+    srcuml_type type;
     std::string name;
 
     bool is_pointer;
-
-    bool is_static;
 
     bool has_index;
     std::string index;
 
 public:
-    srcyuml_attribute(const DeclTypePolicy::DeclTypeData * data, ClassPolicy::AccessSpecifier visibility)
+    srcuml_parameter(const ParamTypePolicy::ParamTypeData * data)
         : data(data),
-          visibility(visibility),
           type(data->type),
           name(data->name ? data->name->ToString() : ""),
           is_pointer(type.get_is_pointer()),
-          is_static(data->isStatic),
           has_index(false),
           index() {
 
-            analyze_attribute();
+            analyze_parameter();
 
     }
 
@@ -63,12 +58,8 @@ public:
         return name;
     }
 
-    const srcyuml_type & get_type() const {
+    const srcuml_type & get_type() const {
         return type;
-    }
-
-    bool get_is_static() const {
-        return is_static;
     }
 
     const std::string get_multiplicity() const {
@@ -99,33 +90,23 @@ public:
 
     }
 
-    // ~srcyuml_attribute() { if(data) delete data; }
+    // ~srcuml_parameter() { if(data) delete data; }
 
-    friend std::ostream & operator<<(std::ostream & out, const srcyuml_attribute & attribute) {
+    friend std::ostream & operator<<(std::ostream & out, const srcuml_parameter & parameter) {
 
-        if(attribute.visibility == ClassPolicy::PUBLIC)
-            out << '+';
-        else if(attribute.visibility == ClassPolicy::PRIVATE)
-            out << '-';
-        else if(attribute.visibility == ClassPolicy::PROTECTED)
-            out << '#';
+        if(!parameter.type.get_is_const() && (parameter.type.get_is_pointer() || parameter.type.get_is_reference()))
+            out << "inout ";
 
-        out << ' ';
+        out << parameter.name << ": " << parameter.type;
 
-        out << attribute.name << ": " << attribute.type;
-
-        out << attribute.get_multiplicity();
-
-        if(attribute.has_index || attribute.is_pointer || (attribute.type.get_is_container() && attribute.type.get_is_ordered())) {
-            out << " ｛ordered｝";
-        }
+        // out << parameter.get_multiplicity();
 
         return out;
 
     }
 
 private:
-    void analyze_attribute() {
+    void analyze_parameter() {
 
         if(!data->name) return;
 

@@ -1,35 +1,35 @@
 /**
- * @file srcyuml_handler.hpp
+ * @file srcuml_handler.hpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
- * This file is part of srcYUML.
+ * This file is part of srcUML.
  *
- * srcYUML is free software: you can redistribute it and/or modify
+ * srcUML is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * srcYUML is distributed in the hope that it will be useful,
+ * srcUML is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_SRCYUML_HANDLER_HPP
-#define INCLUDED_SRCYUML_HANDLER_HPP
+#ifndef INCLUDED_SRCUML_HANDLER_HPP
+#define INCLUDED_SRCUML_HANDLER_HPP
 
 #include <srcSAXEventDispatchUtilities.hpp>
 #include <srcSAXController.hpp>
 
-#include <srcyuml_dispatcher.hpp>
+#include <srcuml_dispatcher.hpp>
 #include <ClassPolicySingleEvent.hpp>
 
-#include <srcyuml_class.hpp>
-#include <srcyuml_relationship.hpp>
+#include <srcuml_class.hpp>
+#include <srcuml_relationship.hpp>
 #include <dot_outputter.hpp>
 #include <yuml_outputter.hpp>
 
@@ -40,37 +40,37 @@
 #include <map>
 
 /**
- * srcyuml_handler
+ * srcuml_handler
  *
  * Base class that provides hooks for processing.
  */
-class srcyuml_handler : public srcSAXEventDispatch::PolicyListener {
+class srcuml_handler : public srcSAXEventDispatch::PolicyListener {
 
 private:
 
-    std::vector<std::shared_ptr<srcyuml_class>> classes;
+    std::vector<std::shared_ptr<srcuml_class>> classes;
 
 public:
 
-    srcyuml_handler(const std::string & input_str, std::ostream & out) {
+    srcuml_handler(const std::string & input_str, std::ostream & out) {
 
         srcSAXController controller(input_str);
         run(controller, out);
 
     }
 
-    srcyuml_handler(const char * input_filename, std::ostream & out) {
+    srcuml_handler(const char * input_filename, std::ostream & out) {
 
         srcSAXController controller(input_filename);
         run(controller, out);
 
     }
 
-    ~srcyuml_handler() {}
+    ~srcuml_handler() {}
 
     void run(srcSAXController & controller, std::ostream & out) {
 
-        srcyuml_dispatcher<ClassPolicy> dispatcher(this);
+        srcuml_dispatcher<ClassPolicy> dispatcher(this);
         controller.parse(&dispatcher);
         yuml_outputter outputter;
         outputter.output(out, classes);
@@ -83,7 +83,7 @@ public:
 
             ClassPolicy::ClassData * class_data = policy->Data<ClassPolicy::ClassData>();
             if(class_data && class_data->name)
-                classes.emplace_back(std::make_shared<srcyuml_class>(class_data));
+                classes.emplace_back(std::make_shared<srcuml_class>(class_data));
 
         }
 

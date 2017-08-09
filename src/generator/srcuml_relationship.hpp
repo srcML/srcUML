@@ -1,33 +1,33 @@
 /**
- * @file srcyuml_relationship.hpp
+ * @file srcuml_relationship.hpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
- * This file is part of srcYUML.
+ * This file is part of srcUML.
  *
- * srcYUML is free software: you can redistribute it and/or modify
+ * srcUML is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * srcYUML is distributed in the hope that it will be useful,
+ * srcUML is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_SRCYUML_RELATIONSHIP_HPP
-#define INCLUDED_SRCYUML_RELATIONSHIP_HPP
+#ifndef INCLUDED_SRCUML_RELATIONSHIP_HPP
+#define INCLUDED_SRCUML_RELATIONSHIP_HPP
 
-#include <srcyuml_class.hpp>
+#include <srcuml_class.hpp>
 
 enum relationship_type { DEPENDENCY, ASSOCIATION, BIDIRECTIONAL, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION };
-struct srcyuml_relationship {
+struct srcuml_relationship {
 
-    srcyuml_relationship(const std::string & source,
+    srcuml_relationship(const std::string & source,
                          const std::string & source_label,
                          const std::string & destination,
                          const std::string & destination_label,
@@ -38,10 +38,10 @@ struct srcyuml_relationship {
           destination_label(destination_label),
           type(type) {}
 
-    srcyuml_relationship(const std::string & source,
+    srcuml_relationship(const std::string & source,
                          const std::string & destination,
                          relationship_type type)
-        : srcyuml_relationship(source, "", destination, "", type) {}
+        : srcuml_relationship(source, "", destination, "", type) {}
 
     std::string source;
     std::string source_label;
@@ -72,25 +72,25 @@ struct srcyuml_relationship {
 
 };
 
-class srcyuml_relationships {
+class srcuml_relationships {
 
 private:
 
-    std::vector<std::shared_ptr<srcyuml_class>> & classes;
+    std::vector<std::shared_ptr<srcuml_class>> & classes;
 
-    std::map<std::string, std::shared_ptr<srcyuml_class>> class_map;
+    std::map<std::string, std::shared_ptr<srcuml_class>> class_map;
 
-    std::vector<srcyuml_relationship> relationships;
+    std::vector<srcuml_relationship> relationships;
 
 public:
-    srcyuml_relationships(std::vector<std::shared_ptr<srcyuml_class>> & classes)
+    srcuml_relationships(std::vector<std::shared_ptr<srcuml_class>> & classes)
         : classes(classes) {
             analyze_classes();
     }
 
-    ~srcyuml_relationships() {}
+    ~srcuml_relationships() {}
 
-    std::vector<srcyuml_relationship> get_relationships(){
+    std::vector<srcuml_relationship> get_relationships(){
         return relationships;
     }
 
@@ -105,24 +105,24 @@ private:
 
     }
 
-    void add_relationship(const srcyuml_relationship & relationship) {
+    void add_relationship(const srcuml_relationship & relationship) {
         relationships.emplace_back(relationship);
     }
 
     void generate_class_map() {
 
-        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
+        for(const std::shared_ptr<srcuml_class> & aclass : classes) {
             class_map[aclass->get_name()] = aclass;
         } 
 
     }
 
-    void resolve_inheritence_inner(std::shared_ptr<srcyuml_class> & aclass) {
+    void resolve_inheritence_inner(std::shared_ptr<srcuml_class> & aclass) {
 
         bool has_found_parents = false;
         for(const ClassPolicy::ParentData & parent_data : aclass->get_data().parents) {
 
-            std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator parent = class_map.find(parent_data.name);
+            std::map<std::string, std::shared_ptr<srcuml_class>>::iterator parent = class_map.find(parent_data.name);
 
             if(parent != class_map.end()) {
 
@@ -165,15 +165,15 @@ private:
 
     void resolve_inheritence() {
 
-        for(std::pair<const std::string, std::shared_ptr<srcyuml_class>> & map_pair : class_map) {
+        for(std::pair<const std::string, std::shared_ptr<srcuml_class>> & map_pair : class_map) {
             resolve_inheritence_inner(map_pair.second);
         }
 
-        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
+        for(const std::shared_ptr<srcuml_class> & aclass : classes) {
 
             for(const ClassPolicy::ParentData & parent_data : aclass->get_data().parents) {
 
-                std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator parent = class_map.find(parent_data.name);
+                std::map<std::string, std::shared_ptr<srcuml_class>>::iterator parent = class_map.find(parent_data.name);
 
                 /** @todo should I show these? */
                 if(parent == class_map.end()) continue;
@@ -183,7 +183,7 @@ private:
                     type = REALIZATION;
                 }
 
-                srcyuml_relationship relationship(parent->second->get_srcyuml_name(), aclass->get_srcyuml_name(), type);
+                srcuml_relationship relationship(parent->second->get_srcuml_name(), aclass->get_srcuml_name(), type);
                 add_relationship(relationship);
 
             }
@@ -194,13 +194,13 @@ private:
 
     void generate_attribute_relationships() {
 
-        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
+        for(const std::shared_ptr<srcuml_class> & aclass : classes) {
 
             /** @todo may want set so same type not added twice */
 
-            for(const srcyuml_attribute & attribute : aclass->get_attributes()) {
+            for(const srcuml_attribute & attribute : aclass->get_attributes()) {
 
-                std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator parent = class_map.find(attribute.get_type().get_type_name());
+                std::map<std::string, std::shared_ptr<srcuml_class>>::iterator parent = class_map.find(attribute.get_type().get_type_name());
                 if(parent == class_map.end()) continue;
 
                 relationship_type type = ASSOCIATION;
@@ -210,7 +210,7 @@ private:
                     type = AGGREGATION;
 
                 std::string relationship_label = attribute.get_name() + attribute.get_multiplicity();
-                srcyuml_relationship relationship(aclass->get_srcyuml_name(), "", parent->second->get_srcyuml_name(), relationship_label, type);
+                srcuml_relationship relationship(aclass->get_srcuml_name(), "", parent->second->get_srcuml_name(), relationship_label, type);
                 add_relationship(relationship);
 
             }
@@ -220,11 +220,11 @@ private:
     }
 
     void generate_dependency_relationships(){//dependency is local variables or parameters
-        for(const std::shared_ptr<srcyuml_class>& aclass : classes){
+        for(const std::shared_ptr<srcuml_class>& aclass : classes){
             //create set of already add dependecies so no repeats
             std::set<std::string> catalogued_dependencies;
             //obtain current class type
-            std::string current_class_type = aclass->get_srcyuml_name();
+            std::string current_class_type = aclass->get_srcuml_name();
             catalogued_dependencies.insert(current_class_type);
 
             for(const std::pair<std::string, const FunctionPolicy::FunctionData *> func : aclass->get_implemented_functions_map()){
@@ -233,55 +233,55 @@ private:
                     //iterate over parameters
                     //obtain param_type which is a nice string form of the type
                     //==================================================
-                    srcyuml_type* temp = new srcyuml_type(aparam->type);
+                    srcuml_type* temp = new srcuml_type(aparam->type);
                     std::string param_type = temp->get_type_name();
                     //==================================================
 
-                    std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(param_type);
+                    std::map<std::string, std::shared_ptr<srcuml_class>>::iterator related_class = class_map.find(param_type);
                     if(related_class == class_map.end()) continue;
-                    std::string working_dep = related_class->second->get_srcyuml_name();
+                    std::string working_dep = related_class->second->get_srcuml_name();
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
                     
                     //remove last condition to re-add multi dependencies
                     if(related_class == class_map.end() || current_class_type == working_dep )// || catalogued_class != catalogued_dependencies.end())
                         continue;
 
-                    srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
+                    srcuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
                     catalogued_dependencies.insert(working_dep); //add param_type is std::string 
                     add_relationship(relationship);                   
                 }
                 //decleration dependencies   
                 for(const DeclTypePolicy::DeclTypeData* arelation : func.second->relations){
-                    srcyuml_type* temp = new srcyuml_type(arelation->type);
+                    srcuml_type* temp = new srcuml_type(arelation->type);
                     std::string relate_type = temp->get_type_name();
 
-                    std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(relate_type);
+                    std::map<std::string, std::shared_ptr<srcuml_class>>::iterator related_class = class_map.find(relate_type);
                     if(related_class == class_map.end()) continue;
-                    std::string working_dep = related_class->second->get_srcyuml_name();//get heuristic version of dependency name
+                    std::string working_dep = related_class->second->get_srcuml_name();//get heuristic version of dependency name
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 
                     //remove last condition to re-add multi dependencies
                     if(related_class == class_map.end() || current_class_type == working_dep )// || catalogued_class != catalogued_dependencies.end())
                         continue;
 
-                    srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
+                    srcuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
                     catalogued_dependencies.insert(working_dep);
                     add_relationship(relationship);
                 }
                 //Return type dependency
-                srcyuml_type* temp = new srcyuml_type(func.second->returnType);
+                srcuml_type* temp = new srcuml_type(func.second->returnType);
                 std::string return_type = temp->get_type_name();
 
-                std::map<std::string, std::shared_ptr<srcyuml_class>>::iterator related_class = class_map.find(return_type);
+                std::map<std::string, std::shared_ptr<srcuml_class>>::iterator related_class = class_map.find(return_type);
                 if(related_class == class_map.end()) continue;
-                std::string working_dep = related_class->second->get_srcyuml_name();
+                std::string working_dep = related_class->second->get_srcuml_name();
                 std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 
                 //remove last condition to re-add multi dependencies
                 if(related_class == class_map.end() || current_class_type == working_dep )// || catalogued_class != catalogued_dependencies.end())
                     continue;
 
-                srcyuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
+                srcuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
                 catalogued_dependencies.insert(working_dep);
                 add_relationship(relationship);
             } 

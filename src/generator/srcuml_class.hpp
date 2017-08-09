@@ -1,37 +1,37 @@
 /**
- * @file srcyuml_class.hpp
+ * @file srcuml_class.hpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
- * This file is part of srcYUML.
+ * This file is part of srcUML.
  *
- * srcYUML is free software: you can redistribute it and/or modify
+ * srcUML is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * srcYUML is distributed in the hope that it will be useful,
+ * srcUML is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_SRCYUML_CLASS_HPP
-#define INCLUDED_SRCYUML_CLASS_HPP
+#ifndef INCLUDED_SRCUML_CLASS_HPP
+#define INCLUDED_SRCUML_CLASS_HPP
 
 #include <ClassPolicySingleEvent.hpp>
 
-#include <srcyuml_attribute.hpp>
-#include <srcyuml_operation.hpp>
+#include <srcuml_attribute.hpp>
+#include <srcuml_operation.hpp>
 #include <static_outputter.hpp>
 
 #include <map>
 #include <set>
 
-class srcyuml_class {
+class srcuml_class {
 
 private:
     const ClassPolicy::ClassData * data;
@@ -61,10 +61,10 @@ private:
     std::map<std::string, const FunctionPolicy::FunctionData *> implemented_functions_map;
     std::map<std::string, const FunctionPolicy::FunctionData *> pure_virtual_functions_map;
 
-    std::vector<srcyuml_attribute> attributes;
+    std::vector<srcuml_attribute> attributes;
 
 public:
-    srcyuml_class(const ClassPolicy::ClassData * data)
+    srcuml_class(const ClassPolicy::ClassData * data)
         : data(data),
           has_field(false),
           has_constructor(false),
@@ -86,7 +86,7 @@ public:
 
     }
 
-    ~srcyuml_class() { if(data) delete data; }
+    ~srcuml_class() { if(data) delete data; }
 
     const ClassPolicy::ClassData & get_data() const {
 
@@ -101,7 +101,7 @@ public:
 
     }
 
-    std::string get_srcyuml_name() const {
+    std::string get_srcuml_name() const {
 
         if(is_interface)
             return "«interface»;" + name;
@@ -157,7 +157,7 @@ public:
         return pure_virtual_functions_map;
     }
 
-    const std::vector<srcyuml_attribute> & get_attributes() const {
+    const std::vector<srcuml_attribute> & get_attributes() const {
         return attributes;
     } 
 

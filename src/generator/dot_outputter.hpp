@@ -1,22 +1,22 @@
 /**
- * @file srcyuml_relationship.hpp
+ * @file dot_outputter.hpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
- * This file is part of srcYUML.
+ * This file is part of srcUML.
  *
- * srcYUML is free software: you can redistribute it and/or modify
+ * srcUML is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * srcYUML is distributed in the hope that it will be useful,
+ * srcUML is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with srcYUML.  If not, see <http://www.gnu.org/licenses/>.
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef INCLUDED_DOT_OUTPUTTER_HPP
@@ -30,9 +30,9 @@ public:
 
 	dot_outputter(){};
 
-	bool output(std::ostream & out, std::vector<std::shared_ptr<srcyuml_class>> & classes){
+	bool output(std::ostream & out, std::vector<std::shared_ptr<srcuml_class>> & classes){
 
-		srcyuml_relationships relationships = analyze_relationships(classes);
+		srcuml_relationships relationships = analyze_relationships(classes);
 
 		out << "digraph hierarchy {\nsize=\"5, 5\"\n";
         out << "node[shape=record,style=filled,fillcolor=gray95]\n";
@@ -44,15 +44,15 @@ public:
 
         //Classes
 
-        for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
-        	class_number_map.insert(std::pair<std::string, int>(aclass->get_srcyuml_name(), class_num));
+        for(const std::shared_ptr<srcuml_class> & aclass : classes) {
+        	class_number_map.insert(std::pair<std::string, int>(aclass->get_srcuml_name(), class_num));
 
     		out << class_num << "[label = \"{ ";
-    		out << aclass->get_srcyuml_name();
+    		out << aclass->get_srcuml_name();
     		if(aclass->get_has_field() || aclass->get_has_method())//private members
             	out << '|';
 
-        	for(const srcyuml_attribute & attribute : aclass->get_attributes()) {//private members
+        	for(const srcuml_attribute & attribute : aclass->get_attributes()) {//private members
             	if(attribute.get_is_static()) {
                 	static_outputter::output(out, attribute);
             	} else {
@@ -66,7 +66,7 @@ public:
 
         	for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
             	for(const FunctionPolicy::FunctionData * function : aclass->get_data().methods[access]) { //private members
-                	srcyuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
+                	srcuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
                 	if(op.get_stereotypes().count("set") > 0){continue;}
                 	if(op.get_stereotypes().count("get") > 0){continue;}
                 	if(function->isStatic) {
@@ -84,7 +84,7 @@ public:
 
         //Relations
 
-        for(const srcyuml_relationship relationship : relationships.get_relationships()) {
+        for(const srcuml_relationship relationship : relationships.get_relationships()) {
             
         	const std::map<std::string, int>::const_iterator current_class = class_number_map.find(relationship.get_source());
         	out << current_class->second << "->";
