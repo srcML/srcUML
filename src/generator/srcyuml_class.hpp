@@ -141,6 +141,14 @@ public:
         this->is_finalized = is_finalized;
     }
 
+    bool get_has_method() const {
+    	return has_method;
+    }
+
+    bool get_has_field() const {
+    	return has_field;
+    }
+
     const std::map<std::string, const FunctionPolicy::FunctionData *> & get_implemented_functions_map() const {
         return implemented_functions_map;
     }
@@ -151,90 +159,7 @@ public:
 
     const std::vector<srcyuml_attribute> & get_attributes() const {
         return attributes;
-    }
-
-    friend bool output_dot_aclass(std::ostream & out, const srcyuml_class & aclass, std::map<std::string, int> & class_number_map, int class_num){
-
-    	//insert mapping to class
-    	class_number_map.insert(std::pair<std::string, int>(aclass.get_srcyuml_name(), class_num));
-
-    	out << class_num << "[label = \"{ ";
-    	out << aclass.get_srcyuml_name();
-    	if(aclass.has_field || aclass.has_method)
-            out << '|';
-
-        for(const srcyuml_attribute & attribute : aclass.attributes) {
-            if(attribute.get_is_static()) {
-                static_outputter::output(out, attribute);
-            } else {
-                out << attribute;
-            }
-            out << "\\n";
-        }
-
-        if(aclass.has_method)
-            out << '|';
-
-        for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
-            for(const FunctionPolicy::FunctionData * function : aclass.data->methods[access]) {
-                srcyuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
-                if(op.get_stereotypes().count("set") > 0){continue;}
-                if(op.get_stereotypes().count("get") > 0){continue;}
-                if(function->isStatic) {
-                    static_outputter::output(out, op);
-                } else {
-                    out << op;
-                }
-                out << "\\n";
-            }
-        }
-
-        out << "}\"]\n";
-
-    	return true;
-
-    }
-
-    friend std::ostream & operator<<(std::ostream & out, const srcyuml_class & aclass) {
-
-        out << '[';
-
-        out << aclass.get_srcyuml_name();
-
-        if(aclass.has_field || aclass.has_method)
-            out << '|';
-
-        for(const srcyuml_attribute & attribute : aclass.attributes) {
-            if(attribute.get_is_static()) {
-                static_outputter::output(out, attribute);
-            } else {
-                out << attribute;
-            }
-            out << ';';
-        }
-
-        if(aclass.has_method)
-            out << '|';
-
-        for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
-            for(const FunctionPolicy::FunctionData * function : aclass.data->methods[access]) {
-                srcyuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
-                if(op.get_stereotypes().count("set") > 0){continue;}
-                if(op.get_stereotypes().count("get") > 0){continue;}
-                if(function->isStatic) {
-                    static_outputter::output(out, op);
-                } else {
-                    out << op;
-                }
-                out << ';';
-            }
-        }
-
-        out << "]\n";
-
-        return out;
-
-    }
+    } 
 
 private:
 

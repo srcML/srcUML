@@ -31,6 +31,7 @@
 #include <srcyuml_class.hpp>
 #include <srcyuml_relationship.hpp>
 #include <dot_outputter.hpp>
+#include <yuml_outputter.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -71,7 +72,7 @@ public:
 
         srcyuml_dispatcher<ClassPolicy> dispatcher(this);
         controller.parse(&dispatcher);
-        dot_outputter outputter;
+        yuml_outputter outputter;
         outputter.output(out, classes);
 
     }

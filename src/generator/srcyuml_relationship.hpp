@@ -50,94 +50,24 @@ struct srcyuml_relationship {
 
     relationship_type type;
 
-    friend bool output_relation(std::ostream & out, const srcyuml_relationship & relationship, const std::map<std::string, int> & class_number_map) {
-
-        const std::map<std::string, int>::const_iterator current_class = class_number_map.find(relationship.source);
-        out << current_class->second << "->";
-        const std::map<std::string, int>::const_iterator second_class = class_number_map.find(relationship.destination);
-        out << second_class->second;
-
-        switch(relationship.type) {
-
-            case DEPENDENCY: {
-                out << "[arrowhead=\"vee\", arrowtail=\"none\", style=\"dashed\"]\n";
-                break;
-            }
-            case ASSOCIATION:
-            case BIDIRECTIONAL: {
-                out << "[arrowhead=\"none\"]\n"; //currently same as generalization
-                break;
-            }
-            case AGGREGATION: {
-                out << "[arrowhead=\"none\", arrowtail=\"odiamond\"]\n";
-                break;
-            }
-            case COMPOSITION: {
-                out << "[arrowhead=\"vee\", arrowtail=\"diamond\"]\n";
-                break;
-            }
-            case GENERALIZATION: {
-                out << "[arrowhead=\"none\"]\n";
-                break;
-            }
-            case REALIZATION: {
-                out << "[arrowhead=\"none\", style=\"dashed\"]\n";
-                break;
-            }
-
-        }
-
-        return true;
+    std::string get_source() const{
+        return source;
     }
 
-    friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationship & relationship) {
+    std::string get_destination() const{
+        return destination;
+    }
 
-        out << '[' << relationship.source << ']';
+    std::string get_source_label() const{
+        return source_label;
+    }
 
-        if(relationship.type == BIDIRECTIONAL)
-            out << '<';
+    std::string get_destination_label() const{
+        return destination_label;
+    }
 
-        out << relationship.source_label;
-
-        switch(relationship.type) {
-
-            case DEPENDENCY: {
-                out << "-.-";
-                break;
-            }
-            case ASSOCIATION:
-            case BIDIRECTIONAL: {
-                out << '-';
-                break;
-            }
-            case AGGREGATION: {
-                out << "<>-";
-                break;
-            }
-            case COMPOSITION: {
-                out << "++-";
-                break;
-            }
-            case GENERALIZATION: {
-                out << "^-";
-                break;
-            }
-            case REALIZATION: {
-                out << "^-.-";
-                break;
-            }
-
-        }
-
-        out << relationship.destination_label;
-
-        if(relationship.type != GENERALIZATION && relationship.type != REALIZATION)
-            out << '>';
-
-        out << '[' << relationship.destination << "]\n";
-
-        return out;
-
+    relationship_type get_type(){
+        return type;
     }
 
 };
@@ -160,24 +90,8 @@ public:
 
     ~srcyuml_relationships() {}
 
-    friend bool output_dot_relations(std::ostream & out, const srcyuml_relationships & relationships, const std::map<std::string, int> & class_number_map) {
-
-        for(const srcyuml_relationship relationship : relationships.relationships) {
-            output_relation(out, relationship, class_number_map);
-        }
-
-        return true;
-
-    }
-
-    friend std::ostream & operator<<(std::ostream & out, const srcyuml_relationships & relationships) {
-
-        for(const srcyuml_relationship relationship : relationships.relationships) {
-            out << relationship;
-        }
-
-        return out;
-
+    std::vector<srcyuml_relationship> get_relationships(){
+        return relationships;
     }
 
 private:

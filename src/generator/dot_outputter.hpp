@@ -32,7 +32,7 @@ public:
 
 	bool output(std::ostream & out, std::vector<std::shared_ptr<srcyuml_class>> & classes){
 
-		srcyuml_relationships relations = analyze_relationships(classes);
+		srcyuml_relationships relationships = analyze_relationships(classes);
 
 		out << "digraph hierarchy {\nsize=\"5, 5\"\n";
         out << "node[shape=record,style=filled,fillcolor=gray95]\n";
@@ -42,15 +42,17 @@ public:
 
         int class_num = 0;
 
+        //Classes
+
         for(const std::shared_ptr<srcyuml_class> & aclass : classes) {
         	class_number_map.insert(std::pair<std::string, int>(aclass->get_srcyuml_name(), class_num));
 
     		out << class_num << "[label = \"{ ";
     		out << aclass->get_srcyuml_name();
-    		if(aclass->has_field || aclass->has_method)//private members
+    		if(aclass->get_has_field() || aclass->get_has_method())//private members
             	out << '|';
 
-        	for(const srcyuml_attribute & attribute : aclass->attributes) {//private members
+        	for(const srcyuml_attribute & attribute : aclass->get_attributes()) {//private members
             	if(attribute.get_is_static()) {
                 	static_outputter::output(out, attribute);
             	} else {
@@ -59,11 +61,11 @@ public:
             	out << "\\n";
         	}
 
-        	if(aclass->has_method)//private members
+        	if(aclass->get_has_method())//private members
             	out << '|';
 
         	for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
-            	for(const FunctionPolicy::FunctionData * function : aclass->data->methods[access]) { //private members
+            	for(const FunctionPolicy::FunctionData * function : aclass->get_data().methods[access]) { //private members
                 	srcyuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
                 	if(op.get_stereotypes().count("set") > 0){continue;}
                 	if(op.get_stereotypes().count("get") > 0){continue;}
@@ -77,7 +79,48 @@ public:
         	}
 
         	out << "}\"]\n";
-            	class_num++;
+            class_num++;
+        }
+
+        //Relations
+
+        for(const srcyuml_relationship relationship : relationships.get_relationships()) {
+            
+        	const std::map<std::string, int>::const_iterator current_class = class_number_map.find(relationship.get_source());
+        	out << current_class->second << "->";
+        	const std::map<std::string, int>::const_iterator second_class = class_number_map.find(relationship.get_destination());
+        	out << second_class->second;
+
+        	switch(relationship.type) {
+
+            	case DEPENDENCY: {
+                	out << "[arrowhead=\"vee\", arrowtail=\"none\", style=\"dashed\"]\n";
+                	break;
+            	}
+            	case ASSOCIATION:
+            	case BIDIRECTIONAL: {
+                	out << "[arrowhead=\"none\"]\n"; //currently same as generalization
+                	break;
+	            }
+    	        case AGGREGATION: {
+        	        out << "[arrowhead=\"none\", arrowtail=\"odiamond\"]\n";
+            	    break;
+            	}
+            	case COMPOSITION: {
+                	out << "[arrowhead=\"vee\", arrowtail=\"diamond\"]\n";
+                	break;
+            	}
+            	case GENERALIZATION: {
+                	out << "[arrowhead=\"none\"]\n";
+                	break;
+            	}
+            	case REALIZATION: {
+                	out << "[arrowhead=\"none\", style=\"dashed\"]\n";
+                	break;
+            	}
+
+        	}
+
         }
 
 	}
