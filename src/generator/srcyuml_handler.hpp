@@ -30,7 +30,7 @@
 
 #include <srcyuml_class.hpp>
 #include <srcyuml_relationship.hpp>
-#include <srcyuml_output.hpp>
+#include <dot_outputter.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -53,27 +53,26 @@ public:
 
     srcyuml_handler(const std::string & input_str, std::ostream & out) {
 
-        srcyuml_output outputter(out);
         srcSAXController controller(input_str);
-        run(controller, outputter);
+        run(controller, out);
 
     }
 
     srcyuml_handler(const char * input_filename, std::ostream & out) {
 
-        srcyuml_output outputter(out);
         srcSAXController controller(input_filename);
-        run(controller, outputter);
+        run(controller, out);
 
     }
 
     ~srcyuml_handler() {}
 
-    void run(srcSAXController & controller, srcyuml_output & outputter) {
+    void run(srcSAXController & controller, std::ostream & out) {
 
         srcyuml_dispatcher<ClassPolicy> dispatcher(this);
         controller.parse(&dispatcher);
-        outputter.output(classes); // outputs using the outputters function
+        dot_outputter outputter;
+        outputter.output(out, classes);
 
     }
 
