@@ -22,9 +22,9 @@
 #ifndef INCLUDED_YUML_OUTPUTTER_HPP
 #define INCLUDED_YUML_OUTPUTTER_HPP
 
-#include <abstract_srcuml_outputter.hpp>
+#include <srcuml_outputter.hpp>
 
-class yuml_outputter : abstract_srcuml_outputter {
+class yuml_outputter : srcuml_outputter {
 
 public:
 

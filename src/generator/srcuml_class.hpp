@@ -104,14 +104,14 @@ public:
     std::string get_srcuml_name() const {
 
         if(is_interface)
-            return "«interface»;" + name;
+            return "«interface»\\n" + name;
 
         // not sure if should be gulliments or {}
         if(is_abstract)
-            return " ｛abstract｝;" + name;
+            return " ｛abstract｝\\n" + name;
 
         if(is_datatype)
-            return "«datatype»;" + name;
+            return "«datatype»\\n" + name;
 
         return name;
 

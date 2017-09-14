@@ -22,9 +22,9 @@
 #ifndef INCLUDED_DOT_OUTPUTTER_HPP
 #define INCLUDED_DOT_OUTPUTTER_HPP
 
-#include <abstract_srcuml_outputter.hpp>
+#include <srcuml_outputter.hpp>
 
-class dot_outputter : abstract_srcuml_outputter {
+class dot_outputter : srcuml_outputter {
 
 public:
 
@@ -34,20 +34,24 @@ public:
 
 		srcuml_relationships relationships = analyze_relationships(classes);
 
-		out << "digraph hierarchy {\nsize=\"5, 5\"\n";
+		out << "digraph hierarchy {\n";//size=\"5, 5\"\n";
         out << "node[shape=record,style=filled,fillcolor=gray95]\n";
         out << "edge[dir=\"both\", arrowtail=\"empty\", arrowhead=\"empty\", labeldistance=\"2.0\"]\n";
 
-        std::map<std::string, int> class_number_map;
+        std::map<std::string, std::string> class_number_map;
 
         int class_num = 0;
+        std::string class_word = "class";
 
         //Classes
 
         for(const std::shared_ptr<srcuml_class> & aclass : classes) {
-        	class_number_map.insert(std::pair<std::string, int>(aclass->get_srcuml_name(), class_num));
 
-    		out << class_num << "[label = \"{ ";
+            std::string class_wn = class_word + std::to_string(class_num);
+
+        	class_number_map.insert(std::pair<std::string, std::string>(aclass->get_srcuml_name(), class_wn));
+
+    		out << class_wn << "[label = \"{ ";
     		out << aclass->get_srcuml_name();
     		if(aclass->get_has_field() || aclass->get_has_method())//private members
             	out << '|';
@@ -86,9 +90,9 @@ public:
 
         for(const srcuml_relationship relationship : relationships.get_relationships()) {
             
-        	const std::map<std::string, int>::const_iterator current_class = class_number_map.find(relationship.get_source());
+        	const std::map<std::string, std::string>::const_iterator current_class = class_number_map.find(relationship.get_source());
         	out << current_class->second << "->";
-        	const std::map<std::string, int>::const_iterator second_class = class_number_map.find(relationship.get_destination());
+        	const std::map<std::string, std::string>::const_iterator second_class = class_number_map.find(relationship.get_destination());
         	out << second_class->second;
 
         	switch(relationship.type) {
@@ -122,6 +126,8 @@ public:
         	}
 
         }
+
+        out << '}' << '\n';
 
 	}
 

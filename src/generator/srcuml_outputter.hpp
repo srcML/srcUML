@@ -1,5 +1,5 @@
 /**
- * @file abstract_srcuml_outputter.hpp
+ * @file srcuml_outputter.hpp
  *
  * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
  *
@@ -19,14 +19,14 @@
  * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDED_ABSTRACT_SRCUML_OUTPUTTER_HPP
-#define INCLUDED_ABSTRACT_SRCUML_OUTPUTTER_HPP
+#ifndef INCLUDED_SRCUML_OUTPUTTER_HPP
+#define INCLUDED_SRCUML_OUTPUTTER_HPP
 
 #include <srcuml_class.hpp>
 #include <srcuml_relationship.hpp>
 
 
-class abstract_srcuml_outputter {
+class srcuml_outputter {
 
 public:
 
