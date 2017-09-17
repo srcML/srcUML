@@ -63,6 +63,15 @@ public:
         return name;
     }
 
+    std::string get_clean_name() const {
+
+        std::string clean_name = name;
+        if(clean_name.size() >= 3 && clean_name[0] == 'm' && clean_name[1] == '_')
+            clean_name.erase(0, 2);
+
+        return clean_name;        
+    }
+
     const srcuml_type & get_type() const {
         return type;
     }
@@ -112,7 +121,7 @@ public:
 
         out << ' ';
 
-        out << attribute.name << ": " << attribute.type;
+        out << attribute.get_clean_name() << ": " << attribute.type;
 
         out << attribute.get_multiplicity();
 
