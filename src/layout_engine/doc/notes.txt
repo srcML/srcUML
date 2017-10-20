@@ -1,0 +1,24 @@
+OGDF
+	SVG Output Engine
+
+		1) ogdf::GraphIO::drawSVG() // Located GraphIO.h Line:2858-2870
+
+		2) " " Implementation found in GraphIO.cpp Line:1191-1213
+
+		3) This is translated into the creation of a SvgPrinter and calling draw.
+		
+			bool GraphIO::drawSVG(const GraphAttributes &attr, ostream &os, const SVGSettings &settings)
+			{
+				SvgPrinter printer(attr, settings);
+				return printer.draw(os);
+			}
+
+			bool GraphIO::drawSVG(const ClusterGraphAttributes &attr, ostream &os, const SVGSettings &settings)
+			{
+				SvgPrinter printer(attr, settings);
+				return printer.draw(os);
+			}
+
+		4) ogdf/src/ogdf/fileformats/SvgPrinter.cpp
+
+		5) GraphIO::SvgSettings Line:67 - 139 Implementaion in .h
