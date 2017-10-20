@@ -1,0 +1,5 @@
+digraph hierarchy {
+node[shape=record,style=filled,fillcolor=gray95]
+edge[dir="both", arrowtail="empty", arrowhead="empty", labeldistance="2.0"]
+class0[label = "{ Ship|- crew: number\n- sails: number\n- sunk: bool\n}"]
+}
