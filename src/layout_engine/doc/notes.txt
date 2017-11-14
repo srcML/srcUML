@@ -22,3 +22,22 @@ OGDF
 		4) ogdf/src/ogdf/fileformats/SvgPrinter.cpp
 
 		5) GraphIO::SvgSettings Line:67 - 139 Implementaion in .h
+
+
+		------GraphAttr-------------	= Has detailed info on nodes/edges
+		|	    |                  |      /\----      Inherits
+		|	  ClusterGraphAttr     |	= Has detailed info on clusters <- Main Objected
+		|	    |                  |	  ----\/      Has associated
+		|	  ClusterGraph         |	= Has base info on clusters
+		|	    |                  |	  	   ----\/ Has associated
+		|	  Graph                |	= has nodes/edges
+		|	  /   \                |
+		---nodes  edges-------------
+
+		1) Create Graph
+		2) Create Clustter and Associate
+		3) Create ClustterAttr and Associate
+		4) Get Info Out of DOT 
+		5) Define sizeof nodes/clusters
+		6) SvgPrinter
+
