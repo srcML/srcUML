@@ -68,19 +68,19 @@ int main(int argc, char ** argv) {
 
 
 	//Output_Call====================================================
-	//Output file
 	std::ostream * out;
 	if(argc > 2){
 		out = new std::ofstream(argv[2]);
-		std::cout << "Printing to: " << argv[2] << std::endl;
 	}else{
 		out = &std::cout;
 	}
 
-	//call draw function
 	if(!ogdf::GraphIO::drawSVG(*cluster_graph_attr, *out, *svg_settings)){
 		std::cout << "Error Write" << std::endl;
 	}
+
+	if(out != &std::cout)
+		{delete out;}
 	//===============================================================
 
 
