@@ -9,6 +9,8 @@ To Compile:
 #include <ogdf/basic/Graph_d.h>
 #include <ogdf/basic/GraphAttributes.h>
 #include <ogdf/basic/graph_generators.h>
+#include <ogdf/basic/HyperGraph.h>
+#include <ogdf/basic/EList.h>
 //===================================================================
 
 //Cluster_Graph_Include==============================================
@@ -55,7 +57,25 @@ int main(int argc, char ** argv) {
 	if(!ogdf::GraphIO::readDOT(*cluster_graph_attr, *cluster_graph, *base_graph, dot_file)){
 		std::cout << "Error Read" << std::endl;
 	}
-	//===============================================================
+
+
+	//Graph_Edits====================================================
+
+	ogdf::List<ogdf::node> nodes;
+	ogdf::ListIterator<ogdf::node> litr;
+
+	base_graph->allNodes(nodes);
+	litr = nodes.begin();
+
+	while(litr != nodes.end()){//HAHAHAHAHAHAH
+		double &n_width = cluster_graph_attr->width(*litr);
+		n_width = 80;
+
+		double &n_height = cluster_graph_attr->height(*litr);
+		n_height = 300;
+
+		++litr;
+	}	
 
 
 	//Layout_Call====================================================
@@ -64,7 +84,6 @@ int main(int argc, char ** argv) {
 
 	//run on graph
 	circle_layout->call(*cluster_graph_attr);
-	//===============================================================
 
 
 	//Output_Call====================================================
