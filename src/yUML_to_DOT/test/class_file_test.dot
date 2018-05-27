@@ -1,0 +1,18 @@
+digraph hierarchy {
+node[shape=record,style=filled,fillcolor=gray95]
+edge[dir="both", arrowtail="empty", arrowhead="empty", labeldistance="2.0"]
+class0[label = "{ «datatype»\nString}"]
+class1[label = "{ «interface»\nWindow||+ draw()\n+ minimize()\n+ maximize()\n}"]
+class2[label = "{  ｛abstract｝\nMyOperatingSystemWindow|- name: String\n- ID: WindowID\n}"]
+class3[label = "{  ｛abstract｝\nMyApplicationWindow|- myApplicationContent: Content\n}"]
+class4[label = "{ «datatype»\nWindowID|- cool: String\n}"]
+class5[label = "{ «datatype»\nContent|- currentContent: String\n|+ setContent(inout newContent: String)\n+ displayContent()\n}"]
+class1->class2[arrowhead="none"]
+class2->class3[arrowhead="none"]
+class2->class0[arrowhead="vee", arrowtail="diamond"]
+class2->class4[arrowhead="vee", arrowtail="diamond"]
+class3->class5[arrowhead="vee", arrowtail="diamond"]
+class4->class0[arrowhead="vee", arrowtail="diamond"]
+class5->class0[arrowhead="vee", arrowtail="diamond"]
+class5->class0[arrowhead="vee", arrowtail="none", style="dashed"]
+}
