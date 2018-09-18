@@ -46,4 +46,4 @@ add_subdirectory(srcSAX/src)
 add_subdirectory(srcSAXEventDispatch/src)
 add_subdirectory(src)
 
-add_subdirectory(test)
+# add_subdirectory(test)
