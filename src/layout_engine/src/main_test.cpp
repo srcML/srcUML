@@ -2,9 +2,9 @@
 Author: P.J. Leyden
 File: main_test.cpp
 To Compile:
-	clang++ main_test.cpp -D NDEBUG -std=c++11 -oogdf_test -Xlinker ../../../../ogdf/libOGDF.a
+	clang++ main_test.cpp -D NDEBUG -std=c++11 -oogdf_test -Xlinker ../../../../builds/ogdf_build/libOGDF.a -Xlinker ../../../../builds/ogdf_build/libCOIN.a -pthread
 */
-//Basic_Graph_Include================================================
+//Basic_Graph_Include================================================	
 #include <ogdf/basic/Graph.h>
 #include <ogdf/basic/Graph_d.h>
 #include <ogdf/basic/GraphAttributes.h>
@@ -26,27 +26,43 @@ To Compile:
 #include <ogdf/module/UMLLayoutModule.h>
 //===================================================================
 
+//Layered============================================================
+#include <ogdf/layered/SugiyamaLayout.h>
+#include <ogdf/layered/OptimalRanking.h>
+#include <ogdf/layered/MedianHeuristic.h>
+#include <ogdf/layered/OptimalHierarchyLayout.h>
+//===================================================================
+
 //Basic_Include======================================================
 #include <string>
 #include <iostream>
 //===================================================================
 
+using namespace ogdf;
 
 int main(int argc, char ** argv) {
 
 
 	//Create Objects=================================================
 	//Create graph pointer
-	ogdf::Graph * base_graph = new ogdf::Graph();
+	Graph * base_graph = new ogdf::Graph();
+	GraphAttributes GA(*base_graph,
+		GraphAttributes::nodeGraphics |
+		GraphAttributes::edgeGraphics |
+		GraphAttributes::nodeLabel |
+		GraphAttributes::edgeStyle |
+		GraphAttributes::nodeStyle |
+		GraphAttributes::nodeTemplate);
+
 
 	//created cluster graph and asscoiate base_graph with it. 
-	ogdf::ClusterGraph * cluster_graph = new ogdf::ClusterGraph(*base_graph);
+	ClusterGraph * cluster_graph = new ogdf::ClusterGraph(*base_graph);
 
 	//create graph and attributes holder. Main Object
-	ogdf::ClusterGraphAttributes * cluster_graph_attr = new ogdf::ClusterGraphAttributes(*cluster_graph, 0x1FFFF);
+	ClusterGraphAttributes * cluster_graph_attr = new ogdf::ClusterGraphAttributes(*cluster_graph, 0x1FFFF);
 
 	//create svg settings object
-	ogdf::GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
+	GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 
 	//get dot file
 	std::ifstream dot_file(argv[1]);
@@ -60,10 +76,18 @@ int main(int argc, char ** argv) {
 
 	//Layout_Call====================================================
 	//create a circular layout objects
-	ogdf::CircularLayout * circle_layout = new ogdf::CircularLayout();
+	SugiyamaLayout * SL;
+	SL->setRanking(new OptimalRanking);
+	SL->setCrossMin(new MedianHeuristic);
+
+	OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
+	ohl->layerDistance(30.0);
+	ohl->nodeDistance(25.0);
+	ohl->weightBalancing(0.8);
+	SL->setLayout(ohl);
 
 	//run on graph
-	circle_layout->call(*cluster_graph_attr);
+	SL->call(*cluster_graph_attr);
 	//===============================================================
 
 
