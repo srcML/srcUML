@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<unit xmlns="http://www.srcML.org/srcML/src" xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="cft2.hpp"><class>class <name>String</name> <block>{<private type="default">
-</private><public>public:
-    <constructor><name>String</name><parameter_list>()</parameter_list><block>{}</block></constructor>
-    <constructor><name>String</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list><block>{}</block></constructor>
-    <destructor><name>~<name>String</name></name><parameter_list>()</parameter_list><block>{}</block></destructor>
-    
-    <function type="operator"><type><name>String</name><modifier>&amp;</modifier></type> <name>operator<name>=</name></name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>String</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list><block>{}</block></function>
-</public>}</block>;</class></unit>

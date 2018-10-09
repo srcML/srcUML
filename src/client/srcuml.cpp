@@ -29,9 +29,15 @@
   */
 
 #include <srcuml_handler.hpp>
+#include <boost/program_options.hpp>
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+
+using namespace boost;
+using namespace std;
+namespace po = boost::program_options;
 
 /**
  * main
@@ -42,7 +48,46 @@
  */
 int main(int argc, char * argv[]) {
 
-  if(argc < 2) {
+    ostream * out = &cout;
+
+    try {
+
+        po::options_description desc("Allowed options");
+        desc.add_options()
+            ("help", "produce help message")
+            ("output,o", po::value<string>(), "set output file")
+            ("input", po::value<string>(), "input file")
+        ;
+
+        po::positional_options_description p;
+        p.add("input", -1);
+
+        po::variables_map vm;        
+        po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+        po::notify(vm);    
+
+        if (vm.count("help")) {
+            cout << desc << "\n";
+            return 0;
+        }
+
+        if (vm.count("output")) {
+            string temp = vm["output"].as<string>();
+            cout << "Ouput file is: " << vm["output"].as<string>() << ".\n";
+            out = new std::ofstream(vm["output"].as<string>());
+        }else {
+            cout << "Ouput File was not set.\n";
+        }
+    }
+    catch(std::exception& e) {
+        cerr << "error: " << e.what() << "\n";
+        return 1;
+    }
+    catch(...) {
+        cerr << "Exception of unknown type!\n";
+    }
+
+  /*if(argc < 2) {
 
     std::cerr << "Usage: srcuml input_file.xml [output_file]\n";
     exit(1);
@@ -50,14 +95,15 @@ int main(int argc, char * argv[]) {
   }
 
   std::ostream * out = &std::cout;
+  */
   
-  if(argc > 2)
+  /*if(argc > 2)
     out = new std::ofstream(argv[2]);
 
   srcuml_handler handler(argv[1], *out);
 
-  if(argc > 2)
-    delete out;
+  if(argc > 2)*/
+    //delete out;
 
-  return 0;
+    return 0;
 }
