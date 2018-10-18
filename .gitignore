@@ -13,3 +13,6 @@ research/*
 *.png
 *.jpg
 *.pdf
+*.sublime-project
+*.sublime-workspace
+

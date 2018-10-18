@@ -72,7 +72,7 @@ public:
 
         srcuml_dispatcher<ClassPolicy> dispatcher(this);
         controller.parse(&dispatcher);
-        dot_outputter outputter;
+        yuml_outputter outputter;
         outputter.output(out, classes);
 
     }

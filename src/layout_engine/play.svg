@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full" viewBox="28.5 28.5 293 873">
+	<g>
+		<g>
+			<path fill="none" d=" M175,90 L175,240" stroke="#000000" stroke-width="1.000000px" />
+		</g>
+		<g>
+			<path fill="none" d=" M175,240 L90,390" stroke="#000000" stroke-width="1.000000px" />
+		</g>
+		<g>
+			<path fill="none" d=" M175,240 L175,390 M175,390 L175,540 M175,540 L175,840" stroke="#000000" stroke-width="1.000000px" />
+		</g>
+		<g>
+			<path fill="none" d=" M175,240 L260,390 M260,390 L260,690" stroke="#000000" stroke-width="1.000000px" />
+		</g>
+		<g>
+			<path fill="none" d=" M90,390 L90,540" stroke="#000000" stroke-width="1.000000px" />
+		</g>
+		<g>
+			<path fill="none" d=" M260,690 L175,840" stroke="#000000" stroke-width="1.000000px" />
+		</g>
+		<g>
+			<path fill="none" d=" M90,540 L175,840" stroke="#000000" stroke-width="1.000000px" />
+		</g>
+		<g>
+			<path fill="none" d=" M90,540 L175,840" stroke="#000000" stroke-width="1.000000px" />
+		</g>
+	</g>
+	<g>
+		<rect x="115" y="780" width="120" height="120" fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" />
+		<text x="175" y="780" text-anchor="middle" dominant-baseline="hanging" font-family="Arial" font-size="10" fill="#000000">
+			<tspan dy="1.1em" x="175">«datatype»</tspan>
+		</text>
+	</g>
+	<g>
+		<rect x="115" y="30" width="120" height="120" fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" />
+		<text x="175" y="30" text-anchor="middle" dominant-baseline="hanging" font-family="Arial" font-size="10" fill="#000000">
+			<tspan dy="1.1em" x="175">«interface»</tspan>
+			<tspan dy="1.1em" x="175">Window</tspan>
+			<tspan dy="1.1em" x="175">+ draw()\n+ minimize()\n+ maximize()\n}</tspan>
+			<tspan dy="1.1em" x="175">+ draw()</tspan>
+			<tspan dy="1.1em" x="175">+ minimize()</tspan>
+			<tspan dy="1.1em" x="175">+ maximize()</tspan>
+		</text>
+	</g>
+	<g>
+		<rect x="115" y="180" width="120" height="120" fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" />
+		<text x="175" y="180" text-anchor="middle" dominant-baseline="hanging" font-family="Arial" font-size="10" fill="#000000">
+			<tspan dy="1.1em" x="175"> ｛abstract｝</tspan>
+			<tspan dy="1.1em" x="175">MyOperatingSystemWindow</tspan>
+			<tspan dy="1.1em" x="175">- name: String</tspan>
+			<tspan dy="1.1em" x="175">- ID: WindowID</tspan>
+		</text>
+	</g>
+	<g>
+		<rect x="30" y="330" width="120" height="120" fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" />
+		<text x="90" y="330" text-anchor="middle" dominant-baseline="hanging" font-family="Arial" font-size="10" fill="#000000">
+			<tspan dy="1.1em" x="90"> ｛abstract｝</tspan>
+			<tspan dy="1.1em" x="90">MyApplicationWindow</tspan>
+			<tspan dy="1.1em" x="90">- myApplicationContent: Content</tspan>
+		</text>
+	</g>
+	<g>
+		<rect x="200" y="630" width="120" height="120" fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" />
+		<text x="260" y="630" text-anchor="middle" dominant-baseline="hanging" font-family="Arial" font-size="10" fill="#000000">
+			<tspan dy="1.1em" x="260">«datatype»</tspan>
+			<tspan dy="1.1em" x="260">WindowID</tspan>
+			<tspan dy="1.1em" x="260">- cool: String</tspan>
+		</text>
+	</g>
+	<g>
+		<rect x="30" y="480" width="120" height="120" fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" />
+		<text x="90" y="480" text-anchor="middle" dominant-baseline="hanging" font-family="Arial" font-size="10" fill="#000000">
+			<tspan dy="1.1em" x="90">«datatype»</tspan>
+			<tspan dy="1.1em" x="90">Content</tspan>
+			<tspan dy="1.1em" x="90">- currentContent: String</tspan>
+			<tspan dy="1.1em" x="90"></tspan>
+			<tspan dy="1.1em" x="90">+ setContent(inout newContent: String)</tspan>
+			<tspan dy="1.1em" x="90">+ displayContent()</tspan>
+		</text>
+	</g>
+</svg>
