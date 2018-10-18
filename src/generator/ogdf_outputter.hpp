@@ -29,16 +29,23 @@ class Loader{
 			ogdf::node& cur_node = g.newNode();
 			//Set Label
 			std::string& label = ga.label(cur_node);
-			label = "";
+			label = generate_label(aclass);
 			//Set Width/Height
 			double& w = ga.width(cur_node);
 			double& h = ga.height(cur_node);
+			//Set Color
+			Color& color = ga.fillColor(cur_node);
+
 		}
 	}
 
 	srcuml_relationships analyze_relationships(std::vector<std::shared_ptr<srcuml_class>> & classes) {
 
 		return srcuml_relationships(classes);
+
+	}
+
+	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass){
 
 	}
 
