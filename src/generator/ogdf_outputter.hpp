@@ -8,6 +8,7 @@
 #include <srcSAXController.hpp>
 #include <srcuml_dispatcher.hpp>
 #include <ClassPolicySingleEvent.hpp>
+#include <srcuml_outputter.hpp>
 
 //OGDF_Requirements
 #include <ogdf/basic/Graph.h>
@@ -17,11 +18,11 @@
 #include <ogdf/cluster/ClusterGraph.h>
 #include <ogdf/cluster/ClusterGraphAttributes.h>
 
-class Loader{
+class ogdf_outputter : srcuml_outputter{
 
-	Loader(){};
+	ogdf_outputter(){};
 
-	void load(ogdf::GraphAttributes& ga, ogdf::Graph& g, std::vector<std::shared_ptr<srcuml_class>> & classes){
+	void output(ogdf::GraphAttributes& ga, ogdf::Graph& g, std::vector<std::shared_ptr<srcuml_class>> & classes){
 		//transfer information from srcUML to OGDF
 		srcuml_relationships relationships = analyze_relationships(classes);
 
@@ -37,12 +38,6 @@ class Loader{
 			Color& color = ga.fillColor(cur_node);
 
 		}
-	}
-
-	srcuml_relationships analyze_relationships(std::vector<std::shared_ptr<srcuml_class>> & classes) {
-
-		return srcuml_relationships(classes);
-
 	}
 
 	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass){
