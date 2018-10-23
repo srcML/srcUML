@@ -9,6 +9,8 @@ To Compile:
 #include <ogdf/basic/Graph_d.h>
 #include <ogdf/basic/GraphAttributes.h>
 #include <ogdf/basic/graph_generators.h>
+#include <ogdf/basic/HyperGraph.h>
+#include <ogdf/basic/EList.h>
 //===================================================================
 
 //Cluster_Graph_Include==============================================
@@ -79,7 +81,6 @@ int main(int argc, char ** argv)
 	std::ostream * out;
 	if(argc > 2){
 		out = new std::ofstream(argv[2]);
-		std::cout << "Printing to: " << argv[2] << std::endl;
 	}else{
 		out = &std::cout;
 	}
