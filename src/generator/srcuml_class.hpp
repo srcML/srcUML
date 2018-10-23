@@ -101,17 +101,17 @@ public:
 
     }
 
-    std::string get_srcuml_name() const {
+    std::string get_srcuml_name() const { //shouldn't do any formatting
 
         if(is_interface)
-            return "«interface»\\n" + name;
+            return "«interface»";
 
         // not sure if should be gulliments or {}
         if(is_abstract)
-            return " ｛abstract｝\\n" + name;
+            return "｛abstract｝";
 
         if(is_datatype)
-            return "«datatype»\\n" + name;
+            return "«datatype»";
 
         return name;
 
