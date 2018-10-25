@@ -22,4 +22,4 @@ file(GLOB CLIENT_SOURCE *.cpp)
 file(GLOB CLIENT_HEADER *.hpp)
 
 add_executable(srcuml $<TARGET_OBJECTS:generator> ${CLIENT_SOURCE} ${CLIENT_HEADER})
-target_link_libraries(srcuml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES} ${BOOST_ROOT})
+target_link_libraries(srcuml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES} boost_program_options)

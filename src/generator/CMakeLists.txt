@@ -21,4 +21,6 @@
 file(GLOB GENERATOR_SOURCE *.cpp)
 file(GLOB GENERATOR_HEADER *.hpp)
 
-add_library(generator OBJECT ${GENERATOR_HEADERS} ${GENERATOR_SOURCE} ${OGDF})
+add_library(generator OBJECT ${GENERATOR_HEADERS} ${GENERATOR_SOURCE})
+link_directories(/usr/local /usr/local/lib)
+target_link_libraries(generator OGDF COIN)
