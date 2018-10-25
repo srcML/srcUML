@@ -32,6 +32,7 @@
 #include <srcuml_relationship.hpp>
 #include <dot_outputter.hpp>
 #include <yuml_outputter.hpp>
+#include <ogdf_outputter.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -49,18 +50,21 @@ class srcuml_handler : public srcSAXEventDispatch::PolicyListener {
 private:
 
     std::vector<std::shared_ptr<srcuml_class>> classes;
+    char type;
 
 public:
 
-    srcuml_handler(const std::string & input_str, std::ostream & out) {
+    srcuml_handler(const std::string & input_str, std::ostream & out, char t = 'O') {
 
+        type = t;
         srcSAXController controller(input_str);
         run(controller, out);
 
     }
 
-    srcuml_handler(const char * input_filename, std::ostream & out) {
+    srcuml_handler(const char * input_filename, std::ostream & out, char t = 'O') {
 
+        type = t;
         srcSAXController controller(input_filename);
         run(controller, out);
 
@@ -72,9 +76,31 @@ public:
 
         srcuml_dispatcher<ClassPolicy> dispatcher(this);
         controller.parse(&dispatcher);
-        yuml_outputter outputter;
-        outputter.output(out, classes);
+        switch(type){
+            case 'O':
+                {
+                    ogdf_outputter outputter;
+                    outputter.output(out, classes);
+                }
+                break;
 
+            case 'D':
+                {
+                    dot_outputter outputter;
+                    outputter.output(out, classes);
+                }
+                break;
+
+            case 'Y':
+                {
+                    yuml_outputter outputter;
+                    outputter.output(out, classes);
+                }
+                break; 
+
+        }
+
+        //delete outputter;
     }
 
     virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy, const srcSAXEventDispatch::srcSAXEventContext & ctx) override {

@@ -18,16 +18,33 @@
 #include <ogdf/cluster/ClusterGraph.h>
 #include <ogdf/cluster/ClusterGraphAttributes.h>
 
+using namespace ogdf;
+
 class ogdf_outputter : srcuml_outputter{
 
-	ogdf_outputter(){};
+public:
 
-	void output(ogdf::GraphAttributes& ga, ogdf::Graph& g, std::vector<std::shared_ptr<srcuml_class>> & classes){
+	ogdf_outputter(){
+		ga.init(g,
+	  	GraphAttributes::nodeGraphics |
+	  	GraphAttributes::edgeGraphics |
+	  	GraphAttributes::nodeLabel |
+	  	GraphAttributes::edgeLabel |
+	  	GraphAttributes::nodeStyle |
+	  	GraphAttributes::edgeStyle |
+	  	GraphAttributes::nodeTemplate);
+	};
+
+	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
 		//transfer information from srcUML to OGDF
 		srcuml_relationships relationships = analyze_relationships(classes);
+		/*std::map<std::string, ogdf::node&> class_node_map;
 
+		//Classes/Nodes
 		for(const std::shared_ptr<srcuml_class> & aclass : classes){
-			ogdf::node& cur_node = g.newNode();
+			ogdf::node cur_node = g.newNode();
+			//Insert into map the node class pairing
+			class_node_map.insert(std::pair<std::string, ogdf::node&>(aclass.get_name(), cur_node));
 			//Set Label
 			std::string& label = ga.label(cur_node);
 			label = generate_label(aclass);
@@ -35,17 +52,32 @@ class ogdf_outputter : srcuml_outputter{
 			double& w = ga.width(cur_node);
 			double& h = ga.height(cur_node);
 			//Set Color
-			Color& color = ga.fillColor(cur_node);
+			Color& color = ga.fillColor(cur_node);*/
 
+
+		//Relationships/Edges
+		for(const srcuml_relationship relationship : relationships.get_relationships()){
+			//get the nodes from graph g, create edge and add apropriate info.
+			//std::cout << "Taco in ogdf\n";
+			//ogdf::edge& cur_edge = g.newEdge(class_node_map.find(relationship.get_source())->second, class_node_map.find(relationship.get_destination())->second);//need to pass to ogdf::node types
 		}
+
+		return true;
 	}
 
 	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass){
+		//create proper string such that SvgPrinter can parse.
+		//\n will be <svg_new_line> box divider will be <svg_box_divide>
 
 	}
 
+private:
+
+	Graph g;
+
+	GraphAttributes ga;
 
 	
-}
+};
 
 #endif

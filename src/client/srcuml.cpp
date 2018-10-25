@@ -37,7 +37,7 @@
 
 using namespace boost;
 using namespace std;
-namespace po = boost::program_options;
+
 
 /**
  * main
@@ -48,9 +48,11 @@ namespace po = boost::program_options;
  */
 int main(int argc, char * argv[]) {
 
-    ostream * out = &cout;
+    //ostream * out = &cout;
 
-    try {
+    /*try {
+
+        namespace po = boost::program_options;
 
         po::options_description desc("Allowed options");
         desc.add_options()
@@ -72,22 +74,23 @@ int main(int argc, char * argv[]) {
         }
 
         if (vm.count("output")) {
-            string temp = vm["output"].as<string>();
-            cout << "Ouput file is: " << vm["output"].as<string>() << ".\n";
-            out = new std::ofstream(vm["output"].as<string>());
-        }else {
+          cout << "output\n";
+            //string temp = vm["output"].as<string>();
+            //cout << "Ouput file is: " << vm["output"].as<string>() << ".\n";
+            //out = new std::ofstream(vm["output"].as<string>());
+        }else{
             cout << "Ouput File was not set.\n";
         }
-    }
-    catch(std::exception& e) {
+
+    }catch(std::exception& e){
         cerr << "error: " << e.what() << "\n";
         return 1;
-    }
-    catch(...) {
-        cerr << "Exception of unknown type!\n";
-    }
 
-  /*if(argc < 2) {
+    }catch(...) {
+        cerr << "Exception of unknown type!\n";
+    }*/
+
+  if(argc < 2) {
 
     std::cerr << "Usage: srcuml input_file.xml [output_file]\n";
     exit(1);
@@ -95,15 +98,15 @@ int main(int argc, char * argv[]) {
   }
 
   std::ostream * out = &std::cout;
-  */
   
-  /*if(argc > 2)
+  
+  if(argc > 2)
     out = new std::ofstream(argv[2]);
 
   srcuml_handler handler(argv[1], *out);
 
-  if(argc > 2)*/
-    //delete out;
+  if(argc > 2)
+    delete out;
 
     return 0;
 }
