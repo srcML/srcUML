@@ -79,6 +79,7 @@ public:
         switch(type){
             case 'O':
                 {
+                    std::cout << "OGDF Called\n";
                     ogdf_outputter outputter;
                     outputter.output(out, classes);
                 }
@@ -86,6 +87,7 @@ public:
 
             case 'D':
                 {
+                    std::cout << "DOT Called\n";
                     dot_outputter outputter;
                     outputter.output(out, classes);
                 }
@@ -93,6 +95,7 @@ public:
 
             case 'Y':
                 {
+                    std::cout << "YUML Called\n";
                     yuml_outputter outputter;
                     outputter.output(out, classes);
                 }
