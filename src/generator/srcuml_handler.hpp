@@ -57,7 +57,7 @@ public:
     srcuml_handler(const std::string & input_str, std::ostream & out, char t = 'O') {
 
         type = t;
-        srcSAXController controller(input_str);
+        srcSAXController controller(input_str.c_str());
         run(controller, out);
 
     }
@@ -75,8 +75,10 @@ public:
     void run(srcSAXController & controller, std::ostream & out) {
 
         srcuml_dispatcher<ClassPolicy> dispatcher(this);
+        std::cout << "Here1\n";
         controller.parse(&dispatcher);
-        switch(type){
+        std::cout << "Here2\n";
+        /*switch(type){
             case 'O':
                 {
                     std::cout << "OGDF Called\n";
@@ -101,7 +103,7 @@ public:
                 }
                 break; 
 
-        }
+        }*/
 
         //delete outputter;
     }
