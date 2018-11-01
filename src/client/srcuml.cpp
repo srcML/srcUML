@@ -77,21 +77,22 @@ int main(int argc, char * argv[]) {
 			std::cout << "Input file is: " << vm["input"].as<string>() << ".\n";
 			input_file = vm["input"].as<std::string>();
 
-			if (vm.count("output")) {
-				std::string temp = vm["output"].as<std::string>();
-				std::cout << "Ouput file is: " << vm["output"].as<std::string>() << ".\n";
-				out = new std::ofstream(vm["output"].as<std::string>());
-			}else{
-				std::cout << "Using cout as default output.\n";
-			}
-
-			if(vm.count("type")){
-				type = vm["type"].as<char>();
-				std::cout << "Type: " << type << std::endl;
-			}
-
 		}else{
 			std::cout << "Error: Require an input file.\nUsage: srcuml input_file.xml [-flags]\n";
+			return 1;
+		}
+
+		if (vm.count("output")) {
+			std::string temp = vm["output"].as<std::string>();
+			std::cout << "Ouput file is: " << vm["output"].as<std::string>() << ".\n";
+			out = new std::ofstream(vm["output"].as<std::string>());
+		}else{
+			std::cout << "Using cout as default output.\n";
+		}
+
+		if(vm.count("type")){
+			type = vm["type"].as<char>();
+			std::cout << "Type: " << type << std::endl;
 		}
 
 	}catch(std::exception& e){
@@ -109,7 +110,7 @@ int main(int argc, char * argv[]) {
 	}
 
 
-	if(out == &std::cout)
+	if(out != &std::cout)
 		delete out;
 
 	return 0;
