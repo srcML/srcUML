@@ -72,12 +72,12 @@ int main(int argc, char * argv[]) {
 			return 0;
 		}
 
-		if(vm.count("input")){
+		if(vm.count("input")) {
 
 			std::cout << "Input file is: " << vm["input"].as<string>() << ".\n";
 			input_file = vm["input"].as<std::string>();
 
-		}else{
+		} else {
 			std::cout << "Error: Require an input file.\nUsage: srcuml input_file.xml [-flags]\n";
 			return 1;
 		}
@@ -86,26 +86,26 @@ int main(int argc, char * argv[]) {
 			std::string temp = vm["output"].as<std::string>();
 			std::cout << "Ouput file is: " << vm["output"].as<std::string>() << ".\n";
 			out = new std::ofstream(vm["output"].as<std::string>());
-		}else{
+		} else {
 			std::cout << "Using cout as default output.\n";
 		}
 
-		if(vm.count("type")){
+		if(vm.count("type")) {
 			type = vm["type"].as<char>();
 			std::cout << "Type: " << type << std::endl;
 		}
 
-	}catch(std::exception& e){
+	} catch(std::exception& e) {
 		std::cerr << "error: " << e.what() << "\n";
 		return 1;
 
-	}catch(...) {
+	} catch(...) {
 		std::cerr << "Exception of unknown type!\n";
 	}
 
-	try{
+	try {
 		srcuml_handler handler(input_file, *out, type);
-	}catch(std::string& e){
+	} catch(std::string& e) {
 		std::cout << e << std::endl;
 	}
 
