@@ -63,12 +63,12 @@ public:
 
 	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
 		//transfer information from srcUML to OGDF
-		//srcuml_relationships relationships = analyze_relationships(classes);
-		//std::map<std::string, ogdf::node&> class_node_map;
+		srcuml_relationships relationships = analyze_relationships(classes);
+		std::map<std::string, ogdf::node&> class_node_map;
 		std::cout << "output OGDF\n";
 
 		//Classes/Nodes
-		/*for(const std::shared_ptr<srcuml_class> & aclass : classes){
+		for(const std::shared_ptr<srcuml_class> & aclass : classes){
 			ogdf::node cur_node = g.newNode();
 			//Insert into map the node class pairing
 			class_node_map.insert(std::pair<std::string, ogdf::node&>(aclass->get_name(), cur_node));
@@ -80,20 +80,20 @@ public:
 			double& h = ga.height(cur_node);
 			//Set Color
 			Color& color = ga.fillColor(cur_node);
-		}*/
+		}
 
 
 		//Relationships/Edges
-		/*for(const srcuml_relationship relationship : relationships.get_relationships()){
+		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add apropriate info.
 			//std::cout << "Taco in ogdf\n";
 			ogdf::node lhs = class_node_map.find(relationship.get_source())->second;
 			ogdf::node rhs = class_node_map.find(relationship.get_destination())->second;
 			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
-		}*/
+		}
 
 
-		/*for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
+		for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
 			float& w = ga.strokeWidth(e);
 			w = 1;
 		}
@@ -122,10 +122,10 @@ public:
 		sl.call(ga);
 
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
-		*/
-		/*if(!ogdf::GraphIO::drawSVG(ga, out, *svg_settings)){
+		
+		if(!ogdf::GraphIO::drawSVG(ga, out, *svg_settings)){
 			std::cout << "Error Write" << std::endl;
-		}*/
+		}
 
 
 		return true;

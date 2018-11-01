@@ -102,8 +102,11 @@ int main(int argc, char * argv[]) {
 		std::cerr << "Exception of unknown type!\n";
 	}
 
-
-	srcuml_handler handler(input_file, *out, type);
+	try{
+		srcuml_handler handler(input_file, *out, type);
+	}catch(std::string& e){
+		std::cout << e << std::endl;
+	}
 
 
 	if(out == &std::cout)
