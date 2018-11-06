@@ -160,6 +160,18 @@ public:
         return index;       
     }
 
+    std::string get_string_type() const {
+        
+        std::string t = "";
+
+        if(is_numeric)
+            t += "number";
+        else
+            t += name;
+
+        return t;
+    }
+
     friend std::ostream & operator<<(std::ostream & out, const srcuml_type & type) {
 
         if(type.is_numeric)

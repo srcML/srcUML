@@ -67,6 +67,54 @@ public:
 
     }
 
+    std::string get_string_function() const {
+
+        std::string func = "";
+
+        if(visibility == ClassPolicy::PUBLIC)
+            func += '+';
+        else if(visibility == ClassPolicy::PRIVATE)
+            func += '-';
+        else if(visibility == ClassPolicy::PROTECTED)
+            func += '#';
+
+        func += ' ';
+
+        func += data->name->SimpleName();
+
+        func += '(';
+        for(std::size_t pos = 0; pos < data->parameters.size(); ++pos) {
+
+            if(pos != 0)
+                func += ", ";
+
+            srcuml_parameter the_parameter(data->parameters[pos]);
+            func += the_parameter.get_string_parameter();
+
+        }
+        func += ')';
+
+        if(data->returnType) {
+
+            srcuml_type the_type(data->returnType);
+            if(the_type.get_type_name() != "void") {
+                func += ": ";
+                func += the_type.get_string_type();
+            }            
+
+        }
+
+        if(!data->stereotype.empty()) {
+
+            func += " ｛";
+            func += data->stereotype;
+            func += "｝";
+
+        }
+
+        return func;
+    }
+
     friend std::ostream & operator<<(std::ostream & out, const srcuml_operation & operation) {
 
         if(operation.visibility == ClassPolicy::PUBLIC)

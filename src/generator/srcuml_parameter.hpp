@@ -92,6 +92,20 @@ public:
 
     // ~srcuml_parameter() { if(data) delete data; }
 
+    std::string get_string_parameter() const {
+
+        std::string para = "";
+
+        if(!type.get_is_const() && (type.get_is_pointer() || type.get_is_reference()))
+            para += "inout ";
+
+        para += name + ": " + type.get_string_type();
+
+        // out << parameter.get_multiplicity();
+
+        return para;
+    }
+
     friend std::ostream & operator<<(std::ostream & out, const srcuml_parameter & parameter) {
 
         if(!parameter.type.get_is_const() && (parameter.type.get_is_pointer() || parameter.type.get_is_reference()))

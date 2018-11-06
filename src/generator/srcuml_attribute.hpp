@@ -101,6 +101,28 @@ public:
 
     // ~srcuml_attribute() { if(data) delete data; }
 
+    std::string get_string_attribute() const {
+
+        std::string att = "";
+
+        if(visibility == ClassPolicy::PUBLIC)
+            att += '+';
+        else if(visibility == ClassPolicy::PRIVATE)
+            att += '-';
+        else if(visibility == ClassPolicy::PROTECTED)
+            att += '#';
+
+        att += ' ';
+        att += name + ": " + type.get_string_type();
+        att += get_multiplicity();
+
+        if(has_index || is_pointer || (type.get_is_container() && type.get_is_ordered())) {
+            att += " ｛ordered｝";
+        }
+
+        return att;
+    }
+
     friend std::ostream & operator<<(std::ostream & out, const srcuml_attribute & attribute) {
 
         if(attribute.visibility == ClassPolicy::PUBLIC)

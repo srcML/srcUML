@@ -52,13 +52,13 @@ public:
 
 	ogdf_outputter(){
 		ga.init(g,
-	  	GraphAttributes::nodeGraphics |
-	  	GraphAttributes::edgeGraphics |
-	  	GraphAttributes::nodeLabel |
-	  	GraphAttributes::edgeLabel |
-	  	GraphAttributes::nodeStyle |
-	  	GraphAttributes::edgeStyle |
-	  	GraphAttributes::nodeTemplate);
+		GraphAttributes::nodeGraphics |
+		GraphAttributes::edgeGraphics |
+		GraphAttributes::nodeLabel |
+		GraphAttributes::edgeLabel |
+		GraphAttributes::nodeStyle |
+		GraphAttributes::edgeStyle |
+		GraphAttributes::nodeTemplate);
 	};
 
 	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
@@ -74,20 +74,18 @@ public:
 			//Set Label
 			std::string& label = ga.label(cur_node);
 			label = generate_label(aclass);
+
+			std::cout << "label: " << label << '\n';
 			//Set Width/Height
 			double& w = ga.width(cur_node);
 			double& h = ga.height(cur_node);
 			//Set Color
 			Color& color = ga.fillColor(cur_node);
 		}
-		std::cerr << "First Loop\n"; 
-
 
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add apropriate info.
-			//std::cout << "Taco in ogdf\n";
-			//std::cerr <<"In Loop\n"; 
 			ogdf::node lhs, rhs;
 
 			std::map<std::string, ogdf::node>::iterator src_it = class_node_map.find(relationship.get_source());
@@ -103,15 +101,10 @@ public:
 			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
 		}
 
-		std::cerr << "Second Loop\n";
-
-
 		for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
 			float& w = ga.strokeWidth(e);
 			w = 1;
 		}
-
-		std::cerr << "Third Loop\n";
 
 		for(NodeElement * n = g.firstNode(); n; n = n->succ()){
 			double& h = ga.height(n);
@@ -120,11 +113,9 @@ public:
 
 			h = 120;
 			w = 120;
+
 			color = Color(Color::Name::Antiquewhite);
 		}
-
-		std::cerr << "Forth Loop\n";
-
 
 		SugiyamaLayout sl;
 		sl.setRanking(new OptimalRanking);
@@ -151,9 +142,28 @@ public:
 	}
 
 	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass){
+		std::string label;
+		label += aclass->get_srcuml_name() + "<svg_new_line>";
+		label += aclass->get_name();
+		label += "<svg_box_divide>";
+		for(const srcuml_attribute & attribute : aclass->get_attributes()){
+			label += attribute.get_string_attribute() + "<svg_new_line>";
+		}
+		label += "<svg_box_divide>";
+
+		for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
+			for(const FunctionPolicy::FunctionData * function : aclass->get_data().methods[access]) { //private members
+				srcuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
+				if(op.get_stereotypes().count("set") > 0){continue;}
+				if(op.get_stereotypes().count("get") > 0){continue;}
+				
+				label += op.get_string_function();
+				label += "<svg_new_line>";
+			}
+		}
 		//create proper string such that SvgPrinter can parse.
 		//\n will be <svg_new_line> box divider will be <svg_box_divide>
-
+		return label;
 	}
 
 private:
