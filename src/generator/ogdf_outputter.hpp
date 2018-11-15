@@ -167,25 +167,25 @@ public:
 		return label;
 	}
 
-	bool drawSVG(const GraphAttributes &A, const string &filename, const SVGSettings &settings)
+	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings)
 	{
-		ofstream os(filename);
+		std::ofstream os(filename);
 		return drawSVG(A, os, settings);
 	}
 
-	bool drawSVG(const ClusterGraphAttributes &A, const string &filename, const SVGSettings &settings)
+	bool drawSVG(const ClusterGraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings)
 	{
-		ofstream os(filename);
+		std::ofstream os(filename);
 		return drawSVG(A, os, settings);
 	}
 
-	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const SVGSettings &settings)
+	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings)
 	{
 		SvgPrinter printer(attr, settings);
 		return printer.draw(os);
 	}
 
-	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const SVGSettings &settings)
+	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings)
 	{
 		SvgPrinter printer(attr, settings);
 		return printer.draw(os);
