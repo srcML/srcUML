@@ -28,6 +28,7 @@ find_package(LibXml2 REQUIRED)
 
 # include needed includes
 include_directories(${LIBXML2_INCLUDE_DIR})
+#include_directories(${OGDF})
 add_definitions("-std=c++1y")
 # add_definitions("-pthread")
 
