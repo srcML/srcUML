@@ -25,6 +25,7 @@
 
 //Input_Output_Include===============================================
 #include <ogdf/fileformats/GraphIO.h>
+#include "SvgPrinter.hpp"
 //===================================================================
 
 //Layout_Include=====================================================
@@ -133,7 +134,7 @@ public:
 
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 		
-		if(!ogdf::GraphIO::drawSVG(ga, out, *svg_settings)){
+		if(!drawSVG(ga, out, *svg_settings)){
 			std::cout << "Error Write" << std::endl;
 		}
 
@@ -164,6 +165,30 @@ public:
 		//create proper string such that SvgPrinter can parse.
 		//\n will be <svg_new_line> box divider will be <svg_box_divide>
 		return label;
+	}
+
+	bool drawSVG(const GraphAttributes &A, const string &filename, const SVGSettings &settings)
+	{
+		ofstream os(filename);
+		return drawSVG(A, os, settings);
+	}
+
+	bool drawSVG(const ClusterGraphAttributes &A, const string &filename, const SVGSettings &settings)
+	{
+		ofstream os(filename);
+		return drawSVG(A, os, settings);
+	}
+
+	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const SVGSettings &settings)
+	{
+		SvgPrinter printer(attr, settings);
+		return printer.draw(os);
+	}
+
+	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const SVGSettings &settings)
+	{
+		SvgPrinter printer(attr, settings);
+		return printer.draw(os);
 	}
 
 private:
