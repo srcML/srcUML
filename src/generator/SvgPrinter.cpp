@@ -267,7 +267,6 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 		}
 	}
 
-
 	//===========================================================================
 	if (m_attr.has(GraphAttributes::nodeLabel)) {
 		pugi::xml_node label = xmlNode.append_child("text");
@@ -286,6 +285,8 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 		int prev = 0;
 		int num_lines = 0;
 
+		std::cout << full_text << "============================\n";
+
 		for(int i = 0; i < full_text.size(); i++){
 			if(full_text.substr(i, 16) == "<svg_box_divide>"){
 				boxDivide = true;
@@ -299,7 +300,9 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 				temp.append_attribute("dy") = "1.1em";
 				temp.append_attribute("x") = m_attr.x(v);
 				temp.text() = full_text.substr(prev, i-prev).c_str();
-				std::cout << full_text.substr(prev, i-prev).c_str() << std::endl;
+				//std::cerr << "XXXX\n";
+				//std::cout << full_text.substr(prev, i-prev).c_str() << std::endl;
+				//std::cerr << "YYYY\n";
 				prev = i + 14;
 				if(boxDivide){
 					pugi::xml_node nl = xmlNode.append_child("line");

@@ -76,13 +76,15 @@ public:
 			std::string& label = ga.label(cur_node);
 			label = generate_label(aclass);
 
-			std::cout << "label: " << label << '\n';
+			//std::cout << "label: " << label << '\n';
 			//Set Width/Height
 			double& w = ga.width(cur_node);
 			double& h = ga.height(cur_node);
 			//Set Color
 			Color& color = ga.fillColor(cur_node);
 		}
+
+		std::cout << "HERE\n";
 
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
@@ -100,12 +102,15 @@ public:
 			}
 
 			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
+
 		}
+
 
 		for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
 			float& w = ga.strokeWidth(e);
 			w = 1;
 		}
+
 
 		for(NodeElement * n = g.firstNode(); n; n = n->succ()){
 			double& h = ga.height(n);
@@ -117,6 +122,7 @@ public:
 
 			color = Color(Color::Name::Antiquewhite);
 		}
+
 
 		SugiyamaLayout sl;
 		sl.setRanking(new OptimalRanking);
@@ -144,7 +150,9 @@ public:
 
 	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass){
 		std::string label;
-		label += aclass->get_srcuml_name() + "<svg_new_line>";
+		if(aclass->get_srcuml_name() != aclass->get_name()){
+			label += aclass->get_srcuml_name() + "<svg_new_line>";
+		}
 		label += aclass->get_name();
 		label += "<svg_box_divide>";
 		for(const srcuml_attribute & attribute : aclass->get_attributes()){
