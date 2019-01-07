@@ -105,7 +105,6 @@ public:
 
         if(is_interface)
             return "«interface»";
-
         // not sure if should be gulliments or {}
         if(is_abstract)
             return "｛abstract｝";

@@ -25,6 +25,7 @@
 
 //Input_Output_Include===============================================
 #include <ogdf/fileformats/GraphIO.h>
+#include "SvgPrinter.hpp"
 //===================================================================
 
 //Layout_Include=====================================================
@@ -75,13 +76,14 @@ public:
 			std::string& label = ga.label(cur_node);
 			label = generate_label(aclass);
 
-			std::cout << "label: " << label << '\n';
+			//std::cout << "label: " << label << '\n';
 			//Set Width/Height
 			double& w = ga.width(cur_node);
 			double& h = ga.height(cur_node);
 			//Set Color
 			Color& color = ga.fillColor(cur_node);
 		}
+
 
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
@@ -99,12 +101,15 @@ public:
 			}
 
 			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
+
 		}
+
 
 		for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
 			float& w = ga.strokeWidth(e);
 			w = 1;
 		}
+
 
 		for(NodeElement * n = g.firstNode(); n; n = n->succ()){
 			double& h = ga.height(n);
@@ -117,23 +122,22 @@ public:
 			color = Color(Color::Name::Antiquewhite);
 		}
 
+
 		SugiyamaLayout sl;
 		sl.setRanking(new OptimalRanking);
 		sl.setCrossMin(new MedianHeuristic);
  
 		OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
-		ohl->layerDistance(30.0);
-		ohl->nodeDistance(25.0);
+		ohl->layerDistance(80.0);
+		ohl->nodeDistance(80.0);
 		ohl->weightBalancing(0.8);
 		sl.setLayout(ohl);
 
 		sl.call(ga);
 
-		std::cerr << "Sugiyama \n";
-
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 		
-		if(!ogdf::GraphIO::drawSVG(ga, out, *svg_settings)){
+		if(!drawSVG(ga, out, *svg_settings)){
 			std::cout << "Error Write" << std::endl;
 		}
 
@@ -143,7 +147,9 @@ public:
 
 	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass){
 		std::string label;
-		label += aclass->get_srcuml_name() + "<svg_new_line>";
+		if(aclass->get_srcuml_name() != aclass->get_name()){
+			label += aclass->get_srcuml_name() + "<svg_new_line>";
+		}
 		label += aclass->get_name();
 		label += "<svg_box_divide>";
 		for(const srcuml_attribute & attribute : aclass->get_attributes()){
@@ -164,6 +170,30 @@ public:
 		//create proper string such that SvgPrinter can parse.
 		//\n will be <svg_new_line> box divider will be <svg_box_divide>
 		return label;
+	}
+
+	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings)
+	{
+		std::ofstream os(filename);
+		return drawSVG(A, os, settings);
+	}
+
+	bool drawSVG(const ClusterGraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings)
+	{
+		std::ofstream os(filename);
+		return drawSVG(A, os, settings);
+	}
+
+	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings)
+	{
+		SvgPrinter printer(attr, settings);
+		return printer.draw(os);
+	}
+
+	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings)
+	{
+		SvgPrinter printer(attr, settings);
+		return printer.draw(os);
 	}
 
 private:
