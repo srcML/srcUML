@@ -84,7 +84,6 @@ public:
 			Color& color = ga.fillColor(cur_node);
 		}
 
-		std::cout << "HERE\n";
 
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
@@ -129,14 +128,12 @@ public:
 		sl.setCrossMin(new MedianHeuristic);
  
 		OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
-		ohl->layerDistance(30.0);
-		ohl->nodeDistance(25.0);
+		ohl->layerDistance(80.0);
+		ohl->nodeDistance(80.0);
 		ohl->weightBalancing(0.8);
 		sl.setLayout(ohl);
 
 		sl.call(ga);
-
-		std::cerr << "Sugiyama \n";
 
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 		
