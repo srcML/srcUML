@@ -267,6 +267,7 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 		}
 	}
 
+	std::cout << "Taco\n";
 
 	//===========================================================================
 	if (m_attr.has(GraphAttributes::nodeLabel)) {
