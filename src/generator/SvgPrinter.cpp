@@ -47,7 +47,7 @@ GraphIO::SVGSettings::SVGSettings()
 	m_bezierInterpolation = false;
 	m_fontSize = 10;
 	m_fontColor = "#000000";
-	m_fontFamily = "Arial";
+	m_fontFamily = "Courier";
 	m_width = "";
 	m_height = "";
 }
@@ -61,7 +61,7 @@ bool SvgPrinter::draw(std::ostream &os)
 		drawClusters(rootNode);
 	}
 
-	drawEdges(rootNode);
+	//drawEdges(rootNode);
 	drawNodes(rootNode);
 
 	doc.save(os);
@@ -96,6 +96,10 @@ pugi::xml_node SvgPrinter::writeHeader(pugi::xml_document &doc)
 	is << " " << (box.height() + 2*margin);
 	rootNode.append_attribute("viewBox") = is.str().c_str();
 
+	pugi::xml_node style_node = rootNode.append_child("style");
+	style_node.text() = (".font_style {font: " + std::to_string(m_settings.fontSize()) + "px monospace;}").c_str();
+
+
 	return rootNode;
 }
 
@@ -128,130 +132,20 @@ void SvgPrinter::writeDashArray(pugi::xml_node xmlNode, StrokeType lineStyle, do
 
 void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 {
-#if 1
-	const double
-	  hexagonHalfHeight = 0.43301270189222 * m_attr.height(v),
-	  pentagonHalfWidth = 0.475528258147577 * m_attr.width(v),
-	  pentagonSmallHeight = 0.154508497187474 * m_attr.height(v),
-	  pentagonSmallWidth = 0.293892626146236 * m_attr.width(v),
-	  pentagonHalfHeight = 0.404508497187474 * m_attr.height(v),
-	  octagonHalfWidth = 0.461939766255643 * m_attr.width(v),
-	  octagonSmallWidth = 0.191341716182545 * m_attr.width(v),
-	  octagonHalfHeight  = 0.461939766255643 * m_attr.height(v),
-	  octagonSmallHeight = 0.191341716182545 * m_attr.height(v);
-#endif
+	pugi::xml_node g_node; 
 	pugi::xml_node shape;
+	pugi::xml_node text_node;
+	pugi::xml_node line_node;
+
 	std::stringstream is;
-	double x = m_attr.x(v);
-	double y = m_attr.y(v);
-	xmlNode = xmlNode.append_child("g");
 
-	// values are precomputed to save expensive sin/cos calls
-	switch (m_attr.shape(v)) {
-	case Shape::Ellipse:
-		shape = xmlNode.append_child("ellipse");
-		shape.append_attribute("cx") = x;
-		shape.append_attribute("cy") = y;
-		shape.append_attribute("rx") = m_attr.width(v) / 2;
-		shape.append_attribute("ry") = m_attr.height(v) / 2;
-		break;
-	case Shape::Triangle:
-		shape = drawPolygon(xmlNode, {
-					x, y - m_attr.height(v)/2,
-					x - m_attr.width(v)/2, y + m_attr.height(v)/2,
-					x + m_attr.width(v)/2, y + m_attr.height(v)/2
-				});
-		break;
-	case Shape::InvTriangle:
-		shape = drawPolygon(xmlNode, {x, y + m_attr.height(v)/2,
-					x - m_attr.width(v)/2, y - m_attr.height(v)/2,
-					x + m_attr.width(v)/2,y - m_attr.height(v)/2
-				});
-		break;
-	case Shape::Pentagon:
-		shape = drawPolygon(xmlNode, {
-					x, y - m_attr.height(v)/2,
-					x + pentagonHalfWidth, y - pentagonSmallHeight,
-					x + pentagonSmallWidth, y + pentagonHalfHeight,
-					x - pentagonSmallWidth, y + pentagonHalfHeight,
-					x - pentagonHalfWidth, y - pentagonSmallHeight
-				});
-		break;
-	case Shape::Hexagon:
-		shape = drawPolygon(xmlNode, {
-					x + m_attr.width(v)/4, y + hexagonHalfHeight,
-					x - m_attr.width(v)/4, y + hexagonHalfHeight,
-					x - m_attr.width(v)/2, y,
-					x - m_attr.width(v)/4, y - hexagonHalfHeight,
-					x + m_attr.width(v)/4, y - hexagonHalfHeight,
-					x + m_attr.width(v)/2, y
-				});
-		break;
-	case Shape::Octagon:
-		shape = drawPolygon(xmlNode, {
-					x + octagonHalfWidth, y + octagonSmallHeight,
-					x + octagonSmallWidth, y + octagonHalfHeight,
-					x - octagonSmallWidth, y + octagonHalfHeight,
-					x - octagonHalfWidth, y + octagonSmallHeight,
-					x - octagonHalfWidth, y - octagonSmallHeight,
-					x - octagonSmallWidth, y - octagonHalfHeight,
-					x + octagonSmallWidth, y - octagonHalfHeight,
-					x + octagonHalfWidth, y - octagonSmallHeight
-				});
-		break;
-	case Shape::Rhomb:
-		shape = drawPolygon(xmlNode, {
-					x + m_attr.width(v)/2, y,
-					x, y + m_attr.height(v)/2,
-					x - m_attr.width(v)/2, y,
-					x, y - m_attr.height(v)/2
-				});
-		break;
-	case Shape::Trapeze:
-		shape = drawPolygon(xmlNode, {
-					x - m_attr.width(v)/2, y + m_attr.height(v)/2,
-					x + m_attr.width(v)/2, y + m_attr.height(v)/2,
-					x + m_attr.width(v)/4, y - m_attr.height(v)/2,
-					x - m_attr.width(v)/4, y - m_attr.height(v)/2
-				});
-		break;
-	case Shape::InvTrapeze:
-		shape = drawPolygon(xmlNode, {
-					x - m_attr.width(v)/2, y - m_attr.height(v)/2,
-					x + m_attr.width(v)/2, y - m_attr.height(v)/2,
-					x + m_attr.width(v)/4, y + m_attr.height(v)/2,
-					x - m_attr.width(v)/4, y + m_attr.height(v)/2
-				});
-		break;
-	case Shape::Parallelogram:
-		shape = drawPolygon(xmlNode, {
-					x - m_attr.width(v)/2, y + m_attr.height(v)/2,
-					x + m_attr.width(v)/4, y + m_attr.height(v)/2,
-					x + m_attr.width(v)/2, y - m_attr.height(v)/2,
-					x - m_attr.width(v)/4, y - m_attr.height(v)/2
-				});
-		break;
-	case Shape::InvParallelogram:
-		shape = drawPolygon(xmlNode, {
-					x - m_attr.width(v)/2, y - m_attr.height(v)/2,
-					x + m_attr.width(v)/4, y - m_attr.height(v)/2,
-					x + m_attr.width(v)/2, y + m_attr.height(v)/2,
-					x - m_attr.width(v)/4, y + m_attr.height(v)/2
-				});
-		break;
-	// unsupported shapes are rendered as rectangle
-	default:
-		shape = xmlNode.append_child("rect");
-		shape.append_attribute("x") = x - m_attr.width(v)/2;
-		shape.append_attribute("y") = y - m_attr.height(v)/2;
-		shape.append_attribute("width") = m_attr.width(v);
-		shape.append_attribute("height") = m_attr.height(v);
+	double x = m_attr.x(v);//center coord
+	double y = m_attr.y(v);//center coord
+	g_node = xmlNode.append_child("g");
+	g_node.append_attribute("class") = "font_style";
+	g_node.append_attribute("transform") = ("translate(" + std::to_string(x - m_attr.width(v)/2) + ", " + std::to_string(y - m_attr.height(v)/2) + ")").c_str();
 
-		if (m_attr.shape(v) == Shape::RoundedRect) {
-			shape.append_attribute("rx") = m_attr.width(v) / 10;
-			shape.append_attribute("ry") = m_attr.height(v) / 10;
-		}
-	}
+	shape = g_node.append_child("rect");
 
 	if (m_attr.has(GraphAttributes::nodeStyle)) {
 		shape.append_attribute("fill") = m_attr.fillColor(v).toString().c_str();
@@ -269,15 +163,83 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 
 	std::cout << "Taco\n";
 
-	//===========================================================================
-	if (m_attr.has(GraphAttributes::nodeLabel)) {
+	std::string full_text = m_attr.label(v).c_str();
+	std::cerr << "Full Text: " << full_text << '\n';
+	int num_lines = 0;
+	int prev = 0;
+	int largest_line = 0;
+	bool new_line = false;
+	bool box_divide = false;
+
+	for(int i = 0; i < full_text.size(); i++){//count number of lines
+		//look for my inserted tags
+		if(full_text.substr(i, 16) == "<svg_box_divide>"){
+			box_divide = true;
+		}
+		if(full_text.substr(i, 14) == "<svg_new_line>"){
+			new_line = true;
+		}
+		if(new_line || box_divide){
+			if(i-prev > largest_line){//track largest line for box size.
+				largest_line = i-prev;
+			}
+			prev = i + 14;
+			if(box_divide){
+				prev += 2;
+			}
+		}
+		new_line = false;
+		box_divide = false;
+	}
+
+	prev = 0;
+
+	for(int i = 0; i < full_text.size(); i++){
+		//look for my inserted tags
+		if(full_text.substr(i, 16) == "<svg_box_divide>"){
+			box_divide = true;
+		}
+		if(full_text.substr(i, 14) == "<svg_new_line>"){
+			new_line = true;
+		}
+		//if I found one of my tags take action
+		//if new line, add text element
+		//if box divide, add text element and line element 
+		if(new_line || box_divide){
+			num_lines++;
+			text_node = g_node.append_child("text");
+			text_node.append_attribute("dy") = (std::to_string(.83 + ((num_lines - 1) * 1.1)) + "em").c_str();
+			text_node.append_attribute("dx") = ".17em";
+			text_node.append_attribute("text-anchor") = "start";
+			text_node.append_attribute("fill") = m_settings.fontColor().c_str();
+			text_node.append_attribute("textLength") = (std::to_string((i-prev) * .67) + "em").c_str();
+			text_node.append_attribute("lengthAdjust") = "spacingAndGlyphs";
+			text_node.text() = full_text.substr(prev, i-prev).c_str();
+
+			prev = i + 14;//move past new line
+
+			if(box_divide){
+				line_node = g_node.append_child("line");
+				line_node.append_attribute("x1") = "0";
+				line_node.append_attribute("y1") = (std::to_string(.83 + ((num_lines - 1) * 1.1) + .34) + "em").c_str();
+				line_node.append_attribute("x2") = (std::to_string(largest_line * .75) + "em").c_str();
+				line_node.append_attribute("y2") = (std::to_string(.83 + ((num_lines - 1) * 1.1) + .34) + "em").c_str();
+				line_node.append_attribute("stroke") = "black";
+				line_node.append_attribute("stroke-width") = "2px";
+				prev += 2;//move further for box_divide
+			}
+		}
+
+		new_line = false;
+		box_divide = false;
+	}
+
+	shape.append_attribute("width") = (std::to_string(largest_line * .75) + "em").c_str();
+	shape.append_attribute("height") = (std::to_string(num_lines * 1.3) + "em").c_str();
+
+	/*if (m_attr.has(GraphAttributes::nodeLabel)) {
 		pugi::xml_node label = xmlNode.append_child("text");
-		label.append_attribute("x") = m_attr.x(v);
-		label.append_attribute("y") = m_attr.y(v) - (m_attr.height(v)/2);
-		label.append_attribute("text-anchor") = "middle";
-		label.append_attribute("dominant-baseline") = "hanging";
-		label.append_attribute("font-family") = m_settings.fontFamily().c_str();
-		label.append_attribute("font-size") = m_settings.fontSize();
+		label.append_attribute("text-anchor") = "start";
 		label.append_attribute("fill") = m_settings.fontColor().c_str();
 
 		//current = the label-text generated in srcUML
@@ -300,21 +262,25 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 				temp.append_attribute("dy") = "1.1em";
 				temp.append_attribute("x") = m_attr.x(v);
 				temp.text() = full_text.substr(prev, i-prev).c_str();
-				std::cout << full_text.substr(prev, i-prev).c_str() << std::endl;
+				//std::cerr << "XXXX\n";
+				//std::cout << full_text.substr(prev, i-prev).c_str() << std::endl;
+				//std::cerr << "YYYY\n";
 				prev = i + 14;
 				if(boxDivide){
 					pugi::xml_node nl = xmlNode.append_child("line");
 					num_lines++;
-					nl.append_attribute("x1") = m_attr.x(v);
-					nl.append_attribute("y1") = m_attr.y(v) + num_lines;
-					nl.append_attribute("x2") = m_attr.x(v) + m_attr.width(v);
-					nl.append_attribute("y2") = m_attr.y(v) + num_lines;
+					nl.append_attribute("x1") = (std::to_string(x - m_attr.width(v)/2) + "em").c_str();//m_attr.x(v);
+					nl.append_attribute("y1") = (std::to_string(y - m_attr.height(v)/2 + num_lines * 4) + "em").c_str();
+					nl.append_attribute("x2") = (std::to_string(x - m_attr.width(v)/2 + m_attr.width(v)) + "em").c_str();
+					nl.append_attribute("y2") = (std::to_string(y - m_attr.height(v)/2 + num_lines * 4) + "em").c_str();
+					nl.append_attribute("stroke-width") = "1.0px";
+					nl.append_attribute("stroke") = "#000000";
 					prev += 2;
 				}
 			}
 			boxDivide = false;
 			newLine = false;
-		}
+		}*/
 		//go character by character. If svg_new_line break and create new tspan while 
 		//incrementing the y unti by 1.1em. If svg_box_divide then break make new tspan 
 		//with text, then make new line using two points on opposite sides of the box 
@@ -326,12 +292,10 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 		//every '\n' put a <tspan> </tspan>
 		//label.text() = m_attr.label(v).c_str();
 
-		if(m_attr.has(GraphAttributes::nodeLabelPosition)) {
+		/*if(m_attr.has(GraphAttributes::nodeLabelPosition)) {
 			label.attribute("x") = m_attr.x(v) + m_attr.xLabel(v);
 			label.attribute("y") = m_attr.y(v) + m_attr.yLabel(v);
-		}
-	}
-	//===========================================================================
+		}*/
 }
 
 void SvgPrinter::drawCluster(pugi::xml_node xmlNode, cluster c)
