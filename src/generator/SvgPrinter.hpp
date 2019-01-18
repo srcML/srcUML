@@ -95,6 +95,12 @@ private:
 	//! SVG configuration
 	const GraphIO::SVGSettings &m_settings;
 
+	//map of node to num of lines contained.
+	std::map<ogdf::node, int> num_lines;
+
+	//map of node to point that is node center.
+	std::map<ogdf::node, std::pair<double, double>> node_center;
+
 	/**
 	 * Draws a rectangle for each cluster in the ogdf::ClusterGraph.
 	 *

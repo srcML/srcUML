@@ -61,8 +61,8 @@ bool SvgPrinter::draw(std::ostream &os)
 		drawClusters(rootNode);
 	}
 
-	//drawEdges(rootNode);
 	drawNodes(rootNode);
+	drawEdges(rootNode);
 
 	doc.save(os);
 
