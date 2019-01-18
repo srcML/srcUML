@@ -95,6 +95,7 @@ pugi::xml_node SvgPrinter::writeHeader(pugi::xml_document &doc)
 	is << " " << (box.width() + 2*margin);
 	is << " " << (box.height() + 2*margin);
 	rootNode.append_attribute("viewBox") = is.str().c_str();
+	rootNode.append_attribute("fill") = "white";
 
 	pugi::xml_node style_node = rootNode.append_child("style");
 	style_node.text() = (".font_style {font: " + std::to_string(m_settings.fontSize()) + "px monospace;}").c_str();
@@ -161,9 +162,8 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 		}
 	}
 
-
 	std::string full_text = m_attr.label(v).c_str();
-	std::cerr << "Full Text: " << full_text << '\n';
+	//std::cerr << "Full Text: " << full_text << '\n';
 	int num_lines = 0;
 	int prev = 0;
 	int largest_line = 0;

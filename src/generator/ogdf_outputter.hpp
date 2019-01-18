@@ -129,8 +129,8 @@ public:
  
 		OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
 		ohl->layerDistance(80.0);
-		ohl->nodeDistance(80.0);
-		ohl->weightBalancing(0.8);
+		ohl->nodeDistance(100.0);
+		ohl->weightBalancing(0.9);
 		sl.setLayout(ohl);
 
 		sl.call(ga);
