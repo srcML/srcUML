@@ -13,6 +13,7 @@
 //OGDF_Requirements
 //Basic_Graph_Include================================================	
 #include <ogdf/basic/Graph.h>
+#include <ogdf/basic/graphics.h>
 #include <ogdf/basic/Graph_d.h>
 #include <ogdf/basic/GraphAttributes.h>
 #include <ogdf/basic/graph_generators.h>
@@ -47,6 +48,14 @@
 using namespace ogdf;
 using namespace ogdf::internal;
 
+struct layout_info{
+
+	//Here for when needed
+
+};
+
+
+
 class ogdf_outputter : srcuml_outputter{
 
 public:
@@ -69,19 +78,22 @@ public:
 
 		//Classes/Nodes
 		for(const std::shared_ptr<srcuml_class> & aclass : classes){
-			ogdf::node cur_node = g.newNode();
+			node cur_node = g.newNode();
 			//Insert into map the node class pairing
 			class_node_map.insert(std::pair<std::string, ogdf::node>(aclass->get_name(), cur_node));
-			//Set Label
+
+			double& h = ga.height(cur_node);
+			h = 120;
+
+			double& w = ga.width(cur_node);
+			w = 120;
+
+			Color& color = ga.fillColor(cur_node);
+			color = Color(Color::Name::Antiquewhite);
+
 			std::string& label = ga.label(cur_node);
 			label = generate_label(aclass);
 
-			//std::cout << "label: " << label << '\n';
-			//Set Width/Height
-			double& w = ga.width(cur_node);
-			double& h = ga.height(cur_node);
-			//Set Color
-			Color& color = ga.fillColor(cur_node);
 		}
 
 
@@ -106,21 +118,14 @@ public:
 
 
 		for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
-			float& w = ga.strokeWidth(e);
-			w = 1;
+			float &w = ga.strokeWidth(e);
+			w = 2;
 		}
 
 
-		for(NodeElement * n = g.firstNode(); n; n = n->succ()){
-			double& h = ga.height(n);
-			double& w = ga.width(n);
-			Color& color = ga.fillColor(n);
+		//for(NodeElement * n = g.firstNode(); n; n = n->succ()){
 
-			h = 120;
-			w = 120;
-
-			color = Color(Color::Name::Antiquewhite);
-		}
+		//}
 
 
 		SugiyamaLayout sl;
@@ -128,9 +133,9 @@ public:
 		sl.setCrossMin(new MedianHeuristic);
  
 		OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
-		ohl->layerDistance(80.0);
-		ohl->nodeDistance(100.0);
-		ohl->weightBalancing(0.9);
+		ohl->layerDistance(120.0);
+		ohl->nodeDistance(200.0);
+		ohl->weightBalancing(1);
 		sl.setLayout(ohl);
 
 		sl.call(ga);
@@ -201,6 +206,8 @@ private:
 	Graph g;
 
 	GraphAttributes ga;
+
+
 
 	
 };

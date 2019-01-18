@@ -233,6 +233,7 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 		box_divide = false;
 	}
 
+
 	shape.append_attribute("width") = (std::to_string(largest_line * .75) + "em").c_str();
 	shape.append_attribute("height") = (std::to_string(num_lines * 1.3) + "em").c_str();
 
@@ -435,6 +436,9 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 			break;
 		}
 	}
+
+	drawSourceArrow = true;
+	drawTargetArrow = true;
 
 	xmlNode = xmlNode.append_child("g");
 	bool drawLabel = m_attr.has(GraphAttributes::edgeLabel) && !m_attr.label(e).empty();
