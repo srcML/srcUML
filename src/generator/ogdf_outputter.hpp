@@ -50,7 +50,8 @@ using namespace ogdf::internal;
 
 struct layout_info{
 
-	//Here for when needed
+	std::map<ogdf::node, std::pair<double, double>> node_wh;
+	std::map<ogdf::node, std::pair<double, double>> node_xy;
 
 };
 
@@ -207,7 +208,7 @@ private:
 
 	GraphAttributes ga;
 
-
+	layout_info li;
 
 	
 };
