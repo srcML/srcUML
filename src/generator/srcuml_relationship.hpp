@@ -66,7 +66,7 @@ struct srcuml_relationship {
         return destination_label;
     }
 
-    relationship_type get_type(){
+    relationship_type get_type() const{
         return type;
     }
 

@@ -1,5 +1,25 @@
-#ifndef LOAD_GRAPH
-#define LOAD_GRAPH
+/**
+ * @file ogdf_outputter.hpp
+ *
+ * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
+ *
+ * This file is part of srcUML.
+ *
+ * srcUML is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * srcUML is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef INCLUDED_OGDF_OUTPUTTER_HPP
+#define INCLUDED_OGDF_OUTPUTTER_HPP
 
 //srcUML_Requirements
 #include <srcuml_class.hpp>
@@ -26,7 +46,7 @@
 
 //Input_Output_Include===============================================
 #include <ogdf/fileformats/GraphIO.h>
-#include "SvgPrinter.hpp"
+#include "svg_printer.hpp"
 //===================================================================
 
 //Layout_Include=====================================================
@@ -48,16 +68,6 @@
 using namespace ogdf;
 using namespace ogdf::internal;
 
-struct layout_info{
-
-	std::map<ogdf::node, std::pair<double, double>> node_wh;
-	std::map<ogdf::node, std::pair<double, double>> node_xy;
-	std::map<ogdf::node, std::pair<int, int>> node_rc;
-
-};
-
-
-
 class ogdf_outputter : srcuml_outputter{
 
 public:
@@ -78,8 +88,6 @@ public:
 		srcuml_relationships relationships = analyze_relationships(classes);
 		std::map<std::string, ogdf::node> class_node_map;
 
-		layout_info li;
-
 		//Classes/Nodes
 		for(const std::shared_ptr<srcuml_class> & aclass : classes){
 			node cur_node = g.newNode();
@@ -90,7 +98,6 @@ public:
 			int num_lines = 0;
 			int longest_line = 0;
 			label = generate_label(aclass, num_lines, longest_line);
-			li.node_rc[cur_node] = std::pair<int, int>(num_lines, longest_line);
 
 			double& h = ga.height(cur_node);
 			h = num_lines * 1.3 * 10;//num_lines * 50;
@@ -100,9 +107,7 @@ public:
 
 			Color& color = ga.fillColor(cur_node);
 			color = Color(Color::Name::Antiquewhite);
-
 		}
-
 
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
@@ -121,19 +126,48 @@ public:
 
 			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
 
-		}
 
-
-		for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
-			float &w = ga.strokeWidth(e);
+			float &w = ga.strokeWidth(cur_edge);
 			w = 2;
+
+			StrokeType &st = ga.strokeType(cur_edge);
+
+			const relationship_type r_type = relationship.get_type();
+			switch(r_type){
+				case DEPENDENCY:
+					st = StrokeType::Dash;
+					break;
+				case ASSOCIATION:
+					st = StrokeType::Dash;
+					break;
+				case BIDIRECTIONAL:
+					st = StrokeType::Dash;
+					break;
+				case AGGREGATION:
+					st = StrokeType::Dash;
+					break;
+				case COMPOSITION:
+					st = StrokeType::Dash;
+					break;
+				case GENERALIZATION:
+					st = StrokeType::Dash;
+					break;
+				case REALIZATION:
+					st = StrokeType::Dash;
+					break;
+			}
 		}
 
+		/*
+			for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
+			
+			}
 
-		//for(NodeElement * n = g.firstNode(); n; n = n->succ()){
 
-		//}
+			for(NodeElement * n = g.firstNode(); n; n = n->succ()){
 
+			}
+		*/
 
 		SugiyamaLayout sl;
 		sl.setRanking(new OptimalRanking);
@@ -194,26 +228,22 @@ public:
 		return label;
 	}
 
-	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings)
-	{
+	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings){
 		std::ofstream os(filename);
 		return drawSVG(A, os, settings);
 	}
 
-	bool drawSVG(const ClusterGraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings)
-	{
+	bool drawSVG(const ClusterGraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings){
 		std::ofstream os(filename);
 		return drawSVG(A, os, settings);
 	}
 
-	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings)
-	{
+	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings){
 		SvgPrinter printer(attr, settings);
 		return printer.draw(os);
 	}
 
-	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings)
-	{
+	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings){
 		SvgPrinter printer(attr, settings);
 		return printer.draw(os);
 	}
