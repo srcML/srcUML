@@ -52,6 +52,7 @@ struct layout_info{
 
 	std::map<ogdf::node, std::pair<double, double>> node_wh;
 	std::map<ogdf::node, std::pair<double, double>> node_xy;
+	std::map<ogdf::node, std::pair<int, int>> node_rc;
 
 };
 
@@ -77,23 +78,28 @@ public:
 		srcuml_relationships relationships = analyze_relationships(classes);
 		std::map<std::string, ogdf::node> class_node_map;
 
+		layout_info li;
+
 		//Classes/Nodes
 		for(const std::shared_ptr<srcuml_class> & aclass : classes){
 			node cur_node = g.newNode();
 			//Insert into map the node class pairing
 			class_node_map.insert(std::pair<std::string, ogdf::node>(aclass->get_name(), cur_node));
 
+			std::string& label = ga.label(cur_node);
+			int num_lines = 0;
+			int longest_line = 0;
+			label = generate_label(aclass, num_lines, longest_line);
+			li.node_rc[cur_node] = std::pair<int, int>(num_lines, longest_line);
+
 			double& h = ga.height(cur_node);
-			h = 120;
+			h = num_lines * 1.3 * 10;//num_lines * 50;
 
 			double& w = ga.width(cur_node);
-			w = 120;
+			w = longest_line * .75 * 10;//longest_line * 10;
 
 			Color& color = ga.fillColor(cur_node);
 			color = Color(Color::Name::Antiquewhite);
-
-			std::string& label = ga.label(cur_node);
-			label = generate_label(aclass);
 
 		}
 
@@ -151,17 +157,25 @@ public:
 		return true;
 	}
 
-	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass){
+	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass, int &num_lines, int &longest_line){
 		std::string label;
 		if(aclass->get_srcuml_name() != aclass->get_name()){
 			label += aclass->get_srcuml_name() + "<svg_new_line>";
+			++num_lines;
+			if(aclass->get_srcuml_name().length() > longest_line){longest_line = aclass->get_srcuml_name().length();}
 		}
 		label += aclass->get_name();
+		++num_lines;
+		if(aclass->get_name().length() > longest_line){longest_line = aclass->get_name().length();}
 		label += "<svg_box_divide>";
+		++num_lines;
 		for(const srcuml_attribute & attribute : aclass->get_attributes()){
 			label += attribute.get_string_attribute() + "<svg_new_line>";
+			++num_lines;
+			if(attribute.get_string_attribute().length() > longest_line){longest_line = attribute.get_string_attribute().length();}
 		}
 		label += "<svg_box_divide>";
+		++num_lines;
 
 		for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
 			for(const FunctionPolicy::FunctionData * function : aclass->get_data().methods[access]) { //private members
@@ -171,6 +185,8 @@ public:
 				
 				label += op.get_string_function();
 				label += "<svg_new_line>";
+				++num_lines;
+				if(op.get_string_function().length() > longest_line){longest_line = op.get_string_function().length();}
 			}
 		}
 		//create proper string such that SvgPrinter can parse.
@@ -207,9 +223,6 @@ private:
 	Graph g;
 
 	GraphAttributes ga;
-
-	layout_info li;
-
 	
 };
 

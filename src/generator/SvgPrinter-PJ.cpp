@@ -31,8 +31,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <string>
 
-#include <ogdf/fileformats/SvgPrinter.h>
+#include "SvgPrinter.hpp"
 #include <ogdf/basic/Queue.h>
 
 using namespace ogdf;
@@ -46,7 +47,7 @@ GraphIO::SVGSettings::SVGSettings()
 	m_bezierInterpolation = false;
 	m_fontSize = 10;
 	m_fontColor = "#000000";
-	m_fontFamily = "Arial";
+	m_fontFamily = "Courier";
 	m_width = "";
 	m_height = "";
 }
@@ -60,8 +61,8 @@ bool SvgPrinter::draw(std::ostream &os)
 		drawClusters(rootNode);
 	}
 
-	drawEdges(rootNode);
 	drawNodes(rootNode);
+	drawEdges(rootNode);
 
 	doc.save(os);
 
@@ -94,10 +95,11 @@ pugi::xml_node SvgPrinter::writeHeader(pugi::xml_document &doc)
 	is << " " << (box.width() + 2*margin);
 	is << " " << (box.height() + 2*margin);
 	rootNode.append_attribute("viewBox") = is.str().c_str();
+	rootNode.append_attribute("fill") = "white";
 
 	pugi::xml_node style_node = rootNode.append_child("style");
 	style_node.text() = (".font_style {font: " + std::to_string(m_settings.fontSize()) + "px monospace;}").c_str();
-	//std::cerr << std::to_string(m_settings.fontSize()) << std::endl;
+
 
 	return rootNode;
 }
@@ -219,10 +221,10 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 				line_node = g_node.append_child("line");
 				line_node.append_attribute("x1") = "0";
 				line_node.append_attribute("y1") = (std::to_string(.83 + ((num_lines - 1) * 1.1) + .34) + "em").c_str();
-				line_node.append_attribute("x2") = m_attr.width(v);
+				line_node.append_attribute("x2") = (std::to_string(largest_line * .75) + "em").c_str();
 				line_node.append_attribute("y2") = (std::to_string(.83 + ((num_lines - 1) * 1.1) + .34) + "em").c_str();
 				line_node.append_attribute("stroke") = "black";
-				line_node.append_attribute("stroke-width") = "1px";
+				line_node.append_attribute("stroke-width") = "2px";
 				prev += 2;//move further for box_divide
 			}
 		}
@@ -234,6 +236,66 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 
 	shape.append_attribute("width") = m_attr.width(v);//(std::to_string(largest_line * .75) + "em").c_str();
 	shape.append_attribute("height") = m_attr.height(v);//(std::to_string(num_lines * 1.3) + "em").c_str();
+
+	/*if (m_attr.has(GraphAttributes::nodeLabel)) {
+		pugi::xml_node label = xmlNode.append_child("text");
+		label.append_attribute("text-anchor") = "start";
+		label.append_attribute("fill") = m_settings.fontColor().c_str();
+
+		//current = the label-text generated in srcUML
+		std::string full_text = m_attr.label(v).c_str();
+		bool newLine = false;
+		bool boxDivide = false;
+		int prev = 0;
+		int num_lines = 0;
+
+		for(int i = 0; i < full_text.size(); i++){
+			if(full_text.substr(i, 16) == "<svg_box_divide>"){
+				boxDivide = true;
+			}
+			if(full_text.substr(i, 14) == "<svg_new_line>"){
+				newLine = true;
+			}
+			if(newLine || boxDivide){
+				pugi::xml_node temp = label.append_child("tspan");
+				num_lines++;
+				temp.append_attribute("dy") = "1.1em";
+				temp.append_attribute("x") = m_attr.x(v);
+				temp.text() = full_text.substr(prev, i-prev).c_str();
+				//std::cerr << "XXXX\n";
+				//std::cout << full_text.substr(prev, i-prev).c_str() << std::endl;
+				//std::cerr << "YYYY\n";
+				prev = i + 14;
+				if(boxDivide){
+					pugi::xml_node nl = xmlNode.append_child("line");
+					num_lines++;
+					nl.append_attribute("x1") = (std::to_string(x - m_attr.width(v)/2) + "em").c_str();//m_attr.x(v);
+					nl.append_attribute("y1") = (std::to_string(y - m_attr.height(v)/2 + num_lines * 4) + "em").c_str();
+					nl.append_attribute("x2") = (std::to_string(x - m_attr.width(v)/2 + m_attr.width(v)) + "em").c_str();
+					nl.append_attribute("y2") = (std::to_string(y - m_attr.height(v)/2 + num_lines * 4) + "em").c_str();
+					nl.append_attribute("stroke-width") = "1.0px";
+					nl.append_attribute("stroke") = "#000000";
+					prev += 2;
+				}
+			}
+			boxDivide = false;
+			newLine = false;
+		}*/
+		//go character by character. If svg_new_line break and create new tspan while 
+		//incrementing the y unti by 1.1em. If svg_box_divide then break make new tspan 
+		//with text, then make new line using two points on opposite sides of the box 
+		//and restart.
+
+		//code to add tspan
+		//get string label and for every \n create a new tspan with dy = "1.1em"
+
+		//every '\n' put a <tspan> </tspan>
+		//label.text() = m_attr.label(v).c_str();
+
+		/*if(m_attr.has(GraphAttributes::nodeLabelPosition)) {
+			label.attribute("x") = m_attr.x(v) + m_attr.xLabel(v);
+			label.attribute("y") = m_attr.y(v) + m_attr.yLabel(v);
+		}*/
 }
 
 void SvgPrinter::drawCluster(pugi::xml_node xmlNode, cluster c)
@@ -374,6 +436,9 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 			break;
 		}
 	}
+
+	drawSourceArrow = true;
+	drawTargetArrow = true;
 
 	xmlNode = xmlNode.append_child("g");
 	bool drawLabel = m_attr.has(GraphAttributes::edgeLabel) && !m_attr.label(e).empty();

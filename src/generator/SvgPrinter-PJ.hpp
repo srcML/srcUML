@@ -95,6 +95,8 @@ private:
 	//! SVG configuration
 	const GraphIO::SVGSettings &m_settings;
 
+	//map of node to num of lines contained.
+
 	/**
 	 * Draws a rectangle for each cluster in the ogdf::ClusterGraph.
 	 *
