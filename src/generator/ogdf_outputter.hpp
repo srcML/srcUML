@@ -31,7 +31,7 @@
 #include <srcuml_outputter.hpp>
 
 //OGDF_Requirements
-//Basic_Graph_Include================================================	
+//Basic_Graph_Include================================================
 #include <ogdf/basic/Graph.h>
 #include <ogdf/basic/graphics.h>
 #include <ogdf/basic/Graph_d.h>
@@ -159,12 +159,12 @@ public:
 		}
 
 		/*
-			for(EdgeElement * e = g.firstEdge(); e; e = e->succ()){
+			for(ogdf::edge * e = g.firstEdge(); e; e = e->succ()){
 			
 			}
 
 
-			for(NodeElement * n = g.firstNode(); n; n = n->succ()){
+			for(ogdf::node * n = g.firstNode(); n; n = n->succ()){
 
 			}
 		*/
