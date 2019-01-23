@@ -39,8 +39,7 @@ using namespace ogdf;
 
 GraphIO::SVGSettings GraphIO::svgSettings;
 
-GraphIO::SVGSettings::SVGSettings()
-{
+GraphIO::SVGSettings::SVGSettings(){
 	m_margin = 1;
 	m_curviness = 0;
 	m_bezierInterpolation = false;
@@ -51,8 +50,7 @@ GraphIO::SVGSettings::SVGSettings()
 	m_height = "";
 }
 
-bool SvgPrinter::draw(std::ostream &os)
-{
+bool SvgPrinter::draw(std::ostream &os){
 	pugi::xml_document doc;
 	pugi::xml_node rootNode = writeHeader(doc);
 
@@ -68,8 +66,7 @@ bool SvgPrinter::draw(std::ostream &os)
 	return true;
 }
 
-pugi::xml_node SvgPrinter::writeHeader(pugi::xml_document &doc)
-{
+pugi::xml_node SvgPrinter::writeHeader(pugi::xml_document &doc){
 	pugi::xml_node rootNode = doc.append_child("svg");
 	rootNode.append_attribute("xmlns") = "http://www.w3.org/2000/svg";
 	rootNode.append_attribute("xmlns:xlink") = "http://www.w3.org/1999/xlink";
@@ -102,8 +99,7 @@ pugi::xml_node SvgPrinter::writeHeader(pugi::xml_document &doc)
 	return rootNode;
 }
 
-void SvgPrinter::writeDashArray(pugi::xml_node xmlNode, StrokeType lineStyle, double lineWidth)
-{
+void SvgPrinter::writeDashArray(pugi::xml_node xmlNode, StrokeType lineStyle, double lineWidth){
 	if(lineStyle != StrokeType::None && lineStyle != StrokeType::Solid) {
 		std::stringstream is;
 
@@ -129,8 +125,7 @@ void SvgPrinter::writeDashArray(pugi::xml_node xmlNode, StrokeType lineStyle, do
 	}
 }
 
-void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
-{
+void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v){
 	pugi::xml_node g_node; 
 	pugi::xml_node shape;
 	pugi::xml_node text_node;
@@ -236,8 +231,7 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v)
 	shape.append_attribute("height") = m_attr.height(v);//(std::to_string(num_lines * 1.3) + "em").c_str();
 }
 
-void SvgPrinter::drawCluster(pugi::xml_node xmlNode, cluster c)
-{
+void SvgPrinter::drawCluster(pugi::xml_node xmlNode, cluster c){
 	OGDF_ASSERT(m_clsAttr);
 
 	pugi::xml_node cluster;
@@ -256,8 +250,7 @@ void SvgPrinter::drawCluster(pugi::xml_node xmlNode, cluster c)
 	}
 }
 
-void SvgPrinter::drawNodes(pugi::xml_node xmlNode)
-{
+void SvgPrinter::drawNodes(pugi::xml_node xmlNode){
 	List<node> nodes;
 	m_attr.constGraph().allNodes(nodes);
 
@@ -270,8 +263,7 @@ void SvgPrinter::drawNodes(pugi::xml_node xmlNode)
 	}
 }
 
-void SvgPrinter::drawClusters(pugi::xml_node xmlNode)
-{
+void SvgPrinter::drawClusters(pugi::xml_node xmlNode){
 	OGDF_ASSERT(m_clsAttr);
 
 	Queue<cluster> queue;
@@ -287,8 +279,7 @@ void SvgPrinter::drawClusters(pugi::xml_node xmlNode)
 	}
 }
 
-void SvgPrinter::drawEdges(pugi::xml_node xmlNode)
-{
+void SvgPrinter::drawEdges(pugi::xml_node xmlNode){
 	if (m_attr.has(GraphAttributes::edgeGraphics)) {
 		xmlNode = xmlNode.append_child("g");
 
@@ -449,7 +440,6 @@ void SvgPrinter::drawLine(std::stringstream &ss, const DPoint &p1, const DPoint 
 	ss << " M" << p1.m_x << "," << p1.m_y << " L" << p2.m_x << "," << p2.m_y;
 }
 
-
 void SvgPrinter::drawBezier(std::stringstream &ss, const DPoint &p1, const DPoint &p2, const DPoint &c1, const DPoint &c2) {
 	ss << " M" << p1.m_x << "," << p1.m_y << " C" << c1.m_x << "," << c1.m_y << "  " << c2.m_x << "," << c2.m_y << " " << p2.m_x << "," << p2.m_y;
 }
@@ -554,8 +544,7 @@ pugi::xml_node SvgPrinter::drawCurve(pugi::xml_node xmlNode, edge e, List<DPoint
 	return line;
 }
 
-void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoint &end, node v, edge e)
-{
+void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoint &end, node v, edge e){
 	const double dx = end.m_x - start.m_x;
 	const double dy = end.m_y - start.m_y;
 	const double size = getArrowSize(e, v);
