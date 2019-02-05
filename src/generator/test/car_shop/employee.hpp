@@ -7,5 +7,6 @@ private:
 	shop *shop_of_work;
 
 public:
+	Employee();
 
 }
