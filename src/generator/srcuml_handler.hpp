@@ -32,13 +32,15 @@
 #include <srcuml_relationship.hpp>
 #include <dot_outputter.hpp>
 #include <yuml_outputter.hpp>
-#include <ogdf_outputter.hpp>
+#include <svg_sugiyama_outputter.hpp>
 
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
 #include <memory>
 #include <map>
+
+enum output_type {dot, yuml, svg_sugiyama, svg_multi, svg_three};
 
 /**
  * srcuml_handler
@@ -49,74 +51,103 @@ class srcuml_handler : public srcSAXEventDispatch::PolicyListener {
 
 private:
 
-    std::vector<std::shared_ptr<srcuml_class>> classes;
-    char type;
+	std::vector<std::shared_ptr<srcuml_class>> classes;
+	output_type type;
 
 public:
 
-    srcuml_handler(const std::string & input_str, std::ostream & out, char t = 'O') {
+	srcuml_handler(const std::string & input_str, std::ostream & out, std::string t = "svg_sugiyama") {
 
-        type = t;
-        srcSAXController controller(input_str.c_str());
-        run(controller, out);
+		if(t == "svg_sugiyama"){
+			type = svg_sugiyama;
+		}else if(t == "dot"){
+			type = dot;
+		}else if(t == "yuml"){
+			type = yuml;
+		}else if(t == "svg_multi"){
+			type = svg_multi;
+		}else if(t == "svg_three"){
+			type = svg_three;
+		}
+		srcSAXController controller(input_str.c_str());
+		run(controller, out);
 
-    }
+	}
 
-    srcuml_handler(const char * input_filename, std::ostream & out, char t = 'O') {
+	srcuml_handler(const char * input_filename, std::ostream & out, std::string t = "svg_sugiyama") {
 
-        type = t;
-        srcSAXController controller(input_filename);
-        run(controller, out);
+		if(t == "svg_sugiyama"){
+			type = svg_sugiyama;
+		}else if(t == "dot"){
+			type = dot;
+		}else if(t == "yuml"){
+			type = yuml;
+		}else if(t == "svg_multi"){
+			type = svg_multi;
+		}else if(t == "svg_three"){
+			type = svg_three;
+		}
+		srcSAXController controller(input_filename);
+		run(controller, out);
 
-    }
+	}
 
-    ~srcuml_handler() {}
+	~srcuml_handler() {}
 
-    void run(srcSAXController & controller, std::ostream & out) {
+	void run(srcSAXController & controller, std::ostream & out) {
 
-        srcuml_dispatcher<ClassPolicy> dispatcher(this);
-        controller.parse(&dispatcher);
-        switch(type){
-            case 'O':
-                {
-                    std::cout << "OGDF Called\n";
-                    ogdf_outputter outputter;
-                    outputter.output(out, classes);
-                }
-                break;
+		srcuml_dispatcher<ClassPolicy> dispatcher(this);
+		controller.parse(&dispatcher);
 
-            case 'D':
-                {
-                    std::cout << "DOT Called\n";
-                    dot_outputter outputter;
-                    outputter.output(out, classes);
-                }
-                break;
+		switch(type){
+			case svg_sugiyama:
+				{
+					std::cout << "SVG SUGIYAMA Called\n";
+					svg_sugiyama_outputter outputter;
+					outputter.output(out, classes);
+				}
+				break;
 
-            case 'Y':
-                {
-                    std::cout << "YUML Called\n";
-                    yuml_outputter outputter;
-                    outputter.output(out, classes);
-                }
-                break; 
+			case dot:
+				{
+					std::cout << "DOT Called\n";
+					dot_outputter outputter;
+					outputter.output(out, classes);
+				}
+				break;
 
-        }
+			case yuml:
+				{
+					std::cout << "YUML Called\n";
+					yuml_outputter outputter;
+					outputter.output(out, classes);
+				}
+				break; 
 
-        //delete outputter;
-    }
+			default:
+				{
+					std::cout << "Error: Output type not recognized, running svg_sugiyama\n";
+					svg_sugiyama_outputter outputter;
+					outputter.output(out, classes);
+				}
+				break;
 
-    virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy, const srcSAXEventDispatch::srcSAXEventContext & ctx) override {
+		}
 
-        if(typeid(ClassPolicy) == typeid(*policy)) {
+		//delete outputter;
+	}
 
-            ClassPolicy::ClassData * class_data = policy->Data<ClassPolicy::ClassData>();
-            if(class_data && class_data->name)
-                classes.emplace_back(std::make_shared<srcuml_class>(class_data));
+	virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy, const srcSAXEventDispatch::srcSAXEventContext & ctx) override {
 
-        }
+		if(typeid(ClassPolicy) == typeid(*policy)) {
 
-    }
+			ClassPolicy::ClassData * class_data = policy->Data<ClassPolicy::ClassData>();
+			if(class_data && class_data->name)
+				classes.emplace_back(std::make_shared<srcuml_class>(class_data));
+
+		}
+
+	}
 
 private:
 

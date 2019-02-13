@@ -29,11 +29,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include <algorithm>
-#include <cmath>
-
-#include <ogdf/fileformats/SvgPrinter.h>
-#include <ogdf/basic/Queue.h>
+#include "svg_printer.hpp"
 
 using namespace ogdf;
 

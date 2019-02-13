@@ -35,6 +35,9 @@
 #include <sstream>
 #include <ogdf/lib/pugixml/pugixml.h>
 #include <ogdf/fileformats/GraphIO.h>
+#include <algorithm>
+#include <cmath>
+#include <ogdf/basic/Queue.h>
 
 namespace ogdf
 {
