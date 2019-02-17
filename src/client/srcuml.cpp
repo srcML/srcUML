@@ -92,7 +92,7 @@ int main(int argc, char * argv[]) {
 
 		if(vm.count("type")) {
 			type = vm["type"].as<std::string>();
-			std::cout << "Type: " << temp << std::endl;
+			std::cout << "Type: " << type << std::endl;
 		}
 
 	} catch(std::exception& e) {

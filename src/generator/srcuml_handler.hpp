@@ -33,6 +33,8 @@
 #include <dot_outputter.hpp>
 #include <yuml_outputter.hpp>
 #include <svg_sugiyama_outputter.hpp>
+#include <svg_multi_outputter.hpp>
+#include <svg_three_outputter.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -104,6 +106,22 @@ public:
 				{
 					std::cout << "SVG SUGIYAMA Called\n";
 					svg_sugiyama_outputter outputter;
+					outputter.output(out, classes);
+				}
+				break;
+
+			case svg_multi:
+				{
+					std::cout << "SVG MULTI Called\n";
+					svg_multi_outputter outputter;
+					outputter.output(out, classes);
+				}
+				break;
+
+			case svg_three:
+				{
+					std::cout << "SVG THREE Called\n";
+					svg_three_outputter outputter;
 					outputter.output(out, classes);
 				}
 				break;

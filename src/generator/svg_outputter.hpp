@@ -46,7 +46,7 @@
 
 //Input_Output_Include===============================================
 #include <ogdf/fileformats/GraphIO.h>
-#include "svg_printer.hpp"
+#include <svg_printer.hpp>
 //===================================================================
 
 //Layout_Include=====================================================

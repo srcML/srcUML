@@ -1,0 +1,26 @@
+Algorithm Layout Plan
+P.J. Leyden
+02/06/2019
+
+I will have two layout definitions:
+
+	1) Multi-Cluster Layout 
+		- This layout will have clusters based on relationship data and stereotype.
+			Closely related classes will end up clustered.
+		- For instance, the printer part of a graph generator might be clustered with its components
+			close together.
+		- Each class will have a tinted box and label representing it's stereotype.
+		- Each individual cluster will have a line crossing algorithm run on it
+		- All clusters will act as a single node an the overall will have a LCM alg. run. 
+
+	2) Three-Cluster Layout
+		- This layout will have three areas
+			- Boundary = contains classes that are interacted with
+			- Control = contains classes used for control
+			- Entity = contains classes that contain data or represent real-life objects
+		- The different clusters will have boxes surounding them that will be tinted 
+			different colors depending on the catagory
+			- Boundary - Blue
+			- Control - Red
+			- Entity - Green 
+		- Each individual cluster will have a line crossing algorithm run on it
