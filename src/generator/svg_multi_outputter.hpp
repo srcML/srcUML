@@ -1,14 +1,14 @@
-#ifndef INCLUDED_SVG_SUGIYAMA_OUTPUTTER_HPP
-#define INCLUDED_SVG_SUGIYAMA_OUTPUTTER_HPP
+#ifndef INCLUDED_SVG_MULTI_OUTPUTTER_HPP
+#define INCLUDED_SVG_MULTI_OUTPUTTER_HPP
 
 
 #include <svg_outputter.hpp>
 
-class svg_sugiyama_outputter : public svg_outputter {
+class svg_multi_outputter : public svg_outputter {
 
 public:
 
-	svg_sugiyama_outputter(){
+	svg_multi_outputter(){
 		ga.init(g,
 		GraphAttributes::nodeGraphics |
 		GraphAttributes::edgeGraphics |
