@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full" style="background: white" viewBox="28.5 28.5 863 758.833">
+	<style>.font_style {font: 10px monospace;}</style>
+	<rect width="200%" height="200%" fill="white" />
+	<g>
+		<g>
+			<path fill="none" d=" M790,49.5 L790,221.5" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+		</g>
+		<g>
+			<path fill="none" d=" M790,221.5 L120,503.333" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+		</g>
+		<g>
+			<path fill="none" d=" M790,221.5 L867.5,671.333" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+		</g>
+		<g>
+			<path fill="none" d=" M790,221.5 L867.5,671.333" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+		</g>
+		<g>
+			<path fill="none" d=" M790,221.5 L867.5,671.333" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+		</g>
+		<g>
+			<path fill="none" d=" M500,503.333 L867.5,671.333" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+		</g>
+	</g>
+	<g class="font_style" transform="translate(845.000000, 651.833333)">
+		<rect fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" width="45" height="39" />
+		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="4.020000em" lengthAdjust="spacingAndGlyphs">String</text>
+		<line x1="0" y1="1.170000em" x2="45" y2="1.170000em" stroke="black" stroke-width="1px" />
+		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
+		<line x1="0" y1="2.270000em" x2="45" y2="2.270000em" stroke="black" stroke-width="1px" />
+	</g>
+	<g class="font_style" transform="translate(767.500000, 30.000000)">
+		<rect fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" width="45" height="39" />
+		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="4.020000em" lengthAdjust="spacingAndGlyphs">Window</text>
+		<line x1="0" y1="1.170000em" x2="45" y2="1.170000em" stroke="black" stroke-width="1px" />
+		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
+		<line x1="0" y1="2.270000em" x2="45" y2="2.270000em" stroke="black" stroke-width="1px" />
+	</g>
+	<g class="font_style" transform="translate(703.750000, 189.000000)">
+		<rect fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" width="172.5" height="65" />
+		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="15.410000em" lengthAdjust="spacingAndGlyphs">MyOperatingSystemWindow</text>
+		<line x1="0" y1="1.170000em" x2="172.5" y2="1.170000em" stroke="black" stroke-width="1px" />
+		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="9.380000em" lengthAdjust="spacingAndGlyphs">- name: String</text>
+		<text dy="3.030000em" dx=".17em" text-anchor="start" fill="#000000" textLength="9.380000em" lengthAdjust="spacingAndGlyphs">- ID: WindowID</text>
+		<text dy="4.130000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
+		<line x1="0" y1="4.470000em" x2="172.5" y2="4.470000em" stroke="black" stroke-width="1px" />
+	</g>
+	<g class="font_style" transform="translate(30.000000, 477.333333)">
+		<rect fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" width="180" height="52" />
+		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="12.730000em" lengthAdjust="spacingAndGlyphs">MyApplicationWindow</text>
+		<line x1="0" y1="1.170000em" x2="180" y2="1.170000em" stroke="black" stroke-width="1px" />
+		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="16.080000em" lengthAdjust="spacingAndGlyphs">- myApplicationContent: </text>
+		<text dy="3.030000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
+		<line x1="0" y1="3.370000em" x2="180" y2="3.370000em" stroke="black" stroke-width="1px" />
+	</g>
+	<g class="font_style" transform="translate(30.000000, 720.833333)">
+		<rect fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" width="105" height="65" />
+		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="8.040000em" lengthAdjust="spacingAndGlyphs">«datatype»</text>
+		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="5.360000em" lengthAdjust="spacingAndGlyphs">WindowID</text>
+		<line x1="0" y1="2.270000em" x2="105" y2="2.270000em" stroke="black" stroke-width="1px" />
+		<text dy="3.030000em" dx=".17em" text-anchor="start" fill="#000000" textLength="9.380000em" lengthAdjust="spacingAndGlyphs">- cool: String</text>
+		<text dy="4.130000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
+		<line x1="0" y1="4.470000em" x2="105" y2="4.470000em" stroke="black" stroke-width="1px" />
+	</g>
+	<g class="font_style" transform="translate(410.000000, 477.333333)">
+		<rect fill="#FAEBD7" stroke-width="1.000000px" stroke="#000000" width="180" height="52" />
+		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="4.690000em" lengthAdjust="spacingAndGlyphs">Content</text>
+		<line x1="0" y1="1.170000em" x2="180" y2="1.170000em" stroke="black" stroke-width="1px" />
+		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="16.080000em" lengthAdjust="spacingAndGlyphs">- currentContent: String</text>
+		<text dy="3.030000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
+		<line x1="0" y1="3.370000em" x2="180" y2="3.370000em" stroke="black" stroke-width="1px" />
+	</g>
+</svg>
