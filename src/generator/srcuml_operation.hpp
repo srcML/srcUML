@@ -46,10 +46,10 @@ public:
     srcuml_operation(const FunctionPolicy::FunctionData * data, ClassPolicy::AccessSpecifier visibility)
         : data(data),
           visibility(visibility) {
-
+            /*
             std::istringstream stream(data->stereotype);
             stereotypes = std::set<std::string>(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
-
+            */
             analyze_operation();
     }
 
@@ -103,7 +103,7 @@ public:
             }            
 
         }
-
+/*
         if(!data->stereotype.empty()) {
 
             func += " ｛";
@@ -111,7 +111,7 @@ public:
             func += "｝";
 
         }
-
+*/
         return func;
     }
 
@@ -149,7 +149,7 @@ public:
             }            
 
         }
-
+/*
         if(!operation.data->stereotype.empty()) {
 
             out << " ｛";
@@ -157,7 +157,7 @@ public:
             out << "｝";
 
         }
-
+*/
         return out;
 
     }

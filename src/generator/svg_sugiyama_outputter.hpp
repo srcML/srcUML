@@ -28,7 +28,7 @@ public:
 		for(const std::shared_ptr<srcuml_class> & aclass : classes){
 			node cur_node = g.newNode();
 			//Insert into map the node class pairing
-			class_node_map.insert(std::pair<std::string, ogdf::node>(aclass->get_name(), cur_node));
+			class_node_map.insert(std::pair<std::string, ogdf::node>(aclass->get_srcuml_name(), cur_node));
 
 			std::string& label = ga.label(cur_node);
 			int num_lines = 0;
@@ -59,17 +59,27 @@ public:
 			if(dest_it != class_node_map.end()){
 				rhs = dest_it->second;
 			}
+			/*
+			if(lhs == NULL){
+				std::cerr << "LHS is NULL\n";
+			}
+			if(rhs == NULL){
+				std::cerr << "RHS is NULL\n";
+			}
 
-			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
+			if(lhs != NULL && rhs != NULL){
+			*/
+
+				ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
 
 
-			float &w = ga.strokeWidth(cur_edge);
-			w = 2;
+				float &w = ga.strokeWidth(cur_edge);
+				w = 2;
 
-			StrokeType &st = ga.strokeType(cur_edge);
+				StrokeType &st = ga.strokeType(cur_edge);
 
-			const relationship_type r_type = relationship.get_type();
-			switch(r_type){
+				const relationship_type r_type = relationship.get_type();
+				switch(r_type){
 				case DEPENDENCY:
 					st = StrokeType::Dash;
 					break;
@@ -91,7 +101,8 @@ public:
 				case REALIZATION:
 					st = StrokeType::Dash;
 					break;
-			}
+				}
+			//}
 		}
 
 		/*
