@@ -118,6 +118,10 @@ public:
 
     }
 
+    virtual void NotifyWrite(const srcSAXEventDispatch::PolicyDispatcher * policy, srcSAXEventDispatch::srcSAXEventContext & ctx) override {
+    }
+
+
 private:
 
 };
