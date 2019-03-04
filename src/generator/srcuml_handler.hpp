@@ -154,7 +154,7 @@ public:
 
 		//delete outputter;
 	}
-	void NotifyWrite(const srcSAXEventDispatch::PolicyDispatcher * policy, srcSAXEventDispatch::srcSAXEventContext & ctx){}
+
 	virtual void Notify(const srcSAXEventDispatch::PolicyDispatcher * policy, const srcSAXEventDispatch::srcSAXEventContext & ctx) override {
 
 		if(typeid(ClassPolicy) == typeid(*policy)) {
@@ -166,6 +166,10 @@ public:
 		}
 
 	}
+
+    virtual void NotifyWrite(const srcSAXEventDispatch::PolicyDispatcher * policy, srcSAXEventDispatch::srcSAXEventContext & ctx) override {
+    }
+
 
 private:
 

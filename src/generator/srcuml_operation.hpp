@@ -40,16 +40,10 @@ private:
     const FunctionPolicy::FunctionData * data;
     const ClassPolicy::AccessSpecifier visibility;
 
-    std::set<std::string> stereotypes;
-
 public:
     srcuml_operation(const FunctionPolicy::FunctionData * data, ClassPolicy::AccessSpecifier visibility)
-        : data(data),
-          visibility(visibility) {
-            /*
-            std::istringstream stream(data->stereotype);
-            stereotypes = std::set<std::string>(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
-            */
+
+        : data(data), visibility(visibility) {
             analyze_operation();
     }
 
@@ -63,7 +57,7 @@ public:
 
     const std::set<std::string> & get_stereotypes() const {
 
-        return stereotypes;
+        return data->stereotypes;
 
     }
 
@@ -103,15 +97,22 @@ public:
             }            
 
         }
-/*
-        if(!data->stereotype.empty()) {
+
+        if(!data->stereotypes.empty()) {
 
             func += " ｛";
-            func += data->stereotype;
+            bool first = true;
+            for(const std::string & stereotype : data->stereotypes) {
+                if(!first) {
+                    func += " ";
+                }
+                func += stereotype;
+                first = false;
+            }
             func += "｝";
 
         }
-*/
+
         return func;
     }
 
@@ -149,15 +150,22 @@ public:
             }            
 
         }
-/*
-        if(!operation.data->stereotype.empty()) {
+
+        if(!operation.get_stereotypes().empty()) {
 
             out << " ｛";
-            out << operation.data->stereotype;
+            bool first = true;
+            for(const std::string & stereotype : operation.get_stereotypes()) {
+                if(!first) {
+                    out << " ";
+                }
+                out << stereotype;
+                first = false;
+            }
             out << "｝";
 
         }
-*/
+
         return out;
 
     }
