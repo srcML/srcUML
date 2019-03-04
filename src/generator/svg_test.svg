@@ -1,0 +1,45 @@
+<svg version="1.1"
+	 baseProfile="full"
+	 width="1000" height="700"
+	 xmlns="http://www.w3.org/2000/svg"
+	 fill="white">
+
+	<style>
+		.test {font: 8px monospace;}
+	</style>
+
+
+	height = 1.3em
+	length = .62em
+	dist down from line .34em
+
+
+	<g class="test" transform="translate(100, 100)" text-anchor="start" stroke="black" stroke-width="2px">
+
+		<rect width="9.92em" height="8em" fill="red"/>
+
+		<text dy=".83em" dx=".17em" fill="white">Class_Bus</text>
+
+		<line x1="0" y1="1.17em" x2="9.92em" y2="1.17em"/>
+
+		<text dy="1.93em" dx=".17em" fill="white">- type: string</text>
+		<text dy="3.03em" dx=".17em" fill="white">- capacity: int</text>
+		<text dy="4.13em" dx=".17em" fill="white">- number: int</text>
+
+		<line x1="0" y1="4.47em" x2="9.92em" y2="4.47em"/>
+
+		<text dy="5.23em" dx=".17em" fill="white">+ get_type()</text>
+		<text dy="6.33em" dx=".17em" fill="white">+ set_number()</text>
+		<text dy="7.43em" dx=".17em" fill="white">+ get_capacity()</text>
+
+	</g>
+
+	<g class="test" transform="translate(400, 400)">
+
+		<rect width=".62em" height="1em" fill="green"/>
+
+		<text dy="1em" fill="white">M</text>
+
+	</g>
+
+</svg>
