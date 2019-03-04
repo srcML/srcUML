@@ -7,6 +7,7 @@ private:
 	std::string type;
 
 public:
-	virtual Part() = 0;
+	//virtual Part() = 0;
+	virtual void register_dimensions() = 0;
 
 };
