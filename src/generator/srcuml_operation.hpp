@@ -61,6 +61,22 @@ public:
 
     }
 
+    std::string get_stereotypes_string() const {
+
+        bool first = true;
+        std::string stereotypes;
+        for(const std::string & stereotype : get_stereotypes()) {
+            if(!first) {
+                stereotypes += " ";
+            }
+            stereotypes += stereotype;
+            first = false;
+        }
+
+        return stereotypes;
+
+    }
+
     std::string get_string_function() const {
 
         std::string func = "";
@@ -101,14 +117,7 @@ public:
         if(!data->stereotypes.empty()) {
 
             func += " ｛";
-            bool first = true;
-            for(const std::string & stereotype : data->stereotypes) {
-                if(!first) {
-                    func += " ";
-                }
-                func += stereotype;
-                first = false;
-            }
+            func += get_stereotypes_string();
             func += "｝";
 
         }
@@ -154,14 +163,7 @@ public:
         if(!operation.get_stereotypes().empty()) {
 
             out << " ｛";
-            bool first = true;
-            for(const std::string & stereotype : operation.get_stereotypes()) {
-                if(!first) {
-                    out << " ";
-                }
-                out << stereotype;
-                first = false;
-            }
+            out << operation.get_stereotypes_string();
             out << "｝";
 
         }
