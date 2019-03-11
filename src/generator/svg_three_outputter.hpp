@@ -1,7 +1,8 @@
 #ifndef INCLUDED_SVG_THREE_OUTPUTTER_HPP
 #define INCLUDED_SVG_THREE_OUTPUTTER_HPP
 
-
+#include <ogdf/cluster/ClusterOrthoLayout.h>
+#include <ogdf/cluster/ClusterPlanRep.h>
 #include <svg_outputter.hpp>
 
 class svg_three_outputter : public svg_outputter {
@@ -127,21 +128,7 @@ public:
 		cga.label(boundary) = "Boundary";
 		cga.label(entity) = "Entity";
 
-
-	/*	
-		SugiyamaLayout sl;
-		sl.setRanking(new OptimalRanking);
-		sl.setCrossMin(new MedianHeuristic);
- 
-		OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
-		ohl->layerDistance(120.0);
-		ohl->nodeDistance(200.0);
-		ohl->weightBalancing(1);
-		sl.setLayout(ohl);
-
-		sl.call(ga);
-	*/
-
+	/*
 		ClusterPlanarizationLayout cpl;
 		cpl.call(g, cga, cg);
 
@@ -150,6 +137,11 @@ public:
 		if(!drawSVG(cga, out, *svg_settings)){
 			std::cout << "Error Write" << std::endl;
 		}
+	*/
+
+		ClusterOrthoLayout col;
+		ClusterPlanRep cpr(cga, cg);
+		col.call();
 
 
 		return true;
