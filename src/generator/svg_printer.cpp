@@ -237,6 +237,11 @@ void SvgPrinter::drawCluster(pugi::xml_node xmlNode, cluster c){
 
 	pugi::xml_node cluster;
 
+	xmlNode.append_attribute("class") = "font_style";
+	pugi::xml_node text_node = xmlNode.append_child("text");
+	//text_node.append_attribute("text-anchor") = "start";
+	text_node.text() = m_clsAttr->label(c).c_str();
+
 	if (c == m_clsAttr->constClusterGraph().rootCluster()) {
 		cluster = xmlNode;
 	} else {

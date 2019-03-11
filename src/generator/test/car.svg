@@ -1,15 +1,22 @@
 <?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full" style="background: white" viewBox="38.5 38 1996.12 500.375">
 	<style>.font_style {font: 10px monospace;}</style>
-	<rect width="200%" height="200%" fill="white" />
-	<g />
-	<g>
+	<style>.cluster_style {font: 30px monospace;}</style>>
+	<rect width="200%" height="200%" fill="#FFFFFF" />
+	
+	<g class="font_style">
+		<text>TACO</text>
+	</g>
+	<g class="cluster_style">
+		<text text-anchor="start" fill="#000000" textLength="8.040000em" lengthAdjust="spacingAndGlyphs">Control</text>
 		<rect x="1781.875" y="405.625" width="251.25" height="131.25" fill="none" stroke="#808080" stroke-width="1.000000px" />
 	</g>
-	<g>
+	<g class="font_style">
+		<text>Boundary</text>
 		<rect x="1146.25" y="210.625" width="596.25" height="326.25" fill="none" stroke="#808080" stroke-width="1.000000px" />
 	</g>
-	<g>
+	<g class="font_style">
+		<text>Entity</text>
 		<rect x="40" y="79.375" width="1066.875" height="451.875" fill="none" stroke="#808080" stroke-width="1.000000px" />
 	</g>
 	<g>
@@ -177,4 +184,5 @@
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
 		<line x1="0" y1="2.270000em" x2="37.5" y2="2.270000em" stroke="black" stroke-width="1px" />
 	</g>
+	<text x="0" y="0">TACO</text>
 </svg>
