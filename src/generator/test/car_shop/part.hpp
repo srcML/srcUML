@@ -1,10 +1,10 @@
-#include <string>
+#include "string.hpp"
 
 class Part{
 private:
 	int id_number;
-	std::string name;
-	std::string type;
+	String name;
+	String type;
 
 public:
 	//virtual Part() = 0;

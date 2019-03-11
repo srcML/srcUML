@@ -1,11 +1,14 @@
+#include "manufacturer.hpp"
 #include "employee.hpp"
 #include <vector>
 
 class Shop{
 private:
-	std::vector<int> employee_ids;
+	Manufacturer *supplier;
+	int* employee_ids;
 
 public:
 	Shop();
 	void add_employee(const Employee&);
+	void add_manu(const Manufacturer&);
 };

@@ -77,7 +77,7 @@ public:
 	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass, int &num_lines, int &longest_line){
 		std::string label;
 		if(aclass->get_srcuml_name() != aclass->get_name()){
-			label += aclass->get_srcuml_name() + "<svg_new_line>";
+			label += aclass->get_srcuml_name().substr(0, aclass->get_srcuml_name().find(aclass->get_name())) + "<svg_new_line>";
 			++num_lines;
 			if(aclass->get_srcuml_name().length() > longest_line){longest_line = aclass->get_srcuml_name().length();}
 		}
@@ -97,6 +97,9 @@ public:
 		for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
 			for(const FunctionPolicy::FunctionData * function : aclass->get_data().methods[access]) { //private members
 				srcuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
+
+				//std::cerr << op.get_string_function() << '\n';
+
 				if(op.get_stereotypes().count("set") > 0){continue;}
 				if(op.get_stereotypes().count("get") > 0){continue;}
 				

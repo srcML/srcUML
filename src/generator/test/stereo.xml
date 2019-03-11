@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<unit xmlns="http://www.srcML.org/srcML/src" revision="1.0.0" url="car_shop/">
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/a_car.hpp" hash="c3bb6c3938d1cb88b1a59622bdd238da98baefd3"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"part.hpp"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;vector&gt;</cpp:file></cpp:include>
+
+<class stereotype="entity">class <name>A_Car</name><block>{<private type="default">
+</private><private>private:
+	<decl_stmt><decl><type><name>Part</name><modifier>*</modifier></type> <name>parts</name></decl>;</decl_stmt>
+</private>}</block>;</class></unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/customer.hpp" hash="16550d3bd2585b3b24f9aa704a43d2f90b69d6aa"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"string.hpp"</cpp:file></cpp:include>
+
+<class stereotype="entity">class <name>Customer</name><block>{<private type="default">
+</private><private>private:
+	<decl_stmt><decl><type><name>String</name></type> <name>name</name></decl>;</decl_stmt>
+	<decl_stmt><decl><type><name>String</name></type> <name>address</name></decl>;</decl_stmt>
+	<decl_stmt><decl><type><name>String</name></type> <name>credit_card</name></decl>;</decl_stmt>
+
+</private><public>public:
+	<constructor_decl><name>Customer</name><parameter_list>()</parameter_list>;</constructor_decl>
+	<constructor_decl><name>Customer</name><parameter_list>(<parameter><decl><type><name>String</name></type> <name>name</name></decl></parameter>)</parameter_list>;</constructor_decl>
+
+	<function_decl><type><name>void</name></type> <name>set_credit</name><parameter_list>(<parameter><decl><type><name>String</name></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl><type><name>String</name></type> <name>get_credit</name><parameter_list>()</parameter_list>;</function_decl>
+
+</public>}</block>;</class></unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/employee.hpp" hash="d076bb65cde78cbd6d0de61da143b40b0b71cb2a"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"customer.hpp"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"shop.hpp"</cpp:file></cpp:include>
+
+<class stereotype="entity">class <name>Employee</name> <super_list>: <super><specifier>public</specifier> <name>Customer</name></super></super_list><block>{<private type="default">
+</private><private>private:
+	<decl_stmt><decl><type><name>int</name></type> <name>employee_id</name></decl>;</decl_stmt>
+	<decl_stmt><decl><type><name>Shop</name> <modifier>*</modifier></type><name>shop_of_work</name></decl>;</decl_stmt>
+
+</private><public>public:
+	<constructor_decl><name>Employee</name><parameter_list>()</parameter_list>;</constructor_decl>
+
+</public>}</block>;</class></unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/manufacturer.hpp" hash="484317e5d4262d37f8debdbc17cce546bec4df32"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"part.hpp"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;vector&gt;</cpp:file></cpp:include>
+
+<class stereotype="entity">class <name>Manufacturer</name> <block>{<private type="default">
+</private><private>private:
+	<decl_stmt><decl><type><name>String</name></type> <name>name</name></decl>;</decl_stmt>
+	<decl_stmt><decl><type><name>Part</name><modifier>*</modifier></type> <name>part_types</name></decl>;</decl_stmt>
+
+</private><public>public:
+	<constructor><name>Manufacturer</name><parameter_list>()</parameter_list><block>{}</block></constructor><empty_stmt>;</empty_stmt>
+</public>}</block>;</class></unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/part.hpp" hash="7f58fb8e09236cb65099382ea544391b6c5be5cb"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"string.hpp"</cpp:file></cpp:include>
+
+<class stereotype="entity">class <name>Part</name><block>{<private type="default">
+</private><private>private:
+	<decl_stmt><decl><type><name>int</name></type> <name>id_number</name></decl>;</decl_stmt>
+	<decl_stmt><decl><type><name>String</name></type> <name>name</name></decl>;</decl_stmt>
+	<decl_stmt><decl><type><name>String</name></type> <name>type</name></decl>;</decl_stmt>
+
+</private><public>public:
+	<comment type="line">//virtual Part() = 0;</comment>
+	<function_decl><specifier>virtual</specifier> <type><name>void</name></type> <name>register_dimensions</name><parameter_list>()</parameter_list> = <literal type="number">0</literal>;</function_decl>
+
+</public>}</block>;</class></unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/register.hpp" hash="5c211828d42dad76af7d7a9f15a4292c7c515f3e"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"ui.hpp"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"manufacturer.hpp"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"part.hpp"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"shop.hpp"</cpp:file></cpp:include>
+
+<class stereotype="control">class <name>Register</name><block>{<private type="default">
+</private><private>private:
+	<decl_stmt><decl><type><name>MyApplicationWindow</name></type> main</decl>;</decl_stmt>
+</private><public>public:
+	<constructor_decl><name>Register</name><parameter_list>()</parameter_list>;</constructor_decl>
+	<function_decl><type><name>void</name></type> <name>register_store_info</name><parameter_list>(<parameter><decl><type><name>Shop</name></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl><type><name>void</name></type> <name>order_parts</name><parameter_list>(<parameter><decl><type><name>Part</name></type></decl></parameter>, <parameter><decl><type><name>Manufacturer</name></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl><type><name>void</name></type> <name>register_employee</name><parameter_list>(<parameter><decl><type><name>Employee</name></type></decl></parameter>)</parameter_list>;</function_decl>
+
+
+</public>}</block>;</class></unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/shop.hpp" hash="a9bbdf4f2792021d2d3855ab4d6f206259637ca0"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"manufacturer.hpp"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"employee.hpp"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;vector&gt;</cpp:file></cpp:include>
+
+<class stereotype="entity">class <name>Shop</name><block>{<private type="default">
+</private><private>private:
+	<decl_stmt><decl><type><name>Manufacturer</name> <modifier>*</modifier></type><name>supplier</name></decl>;</decl_stmt>
+	<decl_stmt><decl><type><name>int</name><modifier>*</modifier></type> <name>employee_ids</name></decl>;</decl_stmt>
+
+</private><public>public:
+	<constructor_decl><name>Shop</name><parameter_list>()</parameter_list>;</constructor_decl>
+	<function_decl><type><name>void</name></type> <name>add_employee</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>Employee</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+	<function_decl><type><name>void</name></type> <name>add_manu</name><parameter_list>(<parameter><decl><type><specifier>const</specifier> <name>Manufacturer</name><modifier>&amp;</modifier></type></decl></parameter>)</parameter_list>;</function_decl>
+</public>}</block>;</class></unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/string.hpp" hash="833bd412864ae2d59071670acad0f071a70550e9"><class stereotype="entity">class <name>String</name><block>{<private type="default">
+</private><private>private:
+	<decl_stmt><decl><type><name>char</name><modifier>*</modifier></type> <name>str</name></decl>;</decl_stmt>
+	<decl_stmt><decl><type><name>int</name></type> <name>stringSize</name></decl>;</decl_stmt>
+</private><public>public:
+	<constructor><name>String</name><parameter_list>()</parameter_list><block>{<expr_stmt><expr><name>stringSize</name> <operator>=</operator> <literal type="number">0</literal></expr>;</expr_stmt> <expr_stmt><expr><name>str</name> <operator>=</operator> <literal type="null">nullptr</literal></expr>;</expr_stmt>}</block></constructor>
+</public>}</block>;</class></unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/ui.hpp" hash="d696607dd85142f06097aaf02557c65f0b82c802"><comment type="line">//====================================================</comment>
+<class stereotype="boundary">class <name>Window</name><block>{<private type="default">
+</private><public>public:
+    <function_decl><specifier>virtual</specifier> <type><name>void</name></type> <name>draw</name><parameter_list>()</parameter_list> = <literal type="number">0</literal>;</function_decl>
+    <function_decl><specifier>virtual</specifier> <type><name>void</name></type> <name>minimize</name><parameter_list>()</parameter_list> = <literal type="number">0</literal>;</function_decl>
+    <function_decl><specifier>virtual</specifier> <type><name>void</name></type> <name>maximize</name><parameter_list>()</parameter_list> = <literal type="number">0</literal>;</function_decl>
+</public>}</block>;</class>
+<comment type="line">//====================================================</comment>
+<class stereotype="boundary">class <name>MyOperatingSystemWindow</name> <super_list>: <super><specifier>public</specifier> <name>Window</name></super></super_list><block>{<private type="default">
+</private><public>public:
+    <constructor><name>MyOperatingSystemWindow</name><parameter_list>()</parameter_list><block>{}</block></constructor>
+</public><private>private:
+    <decl_stmt><decl><type><name>String</name></type> <name>name</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>WindowID</name></type> <name>ID</name></decl>;</decl_stmt>
+</private>}</block>;</class>
+<comment type="line">//====================================================</comment>
+<class stereotype="boundary">class <name>MyApplicationWindow</name> <super_list>: <super><specifier>public</specifier> <name>MyOperatingSystemWindow</name></super></super_list> <block>{<private type="default">
+</private><public>public:
+    <constructor_decl><name>MyApplicationWindow</name><parameter_list>()</parameter_list>;</constructor_decl>
+</public><private>private:
+    <decl_stmt><decl><type><name><name>List</name><argument_list type="generic">&lt;<argument><expr><name>Content</name></expr></argument>&gt;</argument_list></name></type> <name>myApplicationContent</name></decl>;</decl_stmt>
+</private>}</block>;</class>
+<comment type="line">//====================================================</comment>
+<class stereotype="boundary">class <name>WindowID</name> <block>{<private type="default">
+</private><private>private:
+    <decl_stmt><decl><type><name>String</name></type> <name>cool</name></decl>;</decl_stmt>
+</private>}</block>;</class>
+<comment type="line">//====================================================</comment>
+<class stereotype="boundary">class <name>Content</name> <block>{<private type="default">
+</private><public>public:
+    <function><specifier>virtual</specifier> <type><name>void</name></type> <name>setContent</name><parameter_list>(<parameter><decl><type><name>String</name> <modifier>&amp;</modifier></type><name>newContent</name></decl></parameter>)</parameter_list> <block>{}</block></function>
+    <function_decl><type><name>void</name></type> <name>displayContent</name><parameter_list>()</parameter_list>;</function_decl>
+</public><private>private:
+    <decl_stmt><decl><type><name>String</name></type> <name>currentContent</name></decl>;</decl_stmt>
+</private>}</block>;</class>
+
+</unit>
+
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="car_shop/wheel.hpp" hash="a74898efb544c031fb044daf0c0a9ee0ca23d8fe"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"part.hpp"</cpp:file></cpp:include>
+
+<class stereotype="entity">class <name>Wheel</name> <super_list>: <super><specifier>public</specifier> <name>Part</name></super></super_list><block>{<private type="default">
+</private><public>public:
+	<constructor><name>Wheel</name><parameter_list>()</parameter_list><block>{}</block></constructor><empty_stmt>;</empty_stmt>
+	<function><type><name>void</name></type> <name>register_dimension</name><parameter_list>()</parameter_list><block>{}</block></function><empty_stmt>;</empty_stmt>
+
+
+</public>}</block>;</class></unit>
+
+</unit>

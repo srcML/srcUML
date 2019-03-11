@@ -41,6 +41,10 @@ public:
 			double& w = ga.width(cur_node);
 			w = longest_line * .75 * 10;//longest_line * 10;
 
+			for(std::string stereo : aclass->get_stereotypes()){
+				std::cerr << "Stereotype: " << stereo << '\n';
+			}
+
 			Color& color = ga.fillColor(cur_node);
 			color = Color(Color::Name::Antiquewhite);
 		}
@@ -49,6 +53,10 @@ public:
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add apropriate info.
 			ogdf::node lhs, rhs;
+
+			//std::cerr << "Relationship: src:" << relationship.get_source() << '\n';
+			//std::cerr << "Relationship: dst:" << relationship.get_destination() << '\n';
+
 
 			std::map<std::string, ogdf::node>::iterator src_it = class_node_map.find(relationship.get_source());
 			if(src_it != class_node_map.end()){
@@ -84,16 +92,16 @@ public:
 					st = StrokeType::Dash;
 					break;
 				case ASSOCIATION:
-					st = StrokeType::Dash;
+					st = StrokeType::Solid;
 					break;
 				case BIDIRECTIONAL:
-					st = StrokeType::Dash;
+					st = StrokeType::Solid;
 					break;
 				case AGGREGATION:
-					st = StrokeType::Dash;
+					st = StrokeType::Solid;
 					break;
 				case COMPOSITION:
-					st = StrokeType::Dash;
+					st = StrokeType::Solid;
 					break;
 				case GENERALIZATION:
 					st = StrokeType::Dash;

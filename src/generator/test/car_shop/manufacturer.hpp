@@ -3,8 +3,9 @@
 
 class Manufacturer {
 private:
-	std::vector<Part> part_types;
+	String name;
+	Part* part_types;
 
 public:
-	Manufacturer();
+	Manufacturer(){};
 };

@@ -11,15 +11,15 @@ class myHandler(ContentHandler):
 		print("Doc Started\n")
 		
 	def startElement(self, name, attrs):
-		if name == "comment":
-			self.cur_element = "comment"
+		if name == "name":
+			self.cur_element = "name"
 			print( attrs.getNames()[0] + '\t' + attrs.getValue( attrs.getNames()[0] ) )
 		else:
 			self.cur_element = None
 
 	def characters(self, content):
-		if self.cur_element == "comment":
-			print(content)
+		if self.cur_element == "comment" && content == "String":
+			
 
 
 

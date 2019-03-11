@@ -1,16 +1,16 @@
-#include <string>
+#include "string.hpp"
 
 class Customer{
 private:
-	std::string name;
-	std::string address;
-	std::string credit_card;
+	String name;
+	String address;
+	String credit_card;
 
 public:
 	Customer();
-	Customer(std::string name);
+	Customer(String name);
 
-	void set_credit(std::string);
-	std::string get_credit();
+	void set_credit(String);
+	String get_credit();
 
 };

@@ -197,6 +197,9 @@ private:
         for(const std::shared_ptr<srcuml_class> & aclass : classes) {
 
             /** @todo may want set so same type not added twice */
+            //WIP
+
+            std::set<std::string> catalogued_attributes; 
 
             for(const srcuml_attribute & attribute : aclass->get_attributes()) {
 
@@ -210,9 +213,14 @@ private:
                     type = AGGREGATION;
 
                 std::string relationship_label = attribute.get_name() + attribute.get_multiplicity();
+
+                std::set<std::string>::iterator catalogued_class = catalogued_attributes.find(parent->second->get_srcuml_name());
+                if(catalogued_class != catalogued_attributes.end())
+                    continue;
+
                 srcuml_relationship relationship(aclass->get_srcuml_name(), "", parent->second->get_srcuml_name(), relationship_label, type);
                 add_relationship(relationship);
-
+                catalogued_attributes.insert(parent->second->get_srcuml_name());
             }
 
         }
@@ -228,6 +236,7 @@ private:
             catalogued_dependencies.insert(current_class_type);
 
             for(const std::pair<std::string, const FunctionPolicy::FunctionData *> func : aclass->get_implemented_functions_map()){
+
                 //Parameter dependencies
                 for(const ParamTypePolicy::ParamTypeData* aparam : func.second->parameters){
                     //iterate over parameters
@@ -243,13 +252,14 @@ private:
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
                     
                     //remove last condition to re-add multi dependencies
-                    if(related_class == class_map.end() || current_class_type == working_dep )// || catalogued_class != catalogued_dependencies.end())
+                    if(related_class == class_map.end() || current_class_type == working_dep || catalogued_class != catalogued_dependencies.end())
                         continue;
 
                     srcuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
                     catalogued_dependencies.insert(working_dep); //add param_type is std::string 
                     add_relationship(relationship);                   
                 }
+
                 //decleration dependencies   
                 for(const DeclTypePolicy::DeclTypeData* arelation : func.second->relations){
                     srcuml_type* temp = new srcuml_type(arelation->type);
@@ -261,13 +271,14 @@ private:
                     std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 
                     //remove last condition to re-add multi dependencies
-                    if(related_class == class_map.end() || current_class_type == working_dep )// || catalogued_class != catalogued_dependencies.end())
+                    if(related_class == class_map.end() || current_class_type == working_dep || catalogued_class != catalogued_dependencies.end())
                         continue;
 
                     srcuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
                     catalogued_dependencies.insert(working_dep);
                     add_relationship(relationship);
                 }
+
                 //Return type dependency
                 srcuml_type* temp = new srcuml_type(func.second->returnType);
                 std::string return_type = temp->get_type_name();
@@ -278,7 +289,7 @@ private:
                 std::set<std::string>::iterator catalogued_class = catalogued_dependencies.find(working_dep);
 
                 //remove last condition to re-add multi dependencies
-                if(related_class == class_map.end() || current_class_type == working_dep )// || catalogued_class != catalogued_dependencies.end())
+                if(related_class == class_map.end() || current_class_type == working_dep || catalogued_class != catalogued_dependencies.end())
                     continue;
 
                 srcuml_relationship relationship(current_class_type, working_dep, DEPENDENCY);
