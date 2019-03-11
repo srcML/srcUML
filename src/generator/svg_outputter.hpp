@@ -42,6 +42,7 @@
 //Cluster_Graph_Include==============================================
 #include <ogdf/cluster/ClusterGraph.h>
 #include <ogdf/cluster/ClusterGraphAttributes.h>
+#include <ogdf/cluster/ClusterPlanarizationLayout.h>
 //===================================================================
 
 //Input_Output_Include===============================================
