@@ -24,6 +24,7 @@ public:
 
 	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
 		//transfer information from srcUML to ogdf
+
 		srcuml_relationships relationships = analyze_relationships(classes);
 		std::map<std::string, ogdf::node> class_node_map;
 
@@ -35,37 +36,41 @@ public:
 			//Insert into map the node class pairing
 			class_node_map.insert(std::pair<std::string, ogdf::node>(aclass->get_srcuml_name(), cur_node));
 
+
 			int num_lines = 0;
 			int longest_line = 0;
 			cga.label(cur_node) = generate_label(aclass, num_lines, longest_line);
-
 			cga.height(cur_node) = num_lines * 1.3 * 10;//num_lines * 50;
 
 			cga.width(cur_node) = longest_line * .75 * 10;
 			//longest_line * 10;
 
-			std::string stereo = *(aclass->get_stereotypes().begin());
+			std::string stereo = "";
+			if(aclass->get_stereotypes().begin() != aclass->get_stereotypes().end()){
+				stereo = *(aclass->get_stereotypes().begin());
+			}
 
 			Color& color = cga.fillColor(cur_node);
 
 			if(stereo == "control"){
 				
-				color = Color(Color::Name::Chartreuse);
+				color = Color(224, 0, 0, 100);
 				ctrl.pushBack(cur_node);
 
 			}else if(stereo == "boundary"){
 
-				color = Color(Color::Name::Crimson);
+				color = Color(0, 224, 0, 100);
 				bndr.pushBack(cur_node);
 
 			}else if(stereo == "entity"){
 
-				color = Color(Color::Name::Aqua);
+				color = Color(0, 0, 224, 100);
 				enty.pushBack(cur_node);
 
+			}else if(stereo == ""){
+				color = Color(130, 130, 130, 200);
 			}
 		}
-
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add apropriate info.
@@ -88,8 +93,7 @@ public:
 			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
 
 
-			float &w = cga.strokeWidth(cur_edge);
-			w = 2;
+			cga.strokeWidth(cur_edge) = 2;
 
 			StrokeType &st = cga.strokeType(cur_edge);
 
@@ -119,16 +123,30 @@ public:
 			}
 		}
 
-
+		cluster entity = cg.createCluster(enty);
 		cluster control = cg.createCluster(ctrl);
 		cluster boundary = cg.createCluster(bndr);
-		cluster entity = cg.createCluster(enty);
 
 		cga.label(control) = "Control";
 		cga.label(boundary) = "Boundary";
 		cga.label(entity) = "Entity";
 
-	/*
+		cga.strokeColor(entity) = Color(0, 0, 0, 255);
+		cga.strokeColor(control) = Color(0, 0, 0, 255);
+		cga.strokeColor(boundary) = Color(0, 0, 0, 255);
+
+		cga.strokeWidth(entity) = 1.5;
+		cga.strokeWidth(control) = 1.5;
+		cga.strokeWidth(boundary) = 1.5;
+
+		cga.fillColor(entity) = Color(0, 0, 224, 50);
+		cga.fillColor(control) = Color(224, 0, 0, 50);
+		cga.fillColor(boundary) = Color(0, 224, 0, 50);
+
+		cga.setFillPattern(entity, FillPattern::Solid);
+		cga.setFillPattern(control, FillPattern::Solid);
+		cga.setFillPattern(boundary, FillPattern::Solid);
+	
 		ClusterPlanarizationLayout cpl;
 		cpl.call(g, cga, cg);
 
@@ -137,12 +155,13 @@ public:
 		if(!drawSVG(cga, out, *svg_settings)){
 			std::cout << "Error Write" << std::endl;
 		}
-	*/
+	
 
+	/*
 		ClusterOrthoLayout col;
 		ClusterPlanRep cpr(cga, cg);
 		col.call();
-
+	*/
 
 		return true;
 	}

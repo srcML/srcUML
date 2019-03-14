@@ -5,5 +5,4 @@ public:
 	Wheel(){};
 	void register_dimension(){};
 
-
 };

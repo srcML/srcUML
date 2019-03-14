@@ -10,7 +10,7 @@ class MyOperatingSystemWindow : public Window{
 public:
     MyOperatingSystemWindow(){}
 private:
-    String name;
+    std::string name;
     WindowID ID;
 };
 //====================================================
@@ -23,14 +23,14 @@ private:
 //====================================================
 class WindowID {
 private:
-    String cool;
+    std::string cool;
 };
 //====================================================
 class Content {
 public:
-    virtual void setContent(String &newContent) {}
+    virtual void setContent(std::string &newContent) {}
     void displayContent();
 private:
-    String currentContent;
+    std::string currentContent;
 };
 

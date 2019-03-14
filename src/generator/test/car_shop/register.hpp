@@ -6,6 +6,9 @@
 class Register{
 private:
 	MyApplicationWindow main;
+	Shop shop;
+	Manufacturer manu;
+	Employee emp;
 public:
 	Register();
 	void register_store_info(Shop);

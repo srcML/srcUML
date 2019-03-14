@@ -144,6 +144,7 @@ void SvgPrinter::drawNode(pugi::xml_node xmlNode, node v){
 
 	if (m_attr.has(GraphAttributes::nodeStyle)) {
 		shape.append_attribute("fill") = m_attr.fillColor(v).toString().c_str();
+		shape.append_attribute("fill-opacity") = (to_string((double)m_attr.fillColor(v).alpha()/255)).c_str();
 		shape.append_attribute("stroke-width") = (to_string(m_attr.strokeWidth(v)) + "px").c_str();
 
 		StrokeType lineStyle = m_attr.has(GraphAttributes::nodeStyle) ? m_attr.strokeType(v) : StrokeType::Solid;
@@ -251,6 +252,7 @@ void SvgPrinter::drawCluster(pugi::xml_node xmlNode, cluster c){
 		clusterXmlNode.append_attribute("width") = m_clsAttr->width(c);
 		clusterXmlNode.append_attribute("height") = m_clsAttr->height(c);
 		clusterXmlNode.append_attribute("fill") = m_clsAttr->fillPattern(c) == FillPattern::None ? "none" : m_clsAttr->fillColor(c).toString().c_str();
+		clusterXmlNode.append_attribute("fill-opacity") = (to_string((double)m_clsAttr->fillColor(c).alpha()/255)).c_str();
 		clusterXmlNode.append_attribute("stroke") = m_clsAttr->strokeType(c) == StrokeType::None ? "none" : m_clsAttr->strokeColor(c).toString().c_str();
 		clusterXmlNode.append_attribute("stroke-width") = (to_string(m_clsAttr->strokeWidth(c)) + "px").c_str();
 	}
