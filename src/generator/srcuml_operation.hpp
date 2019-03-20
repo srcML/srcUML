@@ -81,6 +81,8 @@ public:
 
         std::string func = "";
 
+        std::cerr << "get_string_function: 1\n";
+
         if(visibility == ClassPolicy::PUBLIC)
             func += '+';
         else if(visibility == ClassPolicy::PRIVATE)
@@ -93,16 +95,28 @@ public:
         func += data->name->SimpleName();
 
         func += '(';
+
+        std::cerr << "get_string_function: 2\n";
+
         for(std::size_t pos = 0; pos < data->parameters.size(); ++pos) {
 
             if(pos != 0)
                 func += ", ";
 
+            std::cerr << "get_string_function: 3\n";
+
             srcuml_parameter the_parameter(data->parameters[pos]);
+
+            std::cerr << "get_string_function: 4\n";
+
             func += the_parameter.get_string_parameter();
+
+            std::cerr << "get_string_function: 5\n";
 
         }
         func += ')';
+
+        std::cerr << "get_string_function: final\n";
 
         if(data->returnType) {
 
@@ -113,6 +127,7 @@ public:
             }            
 
         }
+
 
         if(!data->stereotypes.empty()) {
 
