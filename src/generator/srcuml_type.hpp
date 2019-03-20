@@ -111,7 +111,7 @@ public:
 
     bool get_is_pointer() const {
         return is_pointer;       
-    
+    }    
 
     bool get_is_reference() const {
         return is_reference;       
