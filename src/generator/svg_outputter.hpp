@@ -95,7 +95,6 @@ public:
 		label += "<svg_box_divide>";
 		++num_lines;
 
-		std::cerr << "generate_label: 1\n";
 
 		for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
 			for(const FunctionPolicy::FunctionData * function : aclass->get_data().methods[access]) { //private members
@@ -103,21 +102,16 @@ public:
 
 				std::string func = op.get_string_function();
 
-				std::cerr << "generate_label: 2\n";
-
 				if(op.get_stereotypes().count("set") > 0){continue;}
 				if(op.get_stereotypes().count("get") > 0){continue;}
 				
-				std::cerr << "generate_label: 3\n";
 
 				label += func;
 
-				std::cerr << "generate_label: 4\n";
 
 				label += "<svg_new_line>";
 				++num_lines;
 
-				std::cerr << "generate_label: 5\n";
 
 				if(func.length() > longest_line){longest_line = func.length();}
 			}

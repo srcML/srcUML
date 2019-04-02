@@ -49,10 +49,13 @@ public:
 			color = Color(Color::Name::Antiquewhite);
 		}
 
+		std::map<ogdf::node, ogdf::node> edge_map;
+
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add apropriate info.
 			ogdf::node lhs, rhs;
+
 
 			//std::cerr << "Relationship: src:" << relationship.get_source() << '\n';
 			//std::cerr << "Relationship: dst:" << relationship.get_destination() << '\n';
@@ -67,6 +70,10 @@ public:
 			if(dest_it != class_node_map.end()){
 				rhs = dest_it->second;
 			}
+
+
+			//Add relationship checking. Choose more prominent of relationships. Create Hierarchy. 
+
 
 			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
 
@@ -118,8 +125,8 @@ public:
 		sl.setCrossMin(new MedianHeuristic);
  
 		OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
-		ohl->layerDistance(120.0);
-		ohl->nodeDistance(200.0);
+		ohl->layerDistance(50.0);
+		ohl->nodeDistance(50.0);
 		ohl->weightBalancing(1);
 		sl.setLayout(ohl);
 
