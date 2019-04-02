@@ -37,6 +37,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(srcSAXEventDispatch/CMake)
+add_subdirectory(ogdf)
 
 include_directories(${DISPATCH_INCLUDE_DIR} src/generator test/driver)
 
