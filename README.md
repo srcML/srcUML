@@ -4,11 +4,7 @@
 ### Cloning
 * The project uses srcSAX and srcSAXEventDispatch as submodules.  The repo most be cloned with the `--recursive` option to clone the submodules.  The following is an example command:
 ```bash
-<<<<<<< HEAD
-git clone --recursive https://github.com/PJ-Leyden/srcUML.git
-=======
 git clone --recursive https://github.com/srcML/srcUML.git
->>>>>>> 61ad34e8a773b88d888a2c06d10a9e73446aab6e
 ```
 
 ### Build
