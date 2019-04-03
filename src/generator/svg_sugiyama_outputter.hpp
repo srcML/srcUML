@@ -40,26 +40,22 @@ public:
 
 			double& w = ga.width(cur_node);
 			w = longest_line * .75 * 10;//longest_line * 10;
-
+		/*
 			for(std::string stereo : aclass->get_stereotypes()){
 				std::cerr << "Stereotype: " << stereo << '\n';
 			}
-
+		*/
 			Color& color = ga.fillColor(cur_node);
 			color = Color(Color::Name::Antiquewhite);
 		}
 
-		std::map<ogdf::node, ogdf::node> edge_map;
+		std::multimap<std::string, std::string> edge_map;
+		//come up with rules for relationship 
 
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add apropriate info.
 			ogdf::node lhs, rhs;
-
-
-			//std::cerr << "Relationship: src:" << relationship.get_source() << '\n';
-			//std::cerr << "Relationship: dst:" << relationship.get_destination() << '\n';
-
 
 			std::map<std::string, ogdf::node>::iterator src_it = class_node_map.find(relationship.get_source());
 			if(src_it != class_node_map.end()){
@@ -71,41 +67,54 @@ public:
 				rhs = dest_it->second;
 			}
 
+			bool edge_exists = false;
+			for(auto it = edge_map.begin(); it != edge_map.end(); ++it){
+				if(it->first == src_it->first && it->second == dest_it->first){
+					edge_exists = true;
+				}
+				if(it->first == dest_it->first && it->second == src_it->first){
+					edge_exists = true;
+				}
+			}
 
-			//Add relationship checking. Choose more prominent of relationships. Create Hierarchy. 
+			if(!edge_exists){
+				edge_map.insert(std::pair<std::string, std::string>(src_it->first, dest_it->first));
+				edge_map.insert(std::pair<std::string, std::string>(dest_it->first, src_it->first));
+				//Add relationship checking. Choose more prominent of relationships. Create Hierarchy. 
 
 
-			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
+				ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
 
 
-			float &w = ga.strokeWidth(cur_edge);
-			w = 2;
+				float &w = ga.strokeWidth(cur_edge);
+				w = 2;
 
-			StrokeType &st = ga.strokeType(cur_edge);
+				StrokeType &st = ga.strokeType(cur_edge);
 
-			const relationship_type r_type = relationship.get_type();
-			switch(r_type){
-			case DEPENDENCY:
-				st = StrokeType::Dash;
-				break;
-			case ASSOCIATION:
-				st = StrokeType::Solid;
-				break;
-			case BIDIRECTIONAL:
-				st = StrokeType::Solid;
-				break;
-			case AGGREGATION:
-				st = StrokeType::Solid;
-				break;
-			case COMPOSITION:
-				st = StrokeType::Solid;
-				break;
-			case GENERALIZATION:
-				st = StrokeType::Dash;
-				break;
-			case REALIZATION:
-				st = StrokeType::Dash;
-				break;
+				const relationship_type r_type = relationship.get_type();
+				switch(r_type){
+				case DEPENDENCY:
+					st = StrokeType::Dash;
+					break;
+				case ASSOCIATION:
+					st = StrokeType::Solid;
+					break;
+				case BIDIRECTIONAL:
+					st = StrokeType::Solid;
+					break;
+				case AGGREGATION:
+					st = StrokeType::Solid;
+					break;
+				case COMPOSITION:
+					st = StrokeType::Solid;
+					break;
+				case GENERALIZATION:
+					st = StrokeType::Dash;
+					break;
+				case REALIZATION:
+					st = StrokeType::Dash;
+					break;
+				}
 			}
 		}
 
@@ -137,7 +146,6 @@ public:
 		if(!drawSVG(ga, out, *svg_settings)){
 			std::cout << "Error Write" << std::endl;
 		}
-
 
 		return true;
 	}

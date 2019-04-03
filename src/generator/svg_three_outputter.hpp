@@ -71,14 +71,13 @@ public:
 				color = Color(130, 130, 130, 200);
 			}
 		}
+
+		std::multimap<std::string, std::string> edge_map;
+
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add apropriate info.
 			ogdf::node lhs, rhs;
-
-			//std::cerr << "Relationship: src:" << relationship.get_source() << '\n';
-			//std::cerr << "Relationship: dst:" << relationship.get_destination() << '\n';
-
 
 			std::map<std::string, ogdf::node>::iterator src_it = class_node_map.find(relationship.get_source());
 			if(src_it != class_node_map.end()){
@@ -90,36 +89,52 @@ public:
 				rhs = dest_it->second;
 			}
 
-			ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
+			bool edge_exists = false;
+			for(auto it = edge_map.begin(); it != edge_map.end(); ++it){
+				if(it->first == src_it->first && it->second == dest_it->first){
+					edge_exists = true;
+				}
+				if(it->first == dest_it->first && it->second == src_it->first){
+					edge_exists = true;
+				}
+			}
 
 
-			cga.strokeWidth(cur_edge) = 2;
+			if(!edge_exists){
+				edge_map.insert(std::pair<std::string, std::string>(src_it->first, dest_it->first));
+				edge_map.insert(std::pair<std::string, std::string>(dest_it->first, src_it->first));
+				//Add relationship checking. Choose more prominent of relationships. Create Hierarchy. 
 
-			StrokeType &st = cga.strokeType(cur_edge);
+				ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
 
-			const relationship_type r_type = relationship.get_type();
-			switch(r_type){
-			case DEPENDENCY:
-				st = StrokeType::Dash;
-				break;
-			case ASSOCIATION:
-				st = StrokeType::Solid;
-				break;
-			case BIDIRECTIONAL:
-				st = StrokeType::Solid;
-				break;
-			case AGGREGATION:
-				st = StrokeType::Solid;
-				break;
-			case COMPOSITION:
-				st = StrokeType::Solid;
-				break;
-			case GENERALIZATION:
-				st = StrokeType::Dash;
-				break;
-			case REALIZATION:
-				st = StrokeType::Dash;
-				break;
+				cga.strokeWidth(cur_edge) = 2;
+
+				StrokeType &st = cga.strokeType(cur_edge);
+
+				const relationship_type r_type = relationship.get_type();
+				switch(r_type){
+				case DEPENDENCY:
+					st = StrokeType::Dash;
+					break;
+				case ASSOCIATION:
+					st = StrokeType::Solid;
+					break;
+				case BIDIRECTIONAL:
+					st = StrokeType::Solid;
+					break;
+				case AGGREGATION:
+					st = StrokeType::Solid;
+					break;
+				case COMPOSITION:
+					st = StrokeType::Solid;
+					break;
+				case GENERALIZATION:
+					st = StrokeType::Dash;
+					break;
+				case REALIZATION:
+					st = StrokeType::Dash;
+					break;
+				}
 			}
 		}
 
