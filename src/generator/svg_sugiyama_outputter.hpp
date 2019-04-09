@@ -54,7 +54,7 @@ public:
 
 		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
-			//get the nodes from graph g, create edge and add apropriate info.
+			//get the nodes from graph g, create edge and add appropriate info.
 			ogdf::node lhs, rhs;
 
 			std::map<std::string, ogdf::node>::iterator src_it = class_node_map.find(relationship.get_source());

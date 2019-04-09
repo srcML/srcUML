@@ -24,3 +24,13 @@ I will have two layout definitions:
 			- Control - Red
 			- Entity - Green 
 		- Each individual cluster will have a line crossing algorithm run on it
+
+Relationship Heirarchy
+	1) Realization
+	2) Generalization/Inhertiance
+	3) Composition
+	4) Aggregation
+	5) Directed Association
+	6) Association
+
+	Multiplicity does not fall under the heirarchy as it doesn't affect the line or arrowhead. 
