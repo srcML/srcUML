@@ -31,6 +31,7 @@ public:
 		SList<node> ctrl, bndr, enty;
 
 		//Classes/Nodes
+		//===============================================================================================================
 		for(const std::shared_ptr<srcuml_class> & aclass : classes){
 			node cur_node = g.newNode();
 			//Insert into map the node class pairing
@@ -71,10 +72,15 @@ public:
 				color = Color(130, 130, 130, 200);
 			}
 		}
+		//===============================================================================================================
+
+
+
+		//Relationships/Edges
+		//===============================================================================================================
 
 		std::multimap<std::string, std::string> edge_map;
 
-		//Relationships/Edges
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add apropriate info.
 			ogdf::node lhs, rhs;
@@ -137,6 +143,11 @@ public:
 				}
 			}
 		}
+		//===============================================================================================================
+
+
+		//Cluster Creation
+		//===============================================================================================================
 
 		cluster entity = cg.createCluster(enty);
 		cluster control = cg.createCluster(ctrl);
@@ -162,6 +173,8 @@ public:
 		cga.setFillPattern(control, FillPattern::Solid);
 		cga.setFillPattern(boundary, FillPattern::Solid);
 	
+		//===============================================================================================================
+	
 		ClusterPlanarizationLayout cpl;
 		cpl.call(g, cga, cg);
 
@@ -177,6 +190,7 @@ public:
 		ClusterPlanRep cpr(cga, cg);
 		col.call();
 	*/
+
 
 		return true;
 	}
