@@ -25,6 +25,7 @@ public:
 		std::map<std::string, ogdf::node> class_node_map;
 
 		//Classes/Nodes
+		//===============================================================================================================
 		for(const std::shared_ptr<srcuml_class> & aclass : classes){
 			node cur_node = g.newNode();
 			//Insert into map the node class pairing
@@ -40,19 +41,19 @@ public:
 
 			double& w = ga.width(cur_node);
 			w = longest_line * .75 * 10;//longest_line * 10;
-		/*
-			for(std::string stereo : aclass->get_stereotypes()){
-				std::cerr << "Stereotype: " << stereo << '\n';
-			}
-		*/
+		
 			Color& color = ga.fillColor(cur_node);
 			color = Color(Color::Name::Antiquewhite);
 		}
+		//===============================================================================================================
 
-		std::multimap<std::string, std::string> edge_map;
-		//come up with rules for relationship 
+
+		 
 
 		//Relationships/Edges
+		//===============================================================================================================
+		std::multimap<std::string, std::string> edge_map;
+
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add appropriate info.
 			ogdf::node lhs, rhs;
@@ -85,9 +86,7 @@ public:
 
 				ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
 
-
-				float &w = ga.strokeWidth(cur_edge);
-				w = 2;
+				ga.strokeWidth(cur_edge) = 2;
 
 				StrokeType &st = ga.strokeType(cur_edge);
 
@@ -117,6 +116,7 @@ public:
 				}
 			}
 		}
+		//===============================================================================================================
 
 		/*
 			for(ogdf::edge * e = g.firstEdge(); e; e = e->succ()){
@@ -128,6 +128,9 @@ public:
 
 			}
 		*/
+
+		//Layout
+		//===============================================================================================================
 
 		SugiyamaLayout sl;
 		sl.setRanking(new OptimalRanking);
@@ -146,6 +149,9 @@ public:
 		if(!drawSVG(ga, out, *svg_settings)){
 			std::cout << "Error Write" << std::endl;
 		}
+
+		//===============================================================================================================
+
 
 		return true;
 	}
