@@ -38,20 +38,19 @@ Relationships
 			- Composition (Solid Line | Filled Diamond)
 				- When a class is a container or collection of other classes but the contained 
 				  classes do not have a strong lifecycle dependecy on the container.
+
 	- Inheritance (Solid Line | Full Arrow)
 		- Indicates a relation where one class (the subclass) is a specialized form of the 
 		  other (the superclass).
+
 	- Realization (Dash Line | Full Arrow)
 		- Relation bewteen two classes where one realizes the behvaior specified by the other.
+
 	- Dependency (Dash Line | Open Arrow)
 		- If the definition of one element changes then the other may change.
 
 	- Relationship Heirarchy
-		1) Realization
-		2) Generalization/Inhertiance
-		3) Composition
-		4) Aggregation
-		5) Directed Association
-		6) Association
+		- [Realization/Generalization] && Composition->Aggregation->Directed(Binary)->Directed(Unary)
+		- If Dependency is the only relation, show. 
 
 	- Multiplicity does not fall under the heirarchy as it doesn't affect the line or arrowhead. 

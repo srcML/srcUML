@@ -68,6 +68,11 @@ public:
 				rhs = dest_it->second;
 			}
 
+			/*
+			Run through the relationships and make a map of them first, determing there which is best
+			std::map<ogdf::edge, relationship_type> edge_type_map;
+			*/
+
 			bool edge_exists = false;
 			for(auto it = edge_map.begin(); it != edge_map.end(); ++it){
 				if(it->first == src_it->first && it->second == dest_it->first){
