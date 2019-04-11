@@ -52,7 +52,9 @@ public:
 
 		//Relationships/Edges
 		//===============================================================================================================
-		std::multimap<std::string, std::string> edge_map;
+		//std::multimap<std::string, std::string> edge_map;
+		//std::map<edge, relationship_type> edge_type_map;
+		std::map<std::pair<node, node>, relationship_type> edge_type_map;
 
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add appropriate info.
@@ -68,9 +70,23 @@ public:
 				rhs = dest_it->second;
 			}
 
+			//find possible occurnce of edge already
+			auto itr = edge_type_map.find( std::pair<node, node>(lhs, rhs) );
+			if(itr == edge_type_map.end()){
+				edge_type_map.insert( std::pair<node,node>(lhs,rhs) , relationship.get_type() );
+			}else{
+				//check the relationship type and chose based on the heirarchy
+			}
+			
+		}
+
+		//after do a loop to add to graph
+
+	
+
 			/*
-			Run through the relationships and make a map of them first, determing there which is best
-			std::map<ogdf::edge, relationship_type> edge_type_map;
+				Run through the relationships and make a map of them first, determing there which is best
+				std::map<ogdf::edge, relationship_type> edge_type_map;
 			*/
 
 			bool edge_exists = false;
@@ -82,6 +98,14 @@ public:
 					edge_exists = true;
 				}
 			}
+
+			if(edge_exists){
+
+			}
+			
+			ogdf::edge cur_edge = g.newEdge(lhs, rhs);
+			edge_type_map.insert(std::pair<edge, relationship_type>(cur_edge, relationship.get_type()));
+
 
 			if(!edge_exists){
 				edge_map.insert(std::pair<std::string, std::string>(src_it->first, dest_it->first));
