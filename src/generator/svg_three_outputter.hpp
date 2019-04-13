@@ -78,11 +78,12 @@ public:
 
 		//Relationships/Edges
 		//===============================================================================================================
-
-		std::multimap<std::string, std::string> edge_map;
+		//std::multimap<std::string, std::string> edge_map;
+		//std::map<edge, relationship_type> edge_type_map;
+		std::multimap<std::pair<node, node>, relationship_type> edge_type_map;
 
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
-			//get the nodes from graph g, create edge and add apropriate info.
+			//get the nodes from graph g, create edge and add appropriate info.
 			ogdf::node lhs, rhs;
 
 			std::map<std::string, ogdf::node>::iterator src_it = class_node_map.find(relationship.get_source());
@@ -95,52 +96,79 @@ public:
 				rhs = dest_it->second;
 			}
 
-			bool edge_exists = false;
-			for(auto it = edge_map.begin(); it != edge_map.end(); ++it){
-				if(it->first == src_it->first && it->second == dest_it->first){
-					edge_exists = true;
+
+			//find possible occurnce of edge already
+			auto itr = edge_type_map.find( std::pair<node, node>(lhs, rhs) );
+			if(itr == edge_type_map.end()){
+				edge_type_map.insert( std::pair<std::pair<node,node>, relationship_type> (std::pair<node,node>(lhs,rhs) , relationship.get_type()) );
+			}else{
+				if(itr->second == ASSOCIATION && (relationship.get_type() == BIDIRECTIONAL 
+											   || relationship.get_type() == AGGREGATION
+											   || relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+
+				}else if(itr->second == BIDIRECTIONAL && (relationship.get_type() == AGGREGATION
+											   || relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+
+				}else if(itr->second == AGGREGATION && (relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+
 				}
-				if(it->first == dest_it->first && it->second == src_it->first){
-					edge_exists = true;
-				}
+				//check the relationship type and chose based on the heirarchy
 			}
+			
+		}
 
+		//after do a loop to add to graph
+		for(auto edge : edge_type_map){
 
-			if(!edge_exists){
-				edge_map.insert(std::pair<std::string, std::string>(src_it->first, dest_it->first));
-				edge_map.insert(std::pair<std::string, std::string>(dest_it->first, src_it->first));
-				//Add relationship checking. Choose more prominent of relationships. Create Hierarchy. 
+			/*
+				Run through the relationships and make a map of them first, determing there which is best
+				std::map<ogdf::edge, relationship_type> edge_type_map;
 
-				ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
-
-				cga.strokeWidth(cur_edge) = 2;
-
-				StrokeType &st = cga.strokeType(cur_edge);
-
-				const relationship_type r_type = relationship.get_type();
-				switch(r_type){
-				case DEPENDENCY:
-					st = StrokeType::Dash;
-					break;
-				case ASSOCIATION:
-					st = StrokeType::Solid;
-					break;
-				case BIDIRECTIONAL:
-					st = StrokeType::Solid;
-					break;
-				case AGGREGATION:
-					st = StrokeType::Solid;
-					break;
-				case COMPOSITION:
-					st = StrokeType::Solid;
-					break;
-				case GENERALIZATION:
-					st = StrokeType::Dash;
-					break;
-				case REALIZATION:
-					st = StrokeType::Dash;
-					break;
+				bool edge_exists = false;
+				for(auto it = edge_map.begin(); it != edge_map.end(); ++it){
+					if(it->first == src_it->first && it->second == dest_it->first){
+						edge_exists = true;
+					}
+					if(it->first == dest_it->first && it->second == src_it->first){
+						edge_exists = true;
+					}
 				}
+			*/
+
+			ogdf::edge cur_edge = g.newEdge(edge.first.first, edge.first.second);
+			//edge_type_map.insert(std::pair<ogdf::edge, relationship_type>(cur_edge, edge.second));
+
+			//ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
+			cga.strokeWidth(cur_edge) = 2;
+
+			StrokeType &st = cga.strokeType(cur_edge);
+
+			const relationship_type r_type = edge.second;
+			switch(r_type){
+			case DEPENDENCY:
+				st = StrokeType::Dash;
+				break;
+			case ASSOCIATION:
+				st = StrokeType::Solid;
+				break;
+			case BIDIRECTIONAL:
+				st = StrokeType::Solid;
+				break;
+			case AGGREGATION:
+				st = StrokeType::Solid;
+				break;
+			case COMPOSITION:
+				st = StrokeType::Solid;
+				break;
+			case GENERALIZATION:
+				st = StrokeType::Dash;
+				break;
+			case REALIZATION:
+				st = StrokeType::Dash;
+				break;
 			}
 		}
 		//===============================================================================================================

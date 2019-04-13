@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full" style="background: white" viewBox="38.25 38 2477.75 566">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" version="1.1" baseProfile="full" style="background: white" viewBox="38.25 38.25 2239.25 821.75">
 	<style>.font_style {font: 10px monospace;}</style>
 	<rect width="200%" height="200%" fill="white" />
 	<g class="font_style">
@@ -7,68 +7,65 @@
 	</g>
 	<g class="font_style">
 		<text>Entity</text>
-		<rect x="1280" y="80" width="1194" height="376" fill="#0000E0" fill-opacity="0.196078" stroke="#000000" stroke-width="1.500000px" />
+		<rect x="1320" y="40" width="676" height="778" fill="#0000E0" fill-opacity="0.196078" stroke="#000000" stroke-width="1.500000px" />
 	</g>
 	<g class="font_style">
 		<text>Control</text>
-		<rect x="882" y="118" width="358" height="210" fill="#E00000" fill-opacity="0.196078" stroke="#000000" stroke-width="1.500000px" />
+		<rect x="882" y="328" width="398" height="210" fill="#E00000" fill-opacity="0.196078" stroke="#000000" stroke-width="1.500000px" />
 	</g>
 	<g class="font_style">
 		<text>Boundary</text>
-		<rect x="40" y="150" width="802" height="410" fill="#00E000" fill-opacity="0.196078" stroke="#000000" stroke-width="1.500000px" />
+		<rect x="40" y="360" width="802" height="410" fill="#00E000" fill-opacity="0.196078" stroke="#000000" stroke-width="1.500000px" />
 	</g>
 	<g>
 		<g>
-			<path fill="none" d=" M1684,304 L1644,304" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
-		</g>
-		<g>
-			<path fill="none" d=" M588,474 L548,474" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
-		</g>
-		<g>
-			<path fill="none" d=" M410,434 L410,256" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
-		</g>
-		<g>
-			<path fill="none" d=" M2270,312 L2270,272" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
-		</g>
-		<g>
-			<path fill="none" d=" M2222,364 L2262,364" stroke="#000000" stroke-width="2.000000px" />
-		</g>
-		<g>
-			<path fill="none" d=" M1766,356 L1766,528 M1766,528 L1806,528" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1616,726 L1656,726" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g />
 		<g>
-			<path fill="none" d=" M1926,200 L1926,496" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1854,132 L2156,132 M2156,132 L2156,462" stroke="#000000" stroke-width="2.000000px" />
+		</g>
+		<g />
+		<g>
+			<path fill="none" d=" M1786,528 L1786,674" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<path fill="none" d=" M2072,166 L2392,166 M2392,166 L2392,312" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1932,496 L2036,496" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<path fill="none" d=" M2348,416 L2348,528 M2348,528 L2046,528" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1828,726 L2156,726 M2156,726 L2156,528" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<path fill="none" d=" M922,224 L534,224" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1664,674 L1664,634" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
 		</g>
 		<g>
-			<path fill="none" d=" M1200,166 L1320,166" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1062,368 L1062,258 M1062,258 L1618,258" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<path fill="none" d=" M1062,158 L1062,40 M1062,40 L1926,40 M1926,40 L1926,134" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1200,490 L1640,490" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<path fill="none" d=" M1200,280 L1336,280" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1062,498 L1062,858 M1062,858 L1742,858 M1742,858 L1742,778" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
 		</g>
 		<g>
-			<path fill="none" d=" M1658,166 L1780,166" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M1200,376 L1618,376" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<path fill="none" d=" M270,474 L230,474" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M922,434 L534,434" stroke="#000000" stroke-width="2.000000px" />
+		</g>
+		<g />
+		<g />
+		<g>
+			<path fill="none" d=" M588,684 L548,684" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
 		</g>
 		<g>
-			<path fill="none" d=" M1062,288 L1062,602 M1062,602 L2514,602 M2514,602 L2514,364 M2514,364 L2434,364" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+			<path fill="none" d=" M410,646 L410,466" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+		</g>
+		<g>
+			<path fill="none" d=" M270,684 L230,684" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 	</g>
-	<g class="font_style" transform="translate(1966.500000, 331.500000)">
+	<g class="font_style" transform="translate(1360.500000, 693.500000)">
 		<rect fill="#0000E0" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="255" height="65" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="8.040000em" lengthAdjust="spacingAndGlyphs">«datatype»</text>
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="3.350000em" lengthAdjust="spacingAndGlyphs">A_Car</text>
@@ -77,7 +74,7 @@
 		<text dy="4.130000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
 		<line x1="0" y1="4.470000em" x2="255" y2="4.470000em" stroke="black" stroke-width="1px" />
 	</g>
-	<g class="font_style" transform="translate(1684.500000, 252.000000)">
+	<g class="font_style" transform="translate(1688.500000, 80.000000)">
 		<rect fill="#0000E0" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="165" height="104" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="5.360000em" lengthAdjust="spacingAndGlyphs">Customer</text>
 		<line x1="0" y1="1.170000em" x2="165" y2="1.170000em" stroke="black" stroke-width="1px" />
@@ -89,7 +86,7 @@
 		<text dy="6.330000em" dx=".17em" text-anchor="start" fill="#000000" textLength="14.740000em" lengthAdjust="spacingAndGlyphs">+ set_credit(: String)</text>
 		<text dy="7.430000em" dx=".17em" text-anchor="start" fill="#000000" textLength="14.740000em" lengthAdjust="spacingAndGlyphs">+ get_credit(): String</text>
 	</g>
-	<g class="font_style" transform="translate(1336.250000, 252.500000)">
+	<g class="font_style" transform="translate(1618.250000, 224.500000)">
 		<rect fill="#0000E0" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="307.5" height="65" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="5.360000em" lengthAdjust="spacingAndGlyphs">Employee</text>
 		<line x1="0" y1="1.170000em" x2="307.5" y2="1.170000em" stroke="black" stroke-width="1px" />
@@ -98,7 +95,7 @@
 		<text dy="4.130000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
 		<line x1="0" y1="4.470000em" x2="307.5" y2="4.470000em" stroke="black" stroke-width="1px" />
 	</g>
-	<g class="font_style" transform="translate(1779.750000, 134.500000)">
+	<g class="font_style" transform="translate(1639.750000, 462.500000)">
 		<rect fill="#0000E0" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="292.5" height="65" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="8.040000em" lengthAdjust="spacingAndGlyphs">Manufacturer</text>
 		<line x1="0" y1="1.170000em" x2="292.5" y2="1.170000em" stroke="black" stroke-width="1px" />
@@ -107,7 +104,7 @@
 		<text dy="4.130000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
 		<line x1="0" y1="4.470000em" x2="292.5" y2="4.470000em" stroke="black" stroke-width="1px" />
 	</g>
-	<g class="font_style" transform="translate(2261.750000, 312.000000)">
+	<g class="font_style" transform="translate(1655.750000, 674.000000)">
 		<rect fill="#0000E0" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="172.5" height="104" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="9.380000em" lengthAdjust="spacingAndGlyphs">｛abstract｝</text>
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="2.680000em" lengthAdjust="spacingAndGlyphs">Part</text>
@@ -119,7 +116,7 @@
 		<line x1="0" y1="6.670000em" x2="172.5" y2="6.670000em" stroke="black" stroke-width="1px" />
 		<text dy="7.430000em" dx=".17em" text-anchor="start" fill="#000000" textLength="15.410000em" lengthAdjust="spacingAndGlyphs">+ register_dimensions()</text>
 	</g>
-	<g class="font_style" transform="translate(922.250000, 158.000000)">
+	<g class="font_style" transform="translate(922.250000, 368.000000)">
 		<rect fill="#E00000" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="277.5" height="130" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="5.360000em" lengthAdjust="spacingAndGlyphs">Register</text>
 		<line x1="0" y1="1.170000em" x2="277.5" y2="1.170000em" stroke="black" stroke-width="1px" />
@@ -133,7 +130,7 @@
 		<text dy="8.530000em" dx=".17em" text-anchor="start" fill="#000000" textLength="24.790000em" lengthAdjust="spacingAndGlyphs">+ order_parts(: Part, : Manufacturer)</text>
 		<text dy="9.630000em" dx=".17em" text-anchor="start" fill="#000000" textLength="20.770000em" lengthAdjust="spacingAndGlyphs">+ register_employee(: Employee)</text>
 	</g>
-	<g class="font_style" transform="translate(1320.250000, 120.500000)">
+	<g class="font_style" transform="translate(1618.250000, 330.500000)">
 		<rect fill="#0000E0" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="337.5" height="91" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="2.680000em" lengthAdjust="spacingAndGlyphs">Shop</text>
 		<line x1="0" y1="1.170000em" x2="337.5" y2="1.170000em" stroke="black" stroke-width="1px" />
@@ -144,7 +141,7 @@
 		<text dy="5.230000em" dx=".17em" text-anchor="start" fill="#000000" textLength="17.420000em" lengthAdjust="spacingAndGlyphs">+ add_employee(: Employee)</text>
 		<text dy="6.330000em" dx=".17em" text-anchor="start" fill="#000000" textLength="17.420000em" lengthAdjust="spacingAndGlyphs">+ add_manu(: Manufacturer)</text>
 	</g>
-	<g class="font_style" transform="translate(1806.000000, 496.500000)">
+	<g class="font_style" transform="translate(2036.000000, 462.500000)">
 		<rect fill="#828282" fill-opacity="0.784314" stroke-width="1.000000px" stroke="#000000" width="240" height="65" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="4.020000em" lengthAdjust="spacingAndGlyphs">String</text>
 		<line x1="0" y1="1.170000em" x2="240" y2="1.170000em" stroke="black" stroke-width="1px" />
@@ -153,7 +150,7 @@
 		<text dy="4.130000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
 		<line x1="0" y1="4.470000em" x2="240" y2="4.470000em" stroke="black" stroke-width="1px" />
 	</g>
-	<g class="font_style" transform="translate(587.750000, 428.500000)">
+	<g class="font_style" transform="translate(587.750000, 638.500000)">
 		<rect fill="#00E000" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="142.5" height="91" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="8.710000em" lengthAdjust="spacingAndGlyphs">«interface»</text>
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="4.020000em" lengthAdjust="spacingAndGlyphs">Window</text>
@@ -164,7 +161,7 @@
 		<text dy="5.230000em" dx=".17em" text-anchor="start" fill="#000000" textLength="8.040000em" lengthAdjust="spacingAndGlyphs">+ minimize()</text>
 		<text dy="6.330000em" dx=".17em" text-anchor="start" fill="#000000" textLength="8.040000em" lengthAdjust="spacingAndGlyphs">+ maximize()</text>
 	</g>
-	<g class="font_style" transform="translate(270.250000, 434.000000)">
+	<g class="font_style" transform="translate(270.250000, 646.000000)">
 		<rect fill="#00E000" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="277.5" height="78" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="9.380000em" lengthAdjust="spacingAndGlyphs">｛abstract｝</text>
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="15.410000em" lengthAdjust="spacingAndGlyphs">MyOperatingSystemWindow</text>
@@ -174,7 +171,7 @@
 		<text dy="5.230000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
 		<line x1="0" y1="5.570000em" x2="277.5" y2="5.570000em" stroke="black" stroke-width="1px" />
 	</g>
-	<g class="font_style" transform="translate(286.250000, 190.500000)">
+	<g class="font_style" transform="translate(286.250000, 400.500000)">
 		<rect fill="#00E000" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="247.5" height="65" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="9.380000em" lengthAdjust="spacingAndGlyphs">｛abstract｝</text>
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="12.730000em" lengthAdjust="spacingAndGlyphs">MyApplicationWindow</text>
@@ -183,7 +180,7 @@
 		<text dy="4.130000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
 		<line x1="0" y1="4.470000em" x2="247.5" y2="4.470000em" stroke="black" stroke-width="1px" />
 	</g>
-	<g class="font_style" transform="translate(80.000000, 440.500000)">
+	<g class="font_style" transform="translate(80.000000, 652.500000)">
 		<rect fill="#00E000" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="150" height="65" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="8.040000em" lengthAdjust="spacingAndGlyphs">«datatype»</text>
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="5.360000em" lengthAdjust="spacingAndGlyphs">WindowID</text>
@@ -192,7 +189,7 @@
 		<text dy="4.130000em" dx=".17em" text-anchor="start" fill="#000000" textLength="0.000000em" lengthAdjust="spacingAndGlyphs"></text>
 		<line x1="0" y1="4.470000em" x2="150" y2="4.470000em" stroke="black" stroke-width="1px" />
 	</g>
-	<g class="font_style" transform="translate(516.500000, 296.500000)">
+	<g class="font_style" transform="translate(516.500000, 506.500000)">
 		<rect fill="#00E000" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="285" height="91" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="8.040000em" lengthAdjust="spacingAndGlyphs">«datatype»</text>
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="4.690000em" lengthAdjust="spacingAndGlyphs">Content</text>
@@ -203,7 +200,7 @@
 		<text dy="5.230000em" dx=".17em" text-anchor="start" fill="#000000" textLength="25.460000em" lengthAdjust="spacingAndGlyphs">+ setContent(inout newContent: string)</text>
 		<text dy="6.330000em" dx=".17em" text-anchor="start" fill="#000000" textLength="12.060000em" lengthAdjust="spacingAndGlyphs">+ displayContent()</text>
 	</g>
-	<g class="font_style" transform="translate(2187.500000, 206.500000)">
+	<g class="font_style" transform="translate(1581.500000, 568.500000)">
 		<rect fill="#0000E0" fill-opacity="0.392157" stroke-width="1.000000px" stroke="#000000" width="165" height="65" />
 		<text dy="0.830000em" dx=".17em" text-anchor="start" fill="#000000" textLength="9.380000em" lengthAdjust="spacingAndGlyphs">｛abstract｝</text>
 		<text dy="1.930000em" dx=".17em" text-anchor="start" fill="#000000" textLength="3.350000em" lengthAdjust="spacingAndGlyphs">Wheel</text>
