@@ -14,6 +14,9 @@ public:
 		GraphAttributes::edgeGraphics |
 		GraphAttributes::nodeLabel |
 		GraphAttributes::edgeLabel |
+		GraphAttributes::nodeType  |
+		GraphAttributes::edgeType  |
+		GraphAttributes::edgeArrow |
 		GraphAttributes::nodeStyle |
 		GraphAttributes::edgeStyle |
 		GraphAttributes::nodeTemplate);
@@ -119,29 +122,45 @@ public:
 			ga.strokeWidth(cur_edge) = 2;
 
 			StrokeType &st = ga.strokeType(cur_edge);
+			EdgeArrow &ea = ga.arrowType(cur_edge);
+			Graph::EdgeType &et = ga.type(cur_edge);
 
 			const relationship_type r_type = edge.second;
 			switch(r_type){
 			case DEPENDENCY:
 				st = StrokeType::Dash;
+				ea = EdgeArrow::None;
+				et = Graph::EdgeType::dependency;
 				break;
 			case ASSOCIATION:
 				st = StrokeType::Solid;
+				ea = EdgeArrow::None;
+				et = Graph::EdgeType::association;
 				break;
 			case BIDIRECTIONAL:
 				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
 				break;
 			case AGGREGATION:
 				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
 				break;
 			case COMPOSITION:
 				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
 				break;
 			case GENERALIZATION:
 				st = StrokeType::Dash;
+				ea = EdgeArrow::First;
+				et = Graph::EdgeType::generalization;
 				break;
 			case REALIZATION:
 				st = StrokeType::Dash;
+				ea = EdgeArrow::First;
+				et = Graph::EdgeType::generalization;
 				break;
 			}
 		}

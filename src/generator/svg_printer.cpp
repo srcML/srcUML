@@ -332,12 +332,13 @@ double SvgPrinter::getArrowSize(edge e, node v) {
 	double result = 0;
 
 	if(m_attr.has(GraphAttributes::edgeArrow) || m_attr.directed()) {
-		const double minSize = (m_attr.has(GraphAttributes::edgeStyle) ? m_attr.strokeWidth(e) : 1) * 3;
+		const double minSize = 3;//(m_attr.has(GraphAttributes::edgeStyle) ? m_attr.strokeWidth(e) : 1) * 3;
 		node w = e->opposite(v);
 		result = std::max(minSize, (m_attr.width(v) + m_attr.height(v) + m_attr.width(w) + m_attr.height(w)) / 16.0);
 	}
 
-	return result;
+	//return result;
+	return 20.0;
 }
 
 bool SvgPrinter::isCoveredBy(const DPoint &point, edge e, node v) {
@@ -353,6 +354,8 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 	// draw arrows if G is directed or if arrow types are defined for the edge
 	bool drawSourceArrow = false;
 	bool drawTargetArrow = false;
+	static int edge_count = 0;
+	++edge_count;
 
 	if (m_attr.has(GraphAttributes::edgeArrow)) {
 		switch (m_attr.arrowType(e)) {
@@ -378,16 +381,19 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 	bool drawLabel = m_attr.has(GraphAttributes::edgeLabel) && !m_attr.label(e).empty();
 	pugi::xml_node label;
 
-	if(drawLabel) {
+	if(true) {//drawLabel
 		label = xmlNode.append_child("text");
 		label.append_attribute("text-anchor") = "middle";
 		label.append_attribute("dominant-baseline") = "middle";
 		label.append_attribute("font-family") = m_settings.fontFamily().c_str();
 		label.append_attribute("font-size") = m_settings.fontSize();
 		label.append_attribute("fill") = m_settings.fontColor().c_str();
-		label.text() = m_attr.label(e).c_str();
+		//label.text() = m_attr.label(e).c_str();
+		label.text() = to_string(edge_count).c_str();
 	}
 
+
+	//creates a path whose only points are the two nodes taht start and end the edge
 	DPolyline path = m_attr.bends(e);
 	node s = e->source();
 	node t = e->target();
@@ -566,8 +572,8 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 
 		arrowHead = drawPolygon(xmlNode, {
 				end.m_x, y,
-				end.m_x - size/4, y - size*sign,
-				end.m_x + size/4, y - size*sign
+				end.m_x - size/2.5, y - size*sign,//4
+				end.m_x + size/2.5, y - size*sign//4
 		});
 	} else {
 		// identify the position of the tip
@@ -599,15 +605,21 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 
 		double mx = end.m_x - size * dx2;
 		double my = end.m_y - size * dy2;
-
+	/*
 		double x2 = mx - size/4 * dy2;
 		double y2 = my + size/4 * dx2;
 
 		double x3 = mx + size/4 * dy2;
 		double y3 = my - size/4 * dx2;
+	*/
+		double x2 = mx - size/2.5 * dy2;
+		double y2 = my + size/2.5 * dx2;
+
+		double x3 = mx + size/2.5 * dy2;
+		double y3 = my - size/2.5 * dx2;
 
 		arrowHead = drawPolygon(xmlNode, {end.m_x, end.m_y, x2, y2, x3, y3});
 	}
 
-	appendLineStyle(arrowHead, e);
+	//appendLineStyle(arrowHead, e);
 }
