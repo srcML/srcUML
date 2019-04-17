@@ -50,7 +50,8 @@ Relationships
 		- If the definition of one element changes then the other may change.
 
 	- Relationship Heirarchy
-		- [Realization/Generalization] && Composition->Aggregation->Directed(Binary)->Directed(Unary)
+		- 1) [Realization/Generalization] && Composition->Aggregation->Directed(Binary)->Directed(Unary)
+		- 2) [Realization/Generalization] && Directed(Binary)->Composition->Aggregation->Directed(Unary)
 		- If Dependency is the only relation, show. 
 
 	- Multiplicity does not fall under the heirarchy as it doesn't affect the line or arrowhead. 
