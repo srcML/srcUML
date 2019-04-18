@@ -56,7 +56,8 @@ bool SvgPrinter::draw(std::ostream &os){
 
 	drawEdges(rootNode);
 	drawNodes(rootNode);
-
+	
+	
 	doc.save(os);
 
 	return true;
@@ -341,6 +342,7 @@ double SvgPrinter::getArrowSize(edge e, node v) {
 	return 20.0;
 }
 
+//determines if the point is covered by node v
 bool SvgPrinter::isCoveredBy(const DPoint &point, edge e, node v) {
 	double arrowSize = getArrowSize(e, v);
 
@@ -381,7 +383,7 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 	bool drawLabel = m_attr.has(GraphAttributes::edgeLabel) && !m_attr.label(e).empty();
 	pugi::xml_node label;
 
-	if(true) {//drawLabel
+	if(false) {//drawLabel
 		label = xmlNode.append_child("text");
 		label.append_attribute("text-anchor") = "middle";
 		label.append_attribute("dominant-baseline") = "middle";
@@ -393,7 +395,8 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 	}
 
 
-	//creates a path whose only points are the two nodes taht start and end the edge
+	//creates a path whose only points are the two nodes that start and end the edge
+	//along with anything in bends
 	DPolyline path = m_attr.bends(e);
 	node s = e->source();
 	node t = e->target();
@@ -558,6 +561,48 @@ pugi::xml_node SvgPrinter::drawCurve(pugi::xml_node xmlNode, edge e, List<DPoint
 	return line;
 }
 
+DPoint* line_intersection(const DPoint &line1_p1,  //A
+						  const DPoint &line1_p2,  //B
+						  const DPoint &line2_p1,  //C
+						  const DPoint &line2_p2)  //D
+{ 
+	DPoint *result = new DPoint();
+
+	//line1
+	double x1 = line1_p2.m_y - line1_p1.m_y;
+	double y1 = line1_p1.m_x - line1_p2.m_y;
+	double z1 = x1*(line1_p1.m_x) + y1*(line1_p1.m_y);
+	//line2
+	double x2 = line2_p2.m_y - line2_p1.m_y;
+	double y2 = line2_p1.m_x - line2_p2.m_y;
+	double z2 = x2*(line2_p1.m_x) + y2*(line2_p1.m_y);
+
+	double d = x1*y2 - x2*y1;
+
+	if(d == 0){
+		//std::cerr << "DETERMINATE 0\n";
+		//lines are parallel
+		return nullptr;
+	}else{
+		result->m_x = (y2*z1 - y1*z2)/d;
+		result->m_y = (x1*z2 - x2*z1)/d;
+		if(result->m_x <= std::max(line1_p1.m_x, line1_p2.m_x) &&
+		   result->m_x >= std::min(line1_p2.m_x, line1_p2.m_x) &&
+		   result->m_y <= std::max(line1_p1.m_y, line1_p2.m_y) &&
+		   result->m_y >= std::min(line1_p2.m_y, line1_p2.m_y) &&
+		   result->m_x <= std::max(line2_p1.m_x, line2_p2.m_x) &&
+		   result->m_x >= std::min(line2_p2.m_x, line2_p2.m_x) &&
+		   result->m_y <= std::max(line2_p1.m_y, line2_p2.m_y) &&
+		   result->m_y >= std::min(line2_p2.m_y, line2_p2.m_y)
+		   ){
+		//std::cerr << "result: " << result->m_x << ", " << result->m_y << "\n";
+			return result;
+		}else{
+			return nullptr; 
+		}
+	}
+}
+
 void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoint &end, node v, edge e){
 	const double dx = end.m_x - start.m_x;
 	const double dy = end.m_y - start.m_y;
@@ -573,10 +618,26 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		arrowHead = drawPolygon(xmlNode, {
 				end.m_x, y,
 				end.m_x - size/2.5, y - size*sign,//4
-				end.m_x + size/2.5, y - size*sign//4
+				end.m_x + size/2.5, y - size*sign //4
 		});
 	} else {
 		// identify the position of the tip
+		DPoint *tip;
+		std::vector<DPoint> corners;
+		corners.push_back(DPoint(m_attr.x(v), m_attr.y(v)));
+		corners.push_back(DPoint(m_attr.x(v) + m_attr.width(v), m_attr.y(v)));
+		corners.push_back(DPoint(m_attr.x(v) + m_attr.width(v), m_attr.y(v) + m_attr.height(v)));
+		corners.push_back(DPoint(m_attr.x(v), m_attr.y(v) + m_attr.height(v)));
+
+		for(int i = 0, j = 1; i < 4; ++i){
+			//std::cerr << "HERE\n";
+			tip = line_intersection(start, end, corners[i], corners[j]);
+			++j; if(j == 4) j = 0;
+			if(tip != nullptr){
+				break;
+			}
+		}
+
 
 		double slope = dy / dx;
 		int sign = dx > 0 ? 1 : -1;
@@ -585,6 +646,22 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		double delta = x - start.m_x;
 		double y = start.m_y + delta*slope;
 
+		//TEST
+		/*
+		DPoint *test = line_intersection(
+			DPoint(10, 10),
+			DPoint(20, 20),
+			DPoint(10, 20), 
+			DPoint(20, 10));
+
+		std::cerr << "THE TEST\n";
+		if(test != nullptr){
+			std::cerr << "TEST POINT: (" << test->m_x << ", " << test->m_y << ")\n"; 
+		}
+		*/
+
+
+
 		if(!isCoveredBy(DPoint(x,y), e, v)) {
 			sign = dy > 0 ? 1 : -1;
 			y = m_attr.y(v) - m_attr.height(v)/2 * sign;
@@ -592,8 +669,15 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			x = start.m_x + delta/slope;
 		}
 
-		end.m_x = x;
-		end.m_y = y;
+		std::cerr << "TIP:\n";
+		if(tip != nullptr){
+			std::cerr << "\tMY TIP CALC\n";
+			end.m_x = tip->m_x;
+			end.m_y = tip->m_y;
+		}else{
+			end.m_x = x;
+			end.m_y = y;
+		}
 
 		// draw the actual arrow head
 
