@@ -54,9 +54,9 @@ bool SvgPrinter::draw(std::ostream &os){
 		drawClusters(rootNode);
 	}
 
-	drawNodes(rootNode);
-	drawEdges(rootNode);
 	//drawNodes(rootNode);
+	drawEdges(rootNode);
+	drawNodes(rootNode);
 	
 	
 	doc.save(os);
@@ -572,25 +572,42 @@ DPoint* line_intersection(const DPoint &line1_p1,  //A
 { 
 	DPoint *result = new DPoint();
 
-	double m1 = (line1_p2.m_y - line1_p1.m_y)/(line1_p2.m_x - line1_p1.m_x);
-	double m2 = (line2_p2.m_y - line2_p1.m_y)/(line2_p2.m_x - line2_p1.m_x);
+	/*
+		double m1 = (line1_p2.m_y - line1_p1.m_y)/(line1_p2.m_x - line1_p1.m_x);
+		double m2 = (line2_p2.m_y - line2_p1.m_y)/(line2_p2.m_x - line2_p1.m_x);
 
-	double x = ((m1*line1_p1.m_x)-(line1_p1.m_y)-(m2*line2_p1.m_x)+(line2_p1.m_y))/(m1 - m2);
-	double y = (m1*x)-(m1*line1_p1.m_x)+(line1_p1.m_y);
+		double x = ((m1*line1_p1.m_x)-(line1_p1.m_y)-(m2*line2_p1.m_x)+(line2_p1.m_y))/(m1 - m2);
+		double y = (m1*x)-(m1*line1_p1.m_x)+(line1_p1.m_y);
 
-	result->m_x = x;
-	result->m_y = y;
+		result->m_x = x;
+		result->m_y = y;
+	*/
 
-	std::cerr << "Line Cross Run: \n";
-	std::cerr << "\tInter: (" << x << ", " << y << ")\n";
-	std::cerr << "\tLine1: Slope: " << m1 << '\n';
-	std::cerr << "\tLine2: Slope: " << m2 << '\n';
+	double x1 = line1_p2.m_y - line1_p1.m_y;
+	double y1 = line1_p1.m_x - line1_p2.m_x;
+	double z1 = x1*(line1_p1.m_x) + y1*(line1_p1.m_y);
 
-	if(m1 == m2){
+	double x2 = line2_p2.m_y - line2_p1.m_y;
+	double y2 = line2_p1.m_x - line2_p2.m_x;
+	double z2 = x2*(line2_p1.m_x) + y2*(line2_p1.m_y);
+
+	double d = (x1*y2) - (x2*y1);
+
+	if(d == 0){
 		std::cerr << "DETERMINATE 0\n";
 		//lines are parallel
 		return nullptr;
 	}else{
+
+		double x = ((y2*z1) - (y1*z2))/d;
+		double y = ((x1*z2) - (x2*z1))/d;
+
+		result->m_x = x;
+		result->m_y = y;
+
+		//std::cerr << "Line Cross Run: \n";
+		//std::cerr << "\tInter: (" << x << ", " << y << ")\n";
+
 		if(result->m_x <= std::max(line1_p1.m_x, line1_p2.m_x) &&
 		   result->m_x >= std::min(line1_p1.m_x, line1_p2.m_x) &&
 
@@ -631,13 +648,14 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		});
 	} else {
 		// identify the position of the tip
-		DPoint *tip;
+		DPoint *tip = nullptr;
 		std::vector<DPoint> corners;
 		corners.push_back(DPoint(m_attr.x(v), m_attr.y(v)));
 		corners.push_back(DPoint(m_attr.x(v) + m_attr.width(v), m_attr.y(v)));
 		corners.push_back(DPoint(m_attr.x(v) + m_attr.width(v), m_attr.y(v) + m_attr.height(v)));
 		corners.push_back(DPoint(m_attr.x(v), m_attr.y(v) + m_attr.height(v)));
 
+		std::cerr << "\n\n\nSingle Node=====================\n";
 		for(int i = 0, j = 1; i < 4; ++i){
 			//std::cerr << "HERE\n";
 			tip = line_intersection(start, end, corners[i], corners[j]);
@@ -669,8 +687,6 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		}
 		*/
 
-
-
 		if(!isCoveredBy(DPoint(x,y), e, v)) {
 			sign = dy > 0 ? 1 : -1;
 			y = m_attr.y(v) - m_attr.height(v)/2 * sign;
@@ -680,11 +696,11 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 
 		std::cerr << "TIP:\n";
 		if(tip != nullptr){
-			std::cerr << "\tMY TIP CALC\n";
+			std::cerr << "\tNEW\n";
 			end.m_x = tip->m_x;
 			end.m_y = tip->m_y;
 		}else{
-			//std::cerr << "\tORIGINAL\n";
+			std::cerr << "\tORIGINAL\n";
 			end.m_x = x;
 			end.m_y = y;
 		}
