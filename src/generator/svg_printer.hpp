@@ -61,10 +61,11 @@ public:
 	 * \param attr The attributes of the graph
 	 * \param settings The SVG configuration
 	 */
-	SvgPrinter(const GraphAttributes &attr, const GraphIO::SVGSettings &settings)
+	SvgPrinter(const GraphAttributes &attr, const GraphIO::SVGSettings &settings)//, const std::map<node, std::string> &na)
 	  : m_attr(attr)
 	  , m_clsAttr(nullptr)
 	  , m_settings(settings)
+	  //, m_node_arrow(na)
 	{
 	}
 
@@ -74,10 +75,11 @@ public:
 	 * \param attr The attributes of the graph
 	 * \param settings The SVG configuration
 	 */
-	SvgPrinter(const ClusterGraphAttributes &attr, const GraphIO::SVGSettings &settings)
+	SvgPrinter(const ClusterGraphAttributes &attr, const GraphIO::SVGSettings &settings)//, const std::map<node, std::string> &na)
 	  : m_attr(attr)
 	  , m_clsAttr(new ClusterGraphAttributes(attr))
 	  , m_settings(settings)
+	  //, m_node_arrow(na)
 	{
 	}
 
@@ -97,6 +99,8 @@ private:
 
 	//! SVG configuration
 	GraphIO::SVGSettings m_settings;
+
+	//std::map<node, std::string> m_node_arrow;
 
 	/**
 	 * Draws a rectangle for each cluster in the ogdf::ClusterGraph.

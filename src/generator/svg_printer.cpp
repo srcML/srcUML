@@ -54,8 +54,9 @@ bool SvgPrinter::draw(std::ostream &os){
 		drawClusters(rootNode);
 	}
 
-	drawEdges(rootNode);
 	drawNodes(rootNode);
+	drawEdges(rootNode);
+	//drawNodes(rootNode);
 	
 	
 	doc.save(os);
@@ -379,6 +380,9 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 		}
 	}
 
+	//drawSourceArrow = false;
+	//drawTargetArrow = false;
+
 	xmlNode = xmlNode.append_child("g");
 	bool drawLabel = m_attr.has(GraphAttributes::edgeLabel) && !m_attr.label(e).empty();
 	pugi::xml_node label;
@@ -568,36 +572,41 @@ DPoint* line_intersection(const DPoint &line1_p1,  //A
 { 
 	DPoint *result = new DPoint();
 
-	//line1
-	double x1 = line1_p2.m_y - line1_p1.m_y;
-	double y1 = line1_p1.m_x - line1_p2.m_y;
-	double z1 = x1*(line1_p1.m_x) + y1*(line1_p1.m_y);
-	//line2
-	double x2 = line2_p2.m_y - line2_p1.m_y;
-	double y2 = line2_p1.m_x - line2_p2.m_y;
-	double z2 = x2*(line2_p1.m_x) + y2*(line2_p1.m_y);
+	double m1 = (line1_p2.m_y - line1_p1.m_y)/(line1_p2.m_x - line1_p1.m_x);
+	double m2 = (line2_p2.m_y - line2_p1.m_y)/(line2_p2.m_x - line2_p1.m_x);
 
-	double d = x1*y2 - x2*y1;
+	double x = ((m1*line1_p1.m_x)-(line1_p1.m_y)-(m2*line2_p1.m_x)+(line2_p1.m_y))/(m1 - m2);
+	double y = (m1*x)-(m1*line1_p1.m_x)+(line1_p1.m_y);
 
-	if(d == 0){
-		//std::cerr << "DETERMINATE 0\n";
+	result->m_x = x;
+	result->m_y = y;
+
+	std::cerr << "Line Cross Run: \n";
+	std::cerr << "\tInter: (" << x << ", " << y << ")\n";
+	std::cerr << "\tLine1: Slope: " << m1 << '\n';
+	std::cerr << "\tLine2: Slope: " << m2 << '\n';
+
+	if(m1 == m2){
+		std::cerr << "DETERMINATE 0\n";
 		//lines are parallel
 		return nullptr;
 	}else{
-		result->m_x = (y2*z1 - y1*z2)/d;
-		result->m_y = (x1*z2 - x2*z1)/d;
 		if(result->m_x <= std::max(line1_p1.m_x, line1_p2.m_x) &&
-		   result->m_x >= std::min(line1_p2.m_x, line1_p2.m_x) &&
+		   result->m_x >= std::min(line1_p1.m_x, line1_p2.m_x) &&
+
 		   result->m_y <= std::max(line1_p1.m_y, line1_p2.m_y) &&
-		   result->m_y >= std::min(line1_p2.m_y, line1_p2.m_y) &&
+		   result->m_y >= std::min(line1_p1.m_y, line1_p2.m_y) &&
+
 		   result->m_x <= std::max(line2_p1.m_x, line2_p2.m_x) &&
-		   result->m_x >= std::min(line2_p2.m_x, line2_p2.m_x) &&
+		   result->m_x >= std::min(line2_p1.m_x, line2_p2.m_x) &&
+
 		   result->m_y <= std::max(line2_p1.m_y, line2_p2.m_y) &&
-		   result->m_y >= std::min(line2_p2.m_y, line2_p2.m_y)
+		   result->m_y >= std::min(line2_p1.m_y, line2_p2.m_y)
 		   ){
-		//std::cerr << "result: " << result->m_x << ", " << result->m_y << "\n";
+			//std::cerr << "result: " << result->m_x << ", " << result->m_y << "\n";
 			return result;
 		}else{
+			std::cerr << "\tFailed. Didn't cross.\n";
 			return nullptr; 
 		}
 	}
@@ -675,6 +684,7 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			end.m_x = tip->m_x;
 			end.m_y = tip->m_y;
 		}else{
+			//std::cerr << "\tORIGINAL\n";
 			end.m_x = x;
 			end.m_y = y;
 		}
@@ -701,6 +711,10 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 
 		double x3 = mx + size/2.5 * dy2;
 		double y3 = my - size/2.5 * dx2;
+
+		//determine arrowhead type
+
+
 
 		arrowHead = drawPolygon(xmlNode, {end.m_x, end.m_y, x2, y2, x3, y3});
 	}

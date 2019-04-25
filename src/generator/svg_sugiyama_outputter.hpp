@@ -25,14 +25,14 @@ public:
 	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
 		//transfer information from srcUML to ogdf
 		srcuml_relationships relationships = analyze_relationships(classes);
-		std::map<std::string, ogdf::node> class_node_map;
+		std::map<std::string, node> class_node_map;
 
 		//Classes/Nodes
 		//===============================================================================================================
 		for(const std::shared_ptr<srcuml_class> & aclass : classes){
 			node cur_node = g.newNode();
 			//Insert into map the node class pairing
-			class_node_map.insert(std::pair<std::string, ogdf::node>(aclass->get_srcuml_name(), cur_node));
+			class_node_map.insert(std::pair<std::string, node>(aclass->get_srcuml_name(), cur_node));
 
 			std::string& label = ga.label(cur_node);
 			int num_lines = 0;
@@ -58,17 +58,18 @@ public:
 		//std::multimap<std::string, std::string> edge_map;
 		//std::map<edge, relationship_type> edge_type_map;
 		std::multimap<std::pair<node, node>, relationship_type> edge_type_map;
+		//std::map<node, std::string> node_arrow;
 
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add appropriate info.
-			ogdf::node lhs, rhs;
+			node lhs, rhs;
 
-			std::map<std::string, ogdf::node>::iterator src_it = class_node_map.find(relationship.get_source());
+			std::map<std::string, node>::iterator src_it = class_node_map.find(relationship.get_source());
 			if(src_it != class_node_map.end()){
 				lhs = src_it->second;
 			}
 
-			std::map<std::string, ogdf::node>::iterator dest_it = class_node_map.find(relationship.get_destination());
+			std::map<std::string, node>::iterator dest_it = class_node_map.find(relationship.get_destination());
 			if(dest_it != class_node_map.end()){
 				rhs = dest_it->second;
 			}
@@ -100,25 +101,10 @@ public:
 		//after do a loop to add to graph
 		for(auto edge : edge_type_map){
 
-			/*
-				Run through the relationships and make a map of them first, determing there which is best
-				std::map<ogdf::edge, relationship_type> edge_type_map;
-
-				bool edge_exists = false;
-				for(auto it = edge_map.begin(); it != edge_map.end(); ++it){
-					if(it->first == src_it->first && it->second == dest_it->first){
-						edge_exists = true;
-					}
-					if(it->first == dest_it->first && it->second == src_it->first){
-						edge_exists = true;
-					}
-				}
-			*/
-
 			ogdf::edge cur_edge = g.newEdge(edge.first.first, edge.first.second);
 			//edge_type_map.insert(std::pair<ogdf::edge, relationship_type>(cur_edge, edge.second));
 
-			//ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to ogdf::node types
+			//ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to node types
 			ga.strokeWidth(cur_edge) = 2;
 
 			StrokeType &st = ga.strokeType(cur_edge);
@@ -172,7 +158,7 @@ public:
 			}
 
 
-			for(ogdf::node * n = g.firstNode(); n; n = n->succ()){
+			for(node * n = g.firstNode(); n; n = n->succ()){
 
 			}
 		*/
