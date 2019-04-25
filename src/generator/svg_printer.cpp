@@ -665,14 +665,6 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			}
 		}
 
-
-		double slope = dy / dx;
-		int sign = dx > 0 ? 1 : -1;
-
-		double x = m_attr.x(v) - m_attr.width(v)/2 * sign;
-		double delta = x - start.m_x;
-		double y = start.m_y + delta*slope;
-
 		//TEST
 		/*
 		DPoint *test = line_intersection(
@@ -686,6 +678,14 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			std::cerr << "TEST POINT: (" << test->m_x << ", " << test->m_y << ")\n"; 
 		}
 		*/
+
+
+		double slope = dy / dx;
+		int sign = dx > 0 ? 1 : -1;
+
+		double x = m_attr.x(v) - m_attr.width(v)/2 * sign;
+		double delta = x - start.m_x;
+		double y = start.m_y + delta*slope;
 
 		if(!isCoveredBy(DPoint(x,y), e, v)) {
 			sign = dy > 0 ? 1 : -1;
@@ -704,6 +704,9 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			end.m_x = x;
 			end.m_y = y;
 		}
+
+		end.m_x = x;
+		end.m_y = y;
 
 		// draw the actual arrow head
 
@@ -730,9 +733,29 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 
 		//determine arrowhead type
 
+		//list of points in x y order
+		std::list<double> coord;
+		coord.push_back(end.m_x);
+		coord.push_back(end.m_y);
+		coord.push_back(x2);
+		coord.push_back(y2);
 
+		double vx = start.m_x - end.m_x;
+		double vy = start.m_y - end.m_y;
+		double v_mag = std::sqrt(vx*vx + vy*vy);
+		double temp = 44;
 
-		arrowHead = drawPolygon(xmlNode, {end.m_x, end.m_y, x2, y2, x3, y3});
+		coord.push_back(end.m_x + temp*(vx/v_mag));
+		coord.push_back(end.m_y + temp*(vy/v_mag));
+
+		coord.push_back(x3);
+		coord.push_back(y3);
+
+		arrowHead = drawPolygon(xmlNode, coord);
+		//{end.m_x, end.m_y, x2, y2, x3, y3}
+		//change fill
+		arrowHead.append_attribute("stroke") = "#000000";
+		arrowHead.append_attribute("fill-opacity") = "0";
 	}
 
 	//appendLineStyle(arrowHead, e);
