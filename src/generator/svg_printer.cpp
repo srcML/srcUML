@@ -634,6 +634,18 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 	const double dy = end.m_y - start.m_y;
 	const double size = getArrowSize(e, v);
 
+	bool source = false, target = false;
+
+	std::cerr << "TYPE:\n";
+	if(NodeElement::compare(*v, *(e->source()))){
+		source = true;
+		std::cerr << "\tSOURCE\n";
+	}else if(NodeElement::compare(*v, *(e->target()))){
+		target = true;
+		std::cerr << "\tTARGET\n";
+	} 
+
+
 	pugi::xml_node arrowHead;
 
 	if(dx == 0) {
@@ -694,6 +706,7 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			x = start.m_x + delta/slope;
 		}
 
+/*
 		std::cerr << "TIP:\n";
 		if(tip != nullptr){
 			std::cerr << "\tNEW\n";
@@ -704,7 +717,8 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			end.m_x = x;
 			end.m_y = y;
 		}
-
+*/
+		
 		end.m_x = x;
 		end.m_y = y;
 
