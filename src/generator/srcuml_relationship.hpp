@@ -24,7 +24,7 @@
 
 #include <srcuml_class.hpp>
 
-enum relationship_type { DEPENDENCY, ASSOCIATION, BIDIRECTIONAL, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION };
+enum relationship_type { DEPENDENCY, ASSOCIATION, BIDIRECTIONAL, AGGREGATION, COMPOSITION, GENERALIZATION, REALIZATION, NONE_TYPE };
 struct srcuml_relationship {
 
     srcuml_relationship(const std::string & source,

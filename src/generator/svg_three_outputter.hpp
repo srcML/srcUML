@@ -81,6 +81,7 @@ public:
 		//std::multimap<std::string, std::string> edge_map;
 		//std::map<edge, relationship_type> edge_type_map;
 		std::multimap<std::pair<node, node>, relationship_type> edge_type_map;
+		std::map<std::pair<node, edge>, std::string> ne_arrow;
 
 		for(const srcuml_relationship relationship : relationships.get_relationships()){
 			//get the nodes from graph g, create edge and add appropriate info.
@@ -208,7 +209,7 @@ public:
 
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 		
-		if(!drawSVG(cga, out, *svg_settings)){
+		if(!drawSVG(cga, out, *svg_settings, ne_arrow)){
 			std::cout << "Error Write" << std::endl;
 		}
 	

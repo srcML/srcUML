@@ -61,11 +61,11 @@ public:
 	 * \param attr The attributes of the graph
 	 * \param settings The SVG configuration
 	 */
-	SvgPrinter(const GraphAttributes &attr, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &na)
+	SvgPrinter(const GraphAttributes &attr, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &nea)
 	  : m_attr(attr)
 	  , m_clsAttr(nullptr)
 	  , m_settings(settings)
-	  , m_node_arrow(na)
+	  , m_node_arrow(nea)
 	{
 	}
 
@@ -75,11 +75,11 @@ public:
 	 * \param attr The attributes of the graph
 	 * \param settings The SVG configuration
 	 */
-	SvgPrinter(const ClusterGraphAttributes &attr, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &na)
+	SvgPrinter(const ClusterGraphAttributes &attr, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &nea)
 	  : m_attr(attr)
 	  , m_clsAttr(new ClusterGraphAttributes(attr))
 	  , m_settings(settings)
-	  , m_node_arrow(na)
+	  , m_node_arrow(nea)
 	{
 	}
 

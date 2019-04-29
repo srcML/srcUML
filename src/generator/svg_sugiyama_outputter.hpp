@@ -55,8 +55,6 @@ public:
 
 		//Relationships/Edges
 		//===============================================================================================================
-		//std::multimap<std::string, std::string> edge_map;
-		//std::map<edge, relationship_type> edge_type_map;
 		std::multimap<std::pair<node, node>, relationship_type> edge_type_map;
 		std::map<std::pair<node, edge>, std::string> ne_arrow;
 
@@ -74,26 +72,28 @@ public:
 				rhs = dest_it->second;
 			}
 
-
 			//find possible occurnce of edge already
 			auto itr = edge_type_map.find( std::pair<node, node>(lhs, rhs) );
+
+			//If edge doesn't exist, add it
 			if(itr == edge_type_map.end()){
-				edge_type_map.insert( std::pair<std::pair<node,node>, relationship_type> (std::pair<node,node>(lhs,rhs) , relationship.get_type()) );
+				edge_type_map.insert(std::pair<std::pair<node,node>, 
+					relationship_type> (std::pair<node,node>(lhs,rhs), relationship.get_type()) );
+				edge_type_map.insert(std::pair<std::pair<node,node>, 
+					relationship_type> (std::pair<node,node>(rhs,lhs), NONE_TYPE ) );
+
+			//if edge does exist, check that the new relation isn't stronger
 			}else{
 				if(itr->second == ASSOCIATION && (relationship.get_type() == BIDIRECTIONAL 
 											   || relationship.get_type() == AGGREGATION
 											   || relationship.get_type() == COMPOSITION)){
 					itr->second = relationship.get_type();
-
 				}else if(itr->second == BIDIRECTIONAL && (relationship.get_type() == AGGREGATION
 											   || relationship.get_type() == COMPOSITION)){
 					itr->second = relationship.get_type();
-
 				}else if(itr->second == AGGREGATION && (relationship.get_type() == COMPOSITION)){
 					itr->second = relationship.get_type();
-
 				}
-				//check the relationship type and chose based on the heirarchy
 			}
 			
 		}
@@ -101,10 +101,13 @@ public:
 		//after do a loop to add to graph
 		for(auto edge : edge_type_map){
 
-			ogdf::edge cur_edge = g.newEdge(edge.first.first, edge.first.second);
-			//edge_type_map.insert(std::pair<ogdf::edge, relationship_type>(cur_edge, edge.second));
+			if(edge.second == NONE_TYPE)continue;
+			//edge.first.first  = source 
+			//edge.first.second = destination
+			//edge.second       = relationship type
 
-			//ogdf::edge cur_edge = g.newEdge(lhs, rhs);//need to pass to node types
+			ogdf::edge cur_edge = g.newEdge(edge.first.first, edge.first.second);
+
 			ga.strokeWidth(cur_edge) = 2;
 
 			StrokeType &st = ga.strokeType(cur_edge);
@@ -115,53 +118,56 @@ public:
 			switch(r_type){
 			case DEPENDENCY:
 				st = StrokeType::Dash;
-				ea = EdgeArrow::None;
+				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::dependency;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case ASSOCIATION:
 				st = StrokeType::Solid;
-				ea = EdgeArrow::None;
+				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case BIDIRECTIONAL:
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case AGGREGATION:
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_diamond"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case COMPOSITION:
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_diamond"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case GENERALIZATION:
 				st = StrokeType::Dash;
-				ea = EdgeArrow::First;
+				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::generalization;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case REALIZATION:
 				st = StrokeType::Dash;
-				ea = EdgeArrow::First;
+				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::generalization;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			}
 		}
 		//===============================================================================================================
-
-		/*
-			for(ogdf::edge * e = g.firstEdge(); e; e = e->succ()){
-			
-			}
-
-
-			for(node * n = g.firstNode(); n; n = n->succ()){
-
-			}
-		*/
 
 		//Layout
 		//===============================================================================================================
@@ -180,7 +186,7 @@ public:
 
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 		
-		if(!drawSVG(ga, out, *svg_settings)){
+		if(!drawSVG(ga, out, *svg_settings, ne_arrow)){
 			std::cout << "Error Write" << std::endl;
 		}
 

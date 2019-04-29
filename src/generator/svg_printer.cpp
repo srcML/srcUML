@@ -380,9 +380,6 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 		}
 	}
 
-	//drawSourceArrow = false;
-	//drawTargetArrow = false;
-
 	xmlNode = xmlNode.append_child("g");
 	bool drawLabel = m_attr.has(GraphAttributes::edgeLabel) && !m_attr.label(e).empty();
 	pugi::xml_node label;
@@ -623,7 +620,7 @@ DPoint* line_intersection(const DPoint &line1_p1,  //A
 			//std::cerr << "result: " << result->m_x << ", " << result->m_y << "\n";
 			return result;
 		}else{
-			std::cerr << "\tFailed. Didn't cross.\n";
+			//std::cerr << "Failed. Didn't cross.\n";
 			return nullptr; 
 		}
 	}
@@ -634,8 +631,9 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 	const double dy = end.m_y - start.m_y;
 	const double size = getArrowSize(e, v);
 
-	bool source = false, target = false;
+	//bool source = false, target = false;
 
+	/*
 	std::cerr << "TYPE:\n";
 	if(NodeElement::compare(*v, *(e->source()))){
 		source = true;
@@ -644,6 +642,7 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		target = true;
 		std::cerr << "\tTARGET\n";
 	} 
+	*/
 
 
 	pugi::xml_node arrowHead;
@@ -667,7 +666,6 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		corners.push_back(DPoint(m_attr.x(v) + m_attr.width(v), m_attr.y(v) + m_attr.height(v)));
 		corners.push_back(DPoint(m_attr.x(v), m_attr.y(v) + m_attr.height(v)));
 
-		std::cerr << "\n\n\nSingle Node=====================\n";
 		for(int i = 0, j = 1; i < 4; ++i){
 			//std::cerr << "HERE\n";
 			tip = line_intersection(start, end, corners[i], corners[j]);
@@ -676,21 +674,6 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 				break;
 			}
 		}
-
-		//TEST
-		/*
-		DPoint *test = line_intersection(
-			DPoint(10, 10),
-			DPoint(20, 20),
-			DPoint(10, 20), 
-			DPoint(20, 10));
-
-		std::cerr << "THE TEST\n";
-		if(test != nullptr){
-			std::cerr << "TEST POINT: (" << test->m_x << ", " << test->m_y << ")\n"; 
-		}
-		*/
-
 
 		double slope = dy / dx;
 		int sign = dx > 0 ? 1 : -1;
@@ -706,19 +689,18 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			x = start.m_x + delta/slope;
 		}
 
-/*
-		std::cerr << "TIP:\n";
+		std::cerr << "Tip Calc: ";
 		if(tip != nullptr){
-			std::cerr << "\tNEW\n";
+			std::cerr << " NEW\n";
 			end.m_x = tip->m_x;
 			end.m_y = tip->m_y;
 		}else{
-			std::cerr << "\tORIGINAL\n";
+			std::cerr << " ORIGINAL\n";
 			end.m_x = x;
 			end.m_y = y;
 		}
-*/
-		
+
+		//New doesn't work currently. 
 		end.m_x = x;
 		end.m_y = y;
 
@@ -732,13 +714,7 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 
 		double mx = end.m_x - size * dx2;
 		double my = end.m_y - size * dy2;
-	/*
-		double x2 = mx - size/4 * dy2;
-		double y2 = my + size/4 * dx2;
-
-		double x3 = mx + size/4 * dy2;
-		double y3 = my - size/4 * dx2;
-	*/
+	
 		double x2 = mx - size/2.5 * dy2;
 		double y2 = my + size/2.5 * dx2;
 
@@ -747,30 +723,82 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 
 		//determine arrowhead type
 
-		//list of points in x y order
+		//determine arrow type from m_node_arrow
+		std::map<std::pair<node, edge>, std::string>::iterator a_type_ptr;
+		a_type_ptr = m_node_arrow.find(std::make_pair(v, e));
 		std::list<double> coord;
-		coord.push_back(end.m_x);
-		coord.push_back(end.m_y);
-		coord.push_back(x2);
-		coord.push_back(y2);
+		bool hollow = false;
+		std::cerr << "Arrow Type: ";
+		if(a_type_ptr->second == "none"){
+			std::cerr << "NONE\n";
+		}else if(a_type_ptr->second == "filled_arrow"){
+			std::cerr << "FILLED ARROW\n";
+			coord.push_back(end.m_x);
+			coord.push_back(end.m_y);
+			coord.push_back(x2);
+			coord.push_back(y2);
+			coord.push_back(x3);
+			coord.push_back(y3);
+		}else if(a_type_ptr->second == "hollow_arrow"){
+			std::cerr << "HOLLOW ARROW\n";
+			coord.push_back(end.m_x);
+			coord.push_back(end.m_y);
+			coord.push_back(x2);
+			coord.push_back(y2);
+			coord.push_back(x3);
+			coord.push_back(y3);
 
-		double vx = start.m_x - end.m_x;
-		double vy = start.m_y - end.m_y;
-		double v_mag = std::sqrt(vx*vx + vy*vy);
-		double temp = 44;
+			hollow = true;
+		}else if(a_type_ptr->second == "filled_diamond"){
+			std::cerr << "FILLED DIAMOND\n";
+			coord.push_back(end.m_x);
+			coord.push_back(end.m_y);
+			coord.push_back(x2);
+			coord.push_back(y2);
 
-		coord.push_back(end.m_x + temp*(vx/v_mag));
-		coord.push_back(end.m_y + temp*(vy/v_mag));
+			double vx = start.m_x - end.m_x;
+			double vy = start.m_y - end.m_y;
+			double v_mag = std::sqrt(vx*vx + vy*vy);
+			double temp = 44;
 
-		coord.push_back(x3);
-		coord.push_back(y3);
+			coord.push_back(end.m_x + temp*(vx/v_mag));
+			coord.push_back(end.m_y + temp*(vy/v_mag));
+			end.m_x += temp*(vx/v_mag);
+			end.m_y += temp*(vy/v_mag);
+
+			coord.push_back(x3);
+			coord.push_back(y3);
+		}else if(a_type_ptr->second == "hollow_diamond"){
+			std::cerr << "HOLLOW DIAMOND\n";
+			coord.push_back(end.m_x);
+			coord.push_back(end.m_y);
+			coord.push_back(x2);
+			coord.push_back(y2);
+
+			double vx = start.m_x - end.m_x;
+			double vy = start.m_y - end.m_y;
+			double v_mag = std::sqrt(vx*vx + vy*vy);
+			double temp = 44;
+
+			coord.push_back(end.m_x + temp*(vx/v_mag));
+			coord.push_back(end.m_y + temp*(vy/v_mag));
+			end.m_x += temp*(vx/v_mag);
+			end.m_y += temp*(vy/v_mag);
+
+			coord.push_back(x3);
+			coord.push_back(y3);
+
+			hollow = true;
+		}else{
+			std::cerr << "ERROR\n";
+			//Error
+		}
 
 		arrowHead = drawPolygon(xmlNode, coord);
-		//{end.m_x, end.m_y, x2, y2, x3, y3}
-		//change fill
-		arrowHead.append_attribute("stroke") = "#000000";
-		arrowHead.append_attribute("fill-opacity") = "0";
+		if(hollow){
+			arrowHead.append_attribute("stroke") = "#000000";
+			arrowHead.append_attribute("fill-opacity") = "0";
+		}
 	}
-
 	//appendLineStyle(arrowHead, e);
 }

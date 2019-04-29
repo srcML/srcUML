@@ -121,23 +121,23 @@ public:
 		return label;
 	}
 
-	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings){
+	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
 		std::ofstream os(filename);
-		return drawSVG(A, os, settings);
+		return drawSVG(A, os, settings, ne_arrow);
 	}
 
-	bool drawSVG(const ClusterGraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings){
+	bool drawSVG(const ClusterGraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
 		std::ofstream os(filename);
-		return drawSVG(A, os, settings);
+		return drawSVG(A, os, settings, ne_arrow);
 	}
 
-	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings){
-		SvgPrinter printer(attr, settings);
+	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
+		SvgPrinter printer(attr, settings, ne_arrow);
 		return printer.draw(os);
 	}
 
-	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings){
-		SvgPrinter printer(attr, settings);
+	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
+		SvgPrinter printer(attr, settings, ne_arrow);
 		return printer.draw(os);
 	}
 	
