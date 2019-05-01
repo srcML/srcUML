@@ -4,34 +4,34 @@
 	<rect width="200%" height="200%" fill="white" />
 	<g>
 		<g>
-			<polygon points="632.5,793.583,624.5,813.583,640.5,813.583," />
-			<polygon points="632.5,901.5,624.5,881.5,640.5,881.5," />
-			<path fill="none" d=" M632.5,813.583 L632.5,881.5" stroke="#000000" stroke-width="2.000000px" />
+			<polygon points="632.5,793.583,624.5,813.583,632.5,833.583,640.5,813.583," stroke="#000000" fill-opacity="0" />
+			<polygon points="" />
+			<path fill="none" d=" M632.5,833.583 L632.5,901.5" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
 			<polygon points="166.904,288,186.89,296.036,175.834,307.602," stroke="#000000" fill-opacity="0" />
 			<polygon points="" />
-			<path fill="none" d=" M166.904,288 L297.247,412.583" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+			<path fill="none" d=" M181.362,301.819 L297.247,412.583" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
 		</g>
 		<g>
-			<polygon points="112.5,288,104.5,308,120.5,308," />
+			<polygon points="112.5,288,104.5,308,112.5,328,120.5,308," />
 			<polygon points="" />
-			<path fill="none" d=" M112.5,308 L112.5,445.083 M112.5,445.083 L112.5,761.083 M112.5,761.083 L292.176,1113.42" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M112.5,328 L112.5,445.083 M112.5,445.083 L112.5,761.083 M112.5,761.083 L292.176,1113.42" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<polygon points="331.25,477.583,323.25,497.583,339.25,497.583," />
-			<polygon points="331.25,545.5,323.25,525.5,339.25,525.5," />
-			<path fill="none" d=" M331.25,497.583 L331.25,525.5" stroke="#000000" stroke-width="2.000000px" />
-		</g>
-		<g>
-			<polygon points="363.433,793.583,384.713,796.925,401.257,816.063,376.538,810.679," stroke="#000000" fill-opacity="0" />
+			<polygon points="331.25,477.583,323.25,497.583,331.25,517.583,339.25,497.583," stroke="#000000" fill-opacity="0" />
 			<polygon points="" />
-			<path fill="none" d=" M401.257,816.063 L546.25,902.238" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M331.25,517.583 L331.25,545.5" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<polygon points="308.75,793.583,300.75,813.583,316.75,813.583," />
-			<polygon points="308.75,1113.42,300.75,1093.42,316.75,1093.42," />
-			<path fill="none" d=" M308.75,813.583 L308.75,1093.42" stroke="#000000" stroke-width="2.000000px" />
+			<polygon points="363.433,793.583,384.713,796.925,397.818,814.02,376.538,810.679," stroke="#000000" fill-opacity="0" />
+			<polygon points="" />
+			<path fill="none" d=" M397.818,814.02 L546.25,902.238" stroke="#000000" stroke-width="2.000000px" />
+		</g>
+		<g>
+			<polygon points="308.75,793.583,300.75,813.583,308.75,833.583,316.75,813.583," />
+			<polygon points="" />
+			<path fill="none" d=" M308.75,833.583 L308.75,1113.42" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
 			<polygon points="546.25,1004.76,533.145,1021.86,508.426,1027.24,524.97,1008.1," />
@@ -39,9 +39,9 @@
 			<path fill="none" d=" M508.426,1027.24 L363.433,1113.42" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<polygon points="632.5,1005.5,624.5,1025.5,640.5,1025.5," />
-			<polygon points="632.5,1113.42,624.5,1093.42,640.5,1093.42," />
-			<path fill="none" d=" M632.5,1025.5 L632.5,1093.42" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+			<polygon points="632.5,1005.5,624.5,1025.5,640.5,1025.5," stroke="#000000" fill-opacity="0" />
+			<polygon points="" />
+			<path fill="none" d=" M632.5,1025.5 L632.5,1113.42" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
 		</g>
 		<g>
 			<polygon points="550.218,301,537.908,318.677,513.461,325.186,529.113,305.311," />
@@ -56,7 +56,7 @@
 		<g>
 			<polygon points="" />
 			<polygon points="657.962,901.5,659.572,880.02,673.942,887.056," />
-			<path fill="none" d=" M699.052,301 L810,445.083 M810,445.083 L810,591 M810,591 L657.962,901.5" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+			<path fill="none" d=" M699.052,301 L810,445.083 M810,445.083 L810,591 M810,591 L666.757,883.538" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
 		</g>
 		<g>
 			<polygon points="590.82,301,583.443,321.238,561.475,333.785,571.521,310.567," />
@@ -69,24 +69,24 @@
 			<path fill="none" d=" M790.386,324.309 L931.716,412.583" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<polygon points="325.231,636.5,330.539,657.376,319.46,680.12,314.677,655.278," stroke="#000000" fill-opacity="0" />
+			<polygon points="325.231,636.5,330.539,657.376,319.985,676.155,314.677,655.278," stroke="#000000" fill-opacity="0" />
 			<polygon points="" />
-			<path fill="none" d=" M319.46,680.12 L313.049,728.583" stroke="#000000" stroke-width="2.000000px" />
+			<path fill="none" d=" M319.985,676.155 L313.049,728.583" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 		<g>
-			<polygon points="1232.5,121,1224.5,141,1240.5,141," />
-			<polygon points="1232.5,197,1224.5,177,1240.5,177," />
-			<path fill="none" d=" M1232.5,141 L1232.5,177" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+			<polygon points="1232.5,121,1224.5,141,1240.5,141," stroke="#000000" fill-opacity="0" />
+			<polygon points="" />
+			<path fill="none" d=" M1232.5,141 L1232.5,197" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
 		</g>
 		<g>
 			<polygon points="1186.1,275,1175.94,293.993,1165.64,281.745," stroke="#000000" fill-opacity="0" />
 			<polygon points="" />
-			<path fill="none" d=" M1186.1,275 L1022.42,412.583" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
+			<path fill="none" d=" M1170.79,287.869 L1022.42,412.583" stroke="#000000" stroke-width="2.000000px" stroke-dasharray="8,4" />
 		</g>
 		<g>
-			<polygon points="1232.5,275,1224.5,295,1240.5,295," />
-			<polygon points="1232.5,412.583,1224.5,392.583,1240.5,392.583," />
-			<path fill="none" d=" M1232.5,295 L1232.5,392.583" stroke="#000000" stroke-width="2.000000px" />
+			<polygon points="1232.5,275,1224.5,295,1232.5,315,1240.5,295," />
+			<polygon points="" />
+			<path fill="none" d=" M1232.5,315 L1232.5,412.583" stroke="#000000" stroke-width="2.000000px" />
 		</g>
 	</g>
 	<g class="font_style" transform="translate(505.000000, 728.583333)">

@@ -644,6 +644,7 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 	} 
 	*/
 
+	std::cerr << "HERE\n";
 
 	pugi::xml_node arrowHead;
 
@@ -652,11 +653,75 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		double y = m_attr.y(v) - m_attr.height(v)/2 * sign;
 		end.m_y = y - sign * size;
 
-		arrowHead = drawPolygon(xmlNode, {
-				end.m_x, y,
-				end.m_x - size/2.5, y - size*sign,//4
-				end.m_x + size/2.5, y - size*sign //4
-		});
+		std::map<std::pair<node, edge>, std::string>::iterator a_type_ptr;
+		a_type_ptr = m_node_arrow.find(std::make_pair(v, e));
+		std::list<double> coord;
+		bool hollow = false;
+		std::cerr << "Arrow Type: ";
+		if(a_type_ptr->second == "none"){
+			std::cerr << "NONE\n";
+			end.m_y = y;
+		}else if(a_type_ptr->second == "filled_arrow"){
+			std::cerr << "FILLED ARROW\n";
+			coord.push_back(end.m_x);
+			coord.push_back(y);
+			coord.push_back(end.m_x - size/2.5);
+			coord.push_back(y - size*sign);
+			coord.push_back(end.m_x + size/2.5);
+			coord.push_back(y - size*sign);
+		}else if(a_type_ptr->second == "hollow_arrow"){
+			std::cerr << "HOLLOW ARROW\n";
+			coord.push_back(end.m_x);
+			coord.push_back(y);
+			coord.push_back(end.m_x - size/2.5);
+			coord.push_back(y - size*sign);
+			coord.push_back(end.m_x + size/2.5);
+			coord.push_back(y - size*sign);
+
+			hollow = true;
+		}else if(a_type_ptr->second == "filled_diamond"){
+			std::cerr << "FILLED DIAMOND\n";
+			coord.push_back(end.m_x);
+			coord.push_back(y);
+
+			coord.push_back(end.m_x - size/2.5);
+			coord.push_back(y - size*sign);
+
+			coord.push_back(end.m_x);
+			coord.push_back(y - size*2*sign);
+
+			coord.push_back(end.m_x + size/2.5);
+			coord.push_back(y - size*sign);
+
+			end.m_y = y - size*2*sign;
+		}else if(a_type_ptr->second == "hollow_diamond"){
+			std::cerr << "HOLLOW DIAMOND\n";
+			coord.push_back(end.m_x);
+			coord.push_back(y);
+
+			coord.push_back(end.m_x - size/2.5);
+			coord.push_back(y - size*sign);
+
+			coord.push_back(end.m_x);
+			coord.push_back(y - size*2*sign);
+
+			coord.push_back(end.m_x + size/2.5);
+			coord.push_back(y - size*sign);
+
+			end.m_y = y - size*2*sign;
+
+			hollow = true;
+		}else{
+			std::cerr << "ERROR\n";
+			//Error
+		}
+
+		arrowHead = drawPolygon(xmlNode, coord);
+		if(hollow){
+			arrowHead.append_attribute("stroke") = "#000000";
+			arrowHead.append_attribute("fill-opacity") = "0";
+		}
+
 	} else {
 		// identify the position of the tip
 		DPoint *tip = nullptr;
@@ -667,7 +732,6 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		corners.push_back(DPoint(m_attr.x(v), m_attr.y(v) + m_attr.height(v)));
 
 		for(int i = 0, j = 1; i < 4; ++i){
-			//std::cerr << "HERE\n";
 			tip = line_intersection(start, end, corners[i], corners[j]);
 			++j; if(j == 4) j = 0;
 			if(tip != nullptr){
@@ -739,6 +803,15 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			coord.push_back(y2);
 			coord.push_back(x3);
 			coord.push_back(y3);
+
+			double vx = start.m_x - end.m_x;
+			double vy = start.m_y - end.m_y;
+			double v_mag = std::sqrt(vx*vx + vy*vy);
+			double temp = 20;
+
+			end.m_x += temp*(vx/v_mag);
+			end.m_y += temp*(vy/v_mag);
+
 		}else if(a_type_ptr->second == "hollow_arrow"){
 			std::cerr << "HOLLOW ARROW\n";
 			coord.push_back(end.m_x);
@@ -747,6 +820,14 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			coord.push_back(y2);
 			coord.push_back(x3);
 			coord.push_back(y3);
+
+			double vx = start.m_x - end.m_x;
+			double vy = start.m_y - end.m_y;
+			double v_mag = std::sqrt(vx*vx + vy*vy);
+			double temp = 20;
+
+			end.m_x += temp*(vx/v_mag);
+			end.m_y += temp*(vy/v_mag);
 
 			hollow = true;
 		}else if(a_type_ptr->second == "filled_diamond"){
@@ -778,7 +859,7 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 			double vx = start.m_x - end.m_x;
 			double vy = start.m_y - end.m_y;
 			double v_mag = std::sqrt(vx*vx + vy*vy);
-			double temp = 44;
+			double temp = 40;
 
 			coord.push_back(end.m_x + temp*(vx/v_mag));
 			coord.push_back(end.m_y + temp*(vy/v_mag));

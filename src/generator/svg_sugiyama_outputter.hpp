@@ -117,6 +117,7 @@ public:
 			const relationship_type r_type = edge.second;
 			switch(r_type){
 			case DEPENDENCY:
+				std::cerr << "Dependency\n";
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::dependency;
@@ -124,6 +125,7 @@ public:
 				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case ASSOCIATION:
+				std::cerr << "Association\n";
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::association;
@@ -131,6 +133,7 @@ public:
 				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case BIDIRECTIONAL:
+				std::cerr << "Bidirectional\n";
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::association;
@@ -138,6 +141,7 @@ public:
 				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case AGGREGATION:
+				std::cerr << "Aggregation\n";
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::association;
@@ -145,6 +149,7 @@ public:
 				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case COMPOSITION:
+				std::cerr << "Composition\n";
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::association;
@@ -152,6 +157,7 @@ public:
 				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case GENERALIZATION:
+				std::cerr << "Generalization\n";
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::generalization;
@@ -159,6 +165,7 @@ public:
 				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case REALIZATION:
+				std::cerr << "Realization\n";
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
 				et = Graph::EdgeType::generalization;
