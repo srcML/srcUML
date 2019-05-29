@@ -21,9 +21,9 @@
 cmake_minimum_required(VERSION 2.8)
 project(srcUML)
 
-#enable_testing()
+enable_testing()
 
-# find needed libraries
+#find needed libraries
 find_package(LibXml2 REQUIRED)
 
 find_package(Boost COMPONENTS program_options filesystem system REQUIRED)
@@ -44,5 +44,5 @@ add_subdirectory(ogdf)
 include_directories(${DISPATCH_INCLUDE_DIR} src/generator test/driver ogdf/include ${CMAKE_BINARY_DIR}/ogdf/include ${Boost_INCLUDE_DIR})
 
 add_subdirectory(src)
-#add_subdirectory(test)
+add_subdirectory(test)
 
