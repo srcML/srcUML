@@ -18,10 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
 
+# glob does one time thing, possibly won't find changes to certain things...** may 
+
+
 file(GLOB GENERATOR_SOURCE *.cpp)
 file(GLOB GENERATOR_HEADER *.hpp)
-#glob does one time thing, possibly won't find changes to certain things...** may 
 
 add_library(generator OBJECT ${GENERATOR_HEADERS} ${GENERATOR_SOURCE})
-# link_directories(/usr/local/lib/x86_64-linux-gnu)
-# target_link_libraries(generator OGDF COIN)
+

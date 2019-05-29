@@ -1,0 +1,57 @@
+Algorithm Layout Plan
+P.J. Leyden
+02/06/2019
+
+I will have three layout definitions:
+
+	1) Multi-Cluster Layout 
+		- This layout will have clusters based on relationship data and stereotype.
+			Closely related classes will end up clustered.
+		- For instance, the printer part of a graph generator might be clustered with its components
+			close together.
+		- Each class will have a tinted box and label representing it's stereotype.
+		- Each individual cluster will have a line crossing algorithm run on it
+		- All clusters will act as a single node an the overall will have a LCM alg. run. 
+
+	2) Three-Cluster Layout
+		- This layout will have three areas
+			- Boundary = contains classes that are interacted with
+			- Control = contains classes used for control
+			- Entity = contains classes that contain data or represent real-life objects
+		- The different clusters will have boxes surounding them that will be tinted 
+			different colors depending on the catagory
+			- Boundary - Blue
+			- Control - Red
+			- Entity - Green 
+		- Each individual cluster will have a line crossing algorithm run on it
+
+	3) Sugiyama Layout
+
+Relationships
+	- Association (Solid Line | Open Arrow)
+		- Bi-Directional
+		- Uni-Directional
+		- Reflexive
+		- Aggregation (Solid Line | Hollow Diamond)
+			- When a class is a container or collection of other classes but the contained 
+			  classes do not have a strong lifecycle dependecy on the container.
+			- Composition (Solid Line | Filled Diamond)
+				- When a class is a container or collection of other classes but the contained 
+				  classes do not have a strong lifecycle dependecy on the container.
+
+	- Inheritance (Solid Line | Full Arrow)
+		- Indicates a relation where one class (the subclass) is a specialized form of the 
+		  other (the superclass).
+
+	- Realization (Dash Line | Full Arrow)
+		- Relation bewteen two classes where one realizes the behvaior specified by the other.
+
+	- Dependency (Dash Line | Open Arrow)
+		- If the definition of one element changes then the other may change.
+
+	- Relationship Heirarchy
+		- 1) [Realization/Generalization] && Composition->Aggregation->Directed(Binary)->Directed(Unary)
+		- 2) [Realization/Generalization] && Directed(Binary)->Composition->Aggregation->Directed(Unary)
+		- If Dependency is the only relation, show. 
+
+	- Multiplicity does not fall under the heirarchy as it doesn't affect the line or arrowhead. 

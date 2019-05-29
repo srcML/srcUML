@@ -42,8 +42,8 @@ private:
 
 public:
     srcuml_operation(const FunctionPolicy::FunctionData * data, ClassPolicy::AccessSpecifier visibility)
-        : data(data), visibility(visibility) {
 
+        : data(data), visibility(visibility) {
             analyze_operation();
     }
 
@@ -58,6 +58,22 @@ public:
     const std::set<std::string> & get_stereotypes() const {
 
         return data->stereotypes;
+
+    }
+
+    std::string get_stereotypes_string() const {
+
+        bool first = true;
+        std::string stereotypes;
+        for(const std::string & stereotype : get_stereotypes()) {
+            if(!first) {
+                stereotypes += " ";
+            }
+            stereotypes += stereotype;
+            first = false;
+        }
+
+        return stereotypes;
 
     }
 
@@ -77,16 +93,20 @@ public:
         func += data->name->SimpleName();
 
         func += '(';
+
+
         for(std::size_t pos = 0; pos < data->parameters.size(); ++pos) {
 
             if(pos != 0)
                 func += ", ";
 
             srcuml_parameter the_parameter(data->parameters[pos]);
+
             func += the_parameter.get_string_parameter();
 
         }
         func += ')';
+
 
         if(data->returnType) {
 
@@ -98,17 +118,11 @@ public:
 
         }
 
+
         if(!data->stereotypes.empty()) {
 
             func += " ｛";
-            bool first = true;
-            for(const std::string & stereotype : data->stereotypes) {
-                if(!first) {
-                    func += " ";
-                }
-                func += stereotype;
-                first = false;
-            }
+            func += get_stereotypes_string();
             func += "｝";
 
         }
@@ -154,14 +168,7 @@ public:
         if(!operation.get_stereotypes().empty()) {
 
             out << " ｛";
-            bool first = true;
-            for(const std::string & stereotype : operation.get_stereotypes()) {
-                if(!first) {
-                    out << " ";
-                }
-                out << stereotype;
-                first = false;
-            }
+            out << operation.get_stereotypes_string();
             out << "｝";
 
         }

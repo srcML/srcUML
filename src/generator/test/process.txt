@@ -1,0 +1,5 @@
+// calculate stereotypes for functions
+python stereotype.py -i [input.xml] -o [output.xml]
+
+// calculate class stereotypes and add them as comments
+xsltproc ../stereotype_files/classtype.xsl [.auto.xml] -ofile_name.typed.xml

@@ -63,6 +63,8 @@ private:
 
     std::vector<srcuml_attribute> attributes;
 
+    std::set<std::string> stereotypes;
+
 public:
     srcuml_class(const ClassPolicy::ClassData * data)
         : data(data),
@@ -104,13 +106,13 @@ public:
     std::string get_srcuml_name() const { //shouldn't do any formatting
 
         if(is_interface)
-            return "«interface»";
+            return "«interface»" + name;
         // not sure if should be gulliments or {}
         if(is_abstract)
-            return "｛abstract｝";
+            return "｛abstract｝" + name;
 
         if(is_datatype)
-            return "«datatype»";
+            return "«datatype»" + name;
 
         return name;
 
@@ -159,6 +161,10 @@ public:
     const std::vector<srcuml_attribute> & get_attributes() const {
         return attributes;
     } 
+
+    const std::set<std::string> & get_stereotypes() const {
+        return stereotypes;
+    }
 
 private:
 
@@ -281,6 +287,8 @@ private:
             }
 
         }
+
+        stereotypes = data->stereotypes;
 
     }
 
