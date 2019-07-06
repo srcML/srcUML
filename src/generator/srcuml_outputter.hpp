@@ -34,7 +34,7 @@ public:
 
 	virtual srcuml_relationships analyze_relationships(std::vector<std::shared_ptr<srcuml_class>> & classes) {
 
-	return srcuml_relationships(classes);
+		return srcuml_relationships(classes);
 
 	}
 

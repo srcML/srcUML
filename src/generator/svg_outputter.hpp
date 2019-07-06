@@ -121,6 +121,336 @@ public:
 		return label;
 	}
 
+	void init_standard(std::vector<std::shared_ptr<srcuml_class>> &classes){
+
+		ga.init(g,
+		GraphAttributes::nodeGraphics |
+		GraphAttributes::edgeGraphics |
+		GraphAttributes::nodeLabel |
+		GraphAttributes::edgeLabel |
+		GraphAttributes::nodeType  |
+		GraphAttributes::edgeType  |
+		GraphAttributes::edgeArrow |
+		GraphAttributes::nodeStyle |
+		GraphAttributes::edgeStyle |
+		GraphAttributes::nodeTemplate);
+
+		srcuml_relationships relationships = analyze_relationships(classes);
+
+		//Classes/Nodes
+		//===============================================================================================================
+
+		for(const std::shared_ptr<srcuml_class> & aclass : classes){
+			node cur_node = g.newNode();
+			//Insert into map the node class pairing
+			class_name_node_map.insert(std::pair<std::string, node>(aclass->get_srcuml_name(), cur_node));
+			class_node_map.insert(std::pair<std::shared_ptr<srcuml_class>, node>(aclass, cur_node));
+
+			std::string& label = ga.label(cur_node);
+			int num_lines = 0;
+			int longest_line = 0;
+			label = generate_label(aclass, num_lines, longest_line);
+
+			double& h = ga.height(cur_node);
+			h = num_lines * 1.3 * 10;//num_lines * 50;
+
+			double& w = ga.width(cur_node);
+			w = longest_line * .75 * 10;//longest_line * 10;
+		
+			Color& color = ga.fillColor(cur_node);
+			color = Color(Color::Name::Antiquewhite);
+		}
+
+		//===============================================================================================================
+
+		std::cerr << "Here1\n";
+
+		//Relationships/Edges
+		//===============================================================================================================
+
+		for(const srcuml_relationship relationship : relationships.get_relationships()){
+			//get the nodes from graph g, create edge and add appropriate info.
+			node lhs, rhs;
+
+			std::map<std::string, node>::iterator src_it = class_name_node_map.find(relationship.get_source());
+			if(src_it != class_name_node_map.end()){
+				lhs = src_it->second;
+			}
+
+			std::map<std::string, node>::iterator dest_it = class_name_node_map.find(relationship.get_destination());
+			if(dest_it != class_name_node_map.end()){
+				rhs = dest_it->second;
+			}
+
+			//find possible occurnce of edge already
+			auto itr = edge_type_map.find( std::pair<node, node>(lhs, rhs) );
+
+			//If edge doesn't exist, add it
+			if(itr == edge_type_map.end()){
+				edge_type_map.insert(std::pair<std::pair<node,node>, 
+					relationship_type> (std::pair<node,node>(lhs,rhs), relationship.get_type()) );
+				edge_type_map.insert(std::pair<std::pair<node,node>, 
+					relationship_type> (std::pair<node,node>(rhs,lhs), NONE_TYPE ) );
+
+			//if edge does exist, check that the new relation isn't stronger
+			}else{
+				if(itr->second == ASSOCIATION && (relationship.get_type() == BIDIRECTIONAL 
+											   || relationship.get_type() == AGGREGATION
+											   || relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+				}else if(itr->second == BIDIRECTIONAL && (relationship.get_type() == AGGREGATION
+											   || relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+				}else if(itr->second == AGGREGATION && (relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+				}
+			}	
+		}
+
+		std::cerr << "Here2\n";
+
+		//after do a loop to add to graph
+		for(auto edge : edge_type_map){
+			std::cerr << "Here2.1\n";
+
+			if(edge.second == NONE_TYPE)continue;
+			//edge.first.first  = source 
+			//edge.first.second = destination
+			//edge.second       = relationship type
+
+			ogdf::edge cur_edge = g.newEdge(edge.first.first, edge.first.second);
+
+			ga.strokeWidth(cur_edge) = 2;
+			std::cerr << "Here2.2\n";
+			StrokeType &st = ga.strokeType(cur_edge);
+			EdgeArrow &ea = ga.arrowType(cur_edge);
+			Graph::EdgeType &et = ga.type(cur_edge);
+
+			std::cerr << "Here2.3\n";
+
+			const relationship_type r_type = edge.second;
+			std::cerr << "Here2.4\n";
+			switch(r_type){
+			case DEPENDENCY:
+				std::cerr << "DEPENDENCY\n";
+				st = StrokeType::Dash;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::dependency;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				break;
+			case ASSOCIATION:
+				std::cerr << "ASSOCIATION\n";
+				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				break;
+			case BIDIRECTIONAL:
+				std::cerr << "BIDIRECTIONAL\n";
+				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				break;
+			case AGGREGATION:
+				std::cerr << "AGGREGATION\n";
+				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
+				std::cerr << "TACO\n";
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_diamond"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				break;
+			case COMPOSITION:
+				std::cerr << "COMPOSITION\n";
+				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_diamond"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				break;
+			case GENERALIZATION:
+				std::cerr << "GENERALIZATION\n";
+				st = StrokeType::Dash;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::generalization;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				break;
+			case REALIZATION:
+				std::cerr << "REALIZATION\n";
+				st = StrokeType::Dash;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::generalization;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				break;
+			}
+		}
+
+		std::cerr << "Here3\n";
+	}
+
+	void init_clustered(std::vector<std::shared_ptr<srcuml_class>> &classes){
+
+		cg.init(g);
+
+		cga.init(cg,
+		GraphAttributes::nodeGraphics |
+		GraphAttributes::edgeGraphics |
+		GraphAttributes::nodeLabel |
+		GraphAttributes::edgeLabel |
+		GraphAttributes::nodeType  |
+		GraphAttributes::edgeType  |
+		GraphAttributes::edgeArrow |
+		GraphAttributes::nodeStyle |
+		GraphAttributes::edgeStyle |
+		GraphAttributes::nodeTemplate);
+
+		srcuml_relationships relationships = analyze_relationships(classes);
+
+		//Classes/Nodes
+		//===============================================================================================================
+
+		for(const std::shared_ptr<srcuml_class> & aclass : classes){
+			node cur_node = g.newNode();
+			//Insert into map the node class pairing
+			class_name_node_map.insert(std::pair<std::string, node>(aclass->get_srcuml_name(), cur_node));
+			class_node_map.insert(std::pair<std::shared_ptr<srcuml_class>, node>(aclass, cur_node));
+
+			std::string& label = cga.label(cur_node);
+			int num_lines = 0;
+			int longest_line = 0;
+			label = generate_label(aclass, num_lines, longest_line);
+
+			double& h = cga.height(cur_node);
+			h = num_lines * 1.3 * 10;//num_lines * 50;
+
+			double& w = cga.width(cur_node);
+			w = longest_line * .75 * 10;//longest_line * 10;
+		
+			Color& color = cga.fillColor(cur_node);
+			color = Color(Color::Name::Antiquewhite);
+		}
+
+		//===============================================================================================================
+
+		//Relationships/Edges
+		//===============================================================================================================
+
+		for(const srcuml_relationship relationship : relationships.get_relationships()){
+			//get the nodes from graph g, create edge and add appropriate info.
+			node lhs, rhs;
+
+			std::map<std::string, node>::iterator src_it = class_name_node_map.find(relationship.get_source());
+			if(src_it != class_name_node_map.end()){
+				lhs = src_it->second;
+			}
+
+			std::map<std::string, node>::iterator dest_it = class_name_node_map.find(relationship.get_destination());
+			if(dest_it != class_name_node_map.end()){
+				rhs = dest_it->second;
+			}
+
+			//find possible occurnce of edge already
+			auto itr = edge_type_map.find( std::pair<node, node>(lhs, rhs) );
+
+			//If edge doesn't exist, add it
+			if(itr == edge_type_map.end()){
+				edge_type_map.insert(std::pair<std::pair<node,node>, 
+					relationship_type> (std::pair<node,node>(lhs,rhs), relationship.get_type()) );
+				edge_type_map.insert(std::pair<std::pair<node,node>, 
+					relationship_type> (std::pair<node,node>(rhs,lhs), NONE_TYPE ) );
+
+			//if edge does exist, check that the new relation isn't stronger
+			}else{
+				if(itr->second == ASSOCIATION && (relationship.get_type() == BIDIRECTIONAL 
+											   || relationship.get_type() == AGGREGATION
+											   || relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+				}else if(itr->second == BIDIRECTIONAL && (relationship.get_type() == AGGREGATION
+											   || relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+				}else if(itr->second == AGGREGATION && (relationship.get_type() == COMPOSITION)){
+					itr->second = relationship.get_type();
+				}
+			}	
+		}
+
+		//after do a loop to add to graph
+		for(auto edge : edge_type_map){
+
+			if(edge.second == NONE_TYPE)continue;
+			//edge.first.first  = source 
+			//edge.first.second = destination
+			//edge.second       = relationship type
+
+			ogdf::edge cur_edge = g.newEdge(edge.first.first, edge.first.second);
+
+			cga.strokeWidth(cur_edge) = 2;
+
+			StrokeType &st = cga.strokeType(cur_edge);
+			EdgeArrow &ea = cga.arrowType(cur_edge);
+			Graph::EdgeType &et = cga.type(cur_edge);
+
+			const relationship_type r_type = edge.second;
+			switch(r_type){
+			case DEPENDENCY:
+				st = StrokeType::Dash;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::dependency;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				break;
+			case ASSOCIATION:
+				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				break;
+			case BIDIRECTIONAL:
+				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				break;
+			case AGGREGATION:
+				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_diamond"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				break;
+			case COMPOSITION:
+				st = StrokeType::Solid;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::association;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_diamond"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				break;
+			case GENERALIZATION:
+				st = StrokeType::Dash;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::generalization;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				break;
+			case REALIZATION:
+				st = StrokeType::Dash;
+				ea = EdgeArrow::Both;
+				et = Graph::EdgeType::generalization;
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				break;
+			}
+		}
+	}
+
 	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
 		std::ofstream os(filename);
 		return drawSVG(A, os, settings, ne_arrow);
@@ -140,6 +470,20 @@ public:
 		SvgPrinter printer(attr, settings, ne_arrow);
 		return printer.draw(os);
 	}
+
+protected:
+	Graph g;
+
+	GraphAttributes ga;
+
+	ClusterGraph cg;
+
+	ClusterGraphAttributes cga;
+
+	std::map<std::shared_ptr<srcuml_class>, node>           class_node_map;
+	std::map<std::string, node>                             class_name_node_map;
+	std::multimap<std::pair<node, node>, relationship_type> edge_type_map;
+	std::map<std::pair<node, edge>, std::string>            ne_arrow;
 	
 };
 
