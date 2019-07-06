@@ -23,34 +23,30 @@ public:
 
 		for(auto pair : class_node_map){
 			std::string stereo = "";
-			std::cerr << "HERE2.1\n";
 			if(pair.first->get_stereotypes().begin() != pair.first->get_stereotypes().end()){
 				stereo = *(pair.first->get_stereotypes().begin());
 			}
 
-			std::cerr << "Get Color Variable\n";
-			Color& color = ga.fillColor(pair.second);
-			std::cerr << "Set Color\n";
-			color = Color(0, 0, 0, 0);
-			std::cerr << "Print String Color\n";
-			std::cerr << color.toString() << '\n';
+			std::cerr << pair.second << '\n';
 
-			std::cerr << "HERE2.2\n";
+
+			Color &color = cga.fillColor(pair.second);
+			
 			if(stereo == "control"){
 				std::cerr << "HERE2.21\n";
 				color = Color(224, 0, 0, 100);
-				ctrl.pushBack(pair.second);
+				//ctrl.pushBack(pair.second);
 
 			}else if(stereo == "boundary"){
 				std::cerr << "HERE2.22\n";
 				color = Color(0, 224, 0, 100);
-				bndr.pushBack(pair.second);
+				//bndr.pushBack(pair.second);
 
 			}else if(stereo == "entity"){
 				std::cerr << "HERE2.23\n";
 				color = Color(0, 0, 224, 100);
 				std::cerr << "HERE2.233\n";
-				enty.pushBack(pair.second);
+				//enty.pushBack(pair.second);
 
 			}else if(stereo == ""){
 				std::cerr << "HERE2.24\n";

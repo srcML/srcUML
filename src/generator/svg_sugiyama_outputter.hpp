@@ -15,6 +15,13 @@ public:
 		
 		init_standard(classes);
 
+		for(auto pair : class_node_map){
+			
+			Color& color = ga.fillColor(pair.second);
+			color = Color(224, 0, 0, 100);
+			
+		}
+
 		//Layout
 		//===============================================================================================================
 
