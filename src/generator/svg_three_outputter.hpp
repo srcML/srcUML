@@ -28,7 +28,12 @@ public:
 				stereo = *(pair.first->get_stereotypes().begin());
 			}
 
-			Color& color = cga.fillColor(pair.second);
+			std::cerr << "Get Color Variable\n";
+			Color& color = ga.fillColor(pair.second);
+			std::cerr << "Set Color\n";
+			color = Color(0, 0, 0, 0);
+			std::cerr << "Print String Color\n";
+			std::cerr << color.toString() << '\n';
 
 			std::cerr << "HERE2.2\n";
 			if(stereo == "control"){
