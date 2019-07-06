@@ -24,5 +24,5 @@
 file(GLOB GENERATOR_SOURCE *.cpp)
 file(GLOB GENERATOR_HEADER *.hpp)
 
-add_library(generator OBJECT ${GENERATOR_HEADERS} ${GENERATOR_SOURCE})
+add_library(generator OBJECT ${GENERATOR_HEADER} ${GENERATOR_SOURCE})
 

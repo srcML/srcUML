@@ -18,9 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
 
-file(GLOB CLIENT_SOURCE *.cpp)
-file(GLOB CLIENT_HEADER *.hpp)
+# glob does one time thing, possibly won't find changes to certain things...** may 
 
-add_executable(srcuml $<TARGET_OBJECTS:generator> $<TARGET_OBJECTS:structure> ${CLIENT_SOURCE} ${CLIENT_HEADER})
-link_directories(/usr/local/lib /usr/local/lib/x86_64-linux-gnu)
-target_link_libraries(srcuml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES} ${Boost_LIBRARIES} OGDF COIN pthread)
+
+file(GLOB STRUCTURE_SOURCE *.cpp)
+file(GLOB STRUCTURE_HEADER *.hpp)
+
+add_library(structure OBJECT ${STRUCTURE_HEADER} ${STRUCTURE_SOURCE})
+
