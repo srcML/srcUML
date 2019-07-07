@@ -13,52 +13,43 @@ public:
 
 	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
 		//transfer information from srcUML to ogdf
-		std::cerr << "HERE1\n";
 		init_clustered(classes);
-		std::cerr << "HERE2\n";
 		//Determine Clusters
 		//===============================================================================================================
-
+/*
 		SList<node> ctrl, bndr, enty;
 
 		for(auto pair : class_node_map){
+
 			std::string stereo = "";
 			if(pair.first->get_stereotypes().begin() != pair.first->get_stereotypes().end()){
 				stereo = *(pair.first->get_stereotypes().begin());
 			}
 
-			std::cerr << pair.second << '\n';
-
-
 			Color &color = cga.fillColor(pair.second);
 			
 			if(stereo == "control"){
-				std::cerr << "HERE2.21\n";
 				color = Color(224, 0, 0, 100);
-				//ctrl.pushBack(pair.second);
+				ctrl.pushBack(pair.second);
 
 			}else if(stereo == "boundary"){
-				std::cerr << "HERE2.22\n";
 				color = Color(0, 224, 0, 100);
-				//bndr.pushBack(pair.second);
+				bndr.pushBack(pair.second);
 
 			}else if(stereo == "entity"){
-				std::cerr << "HERE2.23\n";
 				color = Color(0, 0, 224, 100);
-				std::cerr << "HERE2.233\n";
-				//enty.pushBack(pair.second);
+				enty.pushBack(pair.second);
 
 			}else if(stereo == ""){
-				std::cerr << "HERE2.24\n";
 				color = Color(130, 130, 130, 200);
 			}
 		}
 		//===============================================================================================================
 
-		std::cerr << "HERE3\n";
-
 		//Cluster Creation
 		//===============================================================================================================
+
+		std::cerr << "Creating Clusters\n";
 
 		cluster entity = cg.createCluster(enty);
 		cluster control = cg.createCluster(ctrl);
@@ -85,9 +76,13 @@ public:
 		cga.setFillPattern(boundary, FillPattern::Solid);
 	
 		//===============================================================================================================
-	
+*/
+		std::cerr << "Layout\n";
+
 		ClusterPlanarizationLayout cpl;
 		cpl.call(g, cga, cg);
+
+		std::cerr << "Print\n";
 
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 		
@@ -105,15 +100,6 @@ public:
 
 		return true;
 	}
-
-private:
-
-	Graph g;
-
-	ClusterGraph cg;
-
-	ClusterGraphAttributes cga;
-
 };
 
 #endif

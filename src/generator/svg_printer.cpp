@@ -658,62 +658,64 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		std::list<double> coord;
 		bool hollow = false;
 		std::cerr << "Arrow Type: ";
-		if(a_type_ptr->second == "none"){
-			std::cerr << "NONE\n";
-			end.m_y = y;
-		}else if(a_type_ptr->second == "filled_arrow"){
-			std::cerr << "FILLED ARROW\n";
-			coord.push_back(end.m_x);
-			coord.push_back(y);
-			coord.push_back(end.m_x - size/2.5);
-			coord.push_back(y - size*sign);
-			coord.push_back(end.m_x + size/2.5);
-			coord.push_back(y - size*sign);
-		}else if(a_type_ptr->second == "hollow_arrow"){
-			std::cerr << "HOLLOW ARROW\n";
-			coord.push_back(end.m_x);
-			coord.push_back(y);
-			coord.push_back(end.m_x - size/2.5);
-			coord.push_back(y - size*sign);
-			coord.push_back(end.m_x + size/2.5);
-			coord.push_back(y - size*sign);
+		if(a_type_ptr != m_node_arrow.end()){
+			if(a_type_ptr->second == "none"){
+				std::cerr << "NONE\n";
+				end.m_y = y;
+			}else if(a_type_ptr->second == "filled_arrow"){
+				std::cerr << "FILLED ARROW\n";
+				coord.push_back(end.m_x);
+				coord.push_back(y);
+				coord.push_back(end.m_x - size/2.5);
+				coord.push_back(y - size*sign);
+				coord.push_back(end.m_x + size/2.5);
+				coord.push_back(y - size*sign);
+			}else if(a_type_ptr->second == "hollow_arrow"){
+				std::cerr << "HOLLOW ARROW\n";
+				coord.push_back(end.m_x);
+				coord.push_back(y);
+				coord.push_back(end.m_x - size/2.5);
+				coord.push_back(y - size*sign);
+				coord.push_back(end.m_x + size/2.5);
+				coord.push_back(y - size*sign);
 
-			hollow = true;
-		}else if(a_type_ptr->second == "filled_diamond"){
-			std::cerr << "FILLED DIAMOND\n";
-			coord.push_back(end.m_x);
-			coord.push_back(y);
+				hollow = true;
+			}else if(a_type_ptr->second == "filled_diamond"){
+				std::cerr << "FILLED DIAMOND\n";
+				coord.push_back(end.m_x);
+				coord.push_back(y);
 
-			coord.push_back(end.m_x - size/2.5);
-			coord.push_back(y - size*sign);
+				coord.push_back(end.m_x - size/2.5);
+				coord.push_back(y - size*sign);
 
-			coord.push_back(end.m_x);
-			coord.push_back(y - size*2*sign);
+				coord.push_back(end.m_x);
+				coord.push_back(y - size*2*sign);
 
-			coord.push_back(end.m_x + size/2.5);
-			coord.push_back(y - size*sign);
+				coord.push_back(end.m_x + size/2.5);
+				coord.push_back(y - size*sign);
 
-			end.m_y = y - size*2*sign;
-		}else if(a_type_ptr->second == "hollow_diamond"){
-			std::cerr << "HOLLOW DIAMOND\n";
-			coord.push_back(end.m_x);
-			coord.push_back(y);
+				end.m_y = y - size*2*sign;
+			}else if(a_type_ptr->second == "hollow_diamond"){
+				std::cerr << "HOLLOW DIAMOND\n";
+				coord.push_back(end.m_x);
+				coord.push_back(y);
 
-			coord.push_back(end.m_x - size/2.5);
-			coord.push_back(y - size*sign);
+				coord.push_back(end.m_x - size/2.5);
+				coord.push_back(y - size*sign);
 
-			coord.push_back(end.m_x);
-			coord.push_back(y - size*2*sign);
+				coord.push_back(end.m_x);
+				coord.push_back(y - size*2*sign);
 
-			coord.push_back(end.m_x + size/2.5);
-			coord.push_back(y - size*sign);
+				coord.push_back(end.m_x + size/2.5);
+				coord.push_back(y - size*sign);
 
-			end.m_y = y - size*2*sign;
+				end.m_y = y - size*2*sign;
 
-			hollow = true;
-		}else{
-			std::cerr << "ERROR\n";
-			//Error
+				hollow = true;
+			}else{
+				std::cerr << "ERROR\n";
+				//Error
+			}
 		}
 
 		arrowHead = drawPolygon(xmlNode, coord);
@@ -793,86 +795,88 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		std::list<double> coord;
 		bool hollow = false;
 		std::cerr << "Arrow Type: ";
-		if(a_type_ptr->second == "none"){
-			std::cerr << "NONE\n";
-		}else if(a_type_ptr->second == "filled_arrow"){
-			std::cerr << "FILLED ARROW\n";
-			coord.push_back(end.m_x);
-			coord.push_back(end.m_y);
-			coord.push_back(x2);
-			coord.push_back(y2);
-			coord.push_back(x3);
-			coord.push_back(y3);
+		if(a_type_ptr != m_node_arrow.end()){
+			if(a_type_ptr->second == "none"){
+				std::cerr << "NONE\n";
+			}else if(a_type_ptr->second == "filled_arrow"){
+				std::cerr << "FILLED ARROW\n";
+				coord.push_back(end.m_x);
+				coord.push_back(end.m_y);
+				coord.push_back(x2);
+				coord.push_back(y2);
+				coord.push_back(x3);
+				coord.push_back(y3);
 
-			double vx = start.m_x - end.m_x;
-			double vy = start.m_y - end.m_y;
-			double v_mag = std::sqrt(vx*vx + vy*vy);
-			double temp = 20;
+				double vx = start.m_x - end.m_x;
+				double vy = start.m_y - end.m_y;
+				double v_mag = std::sqrt(vx*vx + vy*vy);
+				double temp = 20;
 
-			end.m_x += temp*(vx/v_mag);
-			end.m_y += temp*(vy/v_mag);
+				end.m_x += temp*(vx/v_mag);
+				end.m_y += temp*(vy/v_mag);
 
-		}else if(a_type_ptr->second == "hollow_arrow"){
-			std::cerr << "HOLLOW ARROW\n";
-			coord.push_back(end.m_x);
-			coord.push_back(end.m_y);
-			coord.push_back(x2);
-			coord.push_back(y2);
-			coord.push_back(x3);
-			coord.push_back(y3);
+			}else if(a_type_ptr->second == "hollow_arrow"){
+				std::cerr << "HOLLOW ARROW\n";
+				coord.push_back(end.m_x);
+				coord.push_back(end.m_y);
+				coord.push_back(x2);
+				coord.push_back(y2);
+				coord.push_back(x3);
+				coord.push_back(y3);
 
-			double vx = start.m_x - end.m_x;
-			double vy = start.m_y - end.m_y;
-			double v_mag = std::sqrt(vx*vx + vy*vy);
-			double temp = 20;
+				double vx = start.m_x - end.m_x;
+				double vy = start.m_y - end.m_y;
+				double v_mag = std::sqrt(vx*vx + vy*vy);
+				double temp = 20;
 
-			end.m_x += temp*(vx/v_mag);
-			end.m_y += temp*(vy/v_mag);
+				end.m_x += temp*(vx/v_mag);
+				end.m_y += temp*(vy/v_mag);
 
-			hollow = true;
-		}else if(a_type_ptr->second == "filled_diamond"){
-			std::cerr << "FILLED DIAMOND\n";
-			coord.push_back(end.m_x);
-			coord.push_back(end.m_y);
-			coord.push_back(x2);
-			coord.push_back(y2);
+				hollow = true;
+			}else if(a_type_ptr->second == "filled_diamond"){
+				std::cerr << "FILLED DIAMOND\n";
+				coord.push_back(end.m_x);
+				coord.push_back(end.m_y);
+				coord.push_back(x2);
+				coord.push_back(y2);
 
-			double vx = start.m_x - end.m_x;
-			double vy = start.m_y - end.m_y;
-			double v_mag = std::sqrt(vx*vx + vy*vy);
-			double temp = 44;
+				double vx = start.m_x - end.m_x;
+				double vy = start.m_y - end.m_y;
+				double v_mag = std::sqrt(vx*vx + vy*vy);
+				double temp = 44;
 
-			coord.push_back(end.m_x + temp*(vx/v_mag));
-			coord.push_back(end.m_y + temp*(vy/v_mag));
-			end.m_x += temp*(vx/v_mag);
-			end.m_y += temp*(vy/v_mag);
+				coord.push_back(end.m_x + temp*(vx/v_mag));
+				coord.push_back(end.m_y + temp*(vy/v_mag));
+				end.m_x += temp*(vx/v_mag);
+				end.m_y += temp*(vy/v_mag);
 
-			coord.push_back(x3);
-			coord.push_back(y3);
-		}else if(a_type_ptr->second == "hollow_diamond"){
-			std::cerr << "HOLLOW DIAMOND\n";
-			coord.push_back(end.m_x);
-			coord.push_back(end.m_y);
-			coord.push_back(x2);
-			coord.push_back(y2);
+				coord.push_back(x3);
+				coord.push_back(y3);
+			}else if(a_type_ptr->second == "hollow_diamond"){
+				std::cerr << "HOLLOW DIAMOND\n";
+				coord.push_back(end.m_x);
+				coord.push_back(end.m_y);
+				coord.push_back(x2);
+				coord.push_back(y2);
 
-			double vx = start.m_x - end.m_x;
-			double vy = start.m_y - end.m_y;
-			double v_mag = std::sqrt(vx*vx + vy*vy);
-			double temp = 40;
+				double vx = start.m_x - end.m_x;
+				double vy = start.m_y - end.m_y;
+				double v_mag = std::sqrt(vx*vx + vy*vy);
+				double temp = 40;
 
-			coord.push_back(end.m_x + temp*(vx/v_mag));
-			coord.push_back(end.m_y + temp*(vy/v_mag));
-			end.m_x += temp*(vx/v_mag);
-			end.m_y += temp*(vy/v_mag);
+				coord.push_back(end.m_x + temp*(vx/v_mag));
+				coord.push_back(end.m_y + temp*(vy/v_mag));
+				end.m_x += temp*(vx/v_mag);
+				end.m_y += temp*(vy/v_mag);
 
-			coord.push_back(x3);
-			coord.push_back(y3);
+				coord.push_back(x3);
+				coord.push_back(y3);
 
-			hollow = true;
-		}else{
-			std::cerr << "ERROR\n";
-			//Error
+				hollow = true;
+			}else{
+				std::cerr << "ERROR\n";
+				//Error
+			}
 		}
 
 		arrowHead = drawPolygon(xmlNode, coord);
