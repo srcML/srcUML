@@ -46,3 +46,5 @@ include_directories(${DISPATCH_INCLUDE_DIR} src/generator src/structure test/dri
 add_subdirectory(src)
 #add_subdirectory(test)
 
+install(TARGETS srcuml)
+
