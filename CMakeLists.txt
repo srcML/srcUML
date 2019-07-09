@@ -25,12 +25,11 @@ enable_testing()
 
 #find needed libraries
 find_package(LibXml2 REQUIRED)
-
 find_package(Boost COMPONENTS program_options filesystem system REQUIRED)
+find_package(ogdf REQUIRED)
 
 # include needed includes
 include_directories(${LIBXML2_INCLUDE_DIR})
-#include_directories(${OGDF})
 add_definitions("-std=c++1y")
 # add_definitions("-pthread")
 
@@ -39,12 +38,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(srcSAXEventDispatch/CMake)
-#add_subdirectory(ogdf)
 
-include_directories(${DISPATCH_INCLUDE_DIR} src/generator src/structure test/driver ogdf/include ${CMAKE_BINARY_DIR}/ogdf/include ${Boost_INCLUDE_DIR})
+include_directories(${DISPATCH_INCLUDE_DIR} src/generator src/structure test/driver ogdf/include ${Boost_INCLUDE_DIR})
 
 add_subdirectory(src)
-#add_subdirectory(test)
 
 install(TARGETS srcuml)
 
