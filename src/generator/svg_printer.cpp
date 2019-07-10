@@ -361,6 +361,7 @@ void SvgPrinter::drawEdge(pugi::xml_node xmlNode, edge e) {
 	++edge_count;
 
 	if (m_attr.has(GraphAttributes::edgeArrow)) {
+		std::cerr << "Edge Arrow\n";
 		switch (m_attr.arrowType(e)) {
 		case EdgeArrow::Undefined:
 			drawTargetArrow = m_attr.directed();
@@ -591,7 +592,7 @@ DPoint* line_intersection(const DPoint &line1_p1,  //A
 	double d = (x1*y2) - (x2*y1);
 
 	if(d == 0){
-		std::cerr << "DETERMINATE 0\n";
+		//std::cerr << "DETERMINATE 0\n";
 		//lines are parallel
 		return nullptr;
 	}else{
@@ -644,8 +645,6 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 	} 
 	*/
 
-	std::cerr << "HERE\n";
-
 	pugi::xml_node arrowHead;
 
 	if(dx == 0) {
@@ -657,7 +656,7 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		a_type_ptr = m_node_arrow.find(std::make_pair(v, e));
 		std::list<double> coord;
 		bool hollow = false;
-		std::cerr << "Arrow Type: ";
+		std::cerr << "Arrow Type: " << a_type_ptr->second << '\n';
 		if(a_type_ptr != m_node_arrow.end()){
 			if(a_type_ptr->second == "none"){
 				std::cerr << "NONE\n";
@@ -757,11 +756,9 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 
 		std::cerr << "Tip Calc: ";
 		if(tip != nullptr){
-			std::cerr << " NEW\n";
 			end.m_x = tip->m_x;
 			end.m_y = tip->m_y;
 		}else{
-			std::cerr << " ORIGINAL\n";
 			end.m_x = x;
 			end.m_y = y;
 		}
@@ -794,7 +791,7 @@ void SvgPrinter::drawArrowHead(pugi::xml_node xmlNode, const DPoint &start, DPoi
 		a_type_ptr = m_node_arrow.find(std::make_pair(v, e));
 		std::list<double> coord;
 		bool hollow = false;
-		std::cerr << "Arrow Type: ";
+		std::cerr << "Arrow Type: " << a_type_ptr->second << '\n';	
 		if(a_type_ptr != m_node_arrow.end()){
 			if(a_type_ptr->second == "none"){
 				std::cerr << "NONE\n";
