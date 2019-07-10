@@ -11,6 +11,11 @@ git clone --recursive https://github.com/srcML/srcUML.git
 The project utilizes CMake for building.
 The following provide examples of how to build.  srcuml will be placed in the ./bin directory in all cases.
 
+#### Dependencies
+- libxml2
+- Boost
+- OGDF
+
 ```bash
 # in-source build
 cmake .
