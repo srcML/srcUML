@@ -3,6 +3,7 @@
 
 
 #include <svg_outputter.hpp>
+#include <ogdf/cluster/ClusterPlanRep.h>
 
 class svg_multi_outputter : public svg_outputter {
 
@@ -13,31 +14,35 @@ public:
 	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
 		//transfer information from srcUML to ogdf
 
-		init_standard(classes);
+		init_clustered(classes);
+
+		//Determine Clusters
+		//===============================================================================================================
+		/*
+		Plan:
+			Determine the clusters, storing pointers to the nodes in an SList<node> object, this will become the cluster
+			How to determine the clusters will be the difficult part. I will want to come up with some heuristic, maybe based
+			Dragan's Paper, and go fomr there. 
+		*/
+		//===============================================================================================================
+
+
+		//Cluster Creation
+		//===============================================================================================================
+		//===============================================================================================================
+
 
 		//Layout
 		//===============================================================================================================
-
-		SugiyamaLayout sl;
-		sl.setRanking(new OptimalRanking);
-		sl.setCrossMin(new MedianHeuristic);
- 
-		OptimalHierarchyLayout *ohl = new OptimalHierarchyLayout;
-		ohl->layerDistance(50.0);
-		ohl->nodeDistance(50.0);
-		ohl->weightBalancing(1);
-		sl.setLayout(ohl);
-
-		sl.call(ga);
+		ClusterPlanarizationLayout cpl;
+		cpl.call(g, cga, cg);
 
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 		
-		if(!drawSVG(ga, out, *svg_settings, ne_arrow)){
+		if(!drawSVG(cga, out, *svg_settings, ne_arrow)){
 			std::cout << "Error Write" << std::endl;
 		}
-
 		//===============================================================================================================
-
 
 		return true;
 	}

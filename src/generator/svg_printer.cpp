@@ -71,7 +71,6 @@ pugi::xml_node SvgPrinter::writeHeader(pugi::xml_document &doc){
 	rootNode.append_attribute("xmlns:ev") = "http://www.w3.org/2001/xml-events";
 	rootNode.append_attribute("version") = "1.1";
 	rootNode.append_attribute("baseProfile") = "full";
-	rootNode.append_attribute("style") = "background: white";
 
 	if(!m_settings.width().empty()) {
 		rootNode.append_attribute("width") = m_settings.width().c_str();
@@ -95,8 +94,10 @@ pugi::xml_node SvgPrinter::writeHeader(pugi::xml_document &doc){
 	style_node.text() = (".font_style {font: " + std::to_string(m_settings.fontSize()) + "px monospace;}").c_str();
 	//std::cerr << std::to_string(m_settings.fontSize()) << std::endl;
 	pugi::xml_node back_color = rootNode.append_child("rect");
-	back_color.append_attribute("width") = "200%";
-	back_color.append_attribute("height") = "200%";
+	back_color.append_attribute("x") = (box.p1().m_x - margin);
+	back_color.append_attribute("y") = (box.p1().m_y - margin);
+	back_color.append_attribute("width") = "100%";
+	back_color.append_attribute("height") = "100%";
 	back_color.append_attribute("fill") = "white";
 
 	return rootNode;

@@ -17,7 +17,6 @@ public:
 
 		//Layout
 		//===============================================================================================================
-
 		SugiyamaLayout sl;
 		sl.setRanking(new OptimalRanking);
 		sl.setCrossMin(new MedianHeuristic);
@@ -35,7 +34,6 @@ public:
 		if(!drawSVG(ga, out, *svg_settings, ne_arrow)){
 			std::cout << "Error Write" << std::endl;
 		}
-
 		//===============================================================================================================
 
 		return true;
