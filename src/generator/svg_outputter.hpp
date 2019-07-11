@@ -454,6 +454,8 @@ protected:
 	std::map<std::shared_ptr<srcuml_class>, node>           class_node_map;
 	std::map<std::string, node>                             class_name_node_map;
 	std::multimap<std::pair<node, node>, relationship_type> edge_type_map;
+
+	//change to node_edge_arrow
 	std::map<std::pair<node, edge>, std::string>            ne_arrow;
 	
 };

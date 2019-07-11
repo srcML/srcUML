@@ -22,5 +22,5 @@ file(GLOB SRCUML_SOURCE *.cpp)
 file(GLOB SRCUML_HEADER *.hpp)
 
 add_subdirectory(generator)
-add_subdirectory(structure)
+add_subdirectory(model)
 add_subdirectory(client)
