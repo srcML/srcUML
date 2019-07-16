@@ -27,8 +27,12 @@
 
 
 class srcuml_outputter {
+protected:
+	bool show_methods;
+	bool show_attributes;
 
 public:
+	srcuml_outputter(bool m = true, bool a = true){show_methods = m; show_attributes = a;}
 
 	virtual bool output(std::ostream & out, std::vector<std::shared_ptr<srcuml_class>> & classes) = 0;
 

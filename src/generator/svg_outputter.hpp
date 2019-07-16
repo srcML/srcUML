@@ -73,54 +73,61 @@ class svg_outputter : public srcuml_outputter{
 
 public:
 
-	virtual bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes) = 0;
+	virtual bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> &classes) = 0;
 
 	std::string generate_label(const std::shared_ptr<srcuml_class> & aclass, int &num_lines, int &longest_line){
 		std::string label;
+
 		if(aclass->get_srcuml_name() != aclass->get_name()){
 			label += aclass->get_srcuml_name().substr(0, aclass->get_srcuml_name().find(aclass->get_name())) + "<svg_new_line>";
 			++num_lines;
 			if(aclass->get_srcuml_name().length() > longest_line){longest_line = aclass->get_srcuml_name().length();}
 		}
+
 		label += aclass->get_name();
 		++num_lines;
+
 		if(aclass->get_name().length() > longest_line){longest_line = aclass->get_name().length();}
 		label += "<svg_box_divide>";
 		++num_lines;
-		for(const srcuml_attribute & attribute : aclass->get_attributes()){
-			label += attribute.get_string_attribute() + "<svg_new_line>";
-			++num_lines;
-			if(attribute.get_string_attribute().length() > longest_line){longest_line = attribute.get_string_attribute().length();}
-		}
-		label += "<svg_box_divide>";
-		++num_lines;
 
-
-		for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
-			for(const FunctionPolicy::FunctionData * function : aclass->get_data().methods[access]) { //private members
-				srcuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
-
-				std::string func = op.get_string_function();
-
-				if(op.get_stereotypes().count("set") > 0){continue;}
-				if(op.get_stereotypes().count("get") > 0){continue;}
-				
-
-				label += func;
-
-
-				label += "<svg_new_line>";
+		if(show_attributes){
+			for(const srcuml_attribute & attribute : aclass->get_attributes()){
+				label += attribute.get_string_attribute() + "<svg_new_line>";
 				++num_lines;
+				if(attribute.get_string_attribute().length() > longest_line){longest_line = attribute.get_string_attribute().length();}
+			}
+
+			label += "<svg_box_divide>";
+			++num_lines;
+		}
+
+		if(show_methods){
+			for(std::size_t access = 0; access <= ClassPolicy::PROTECTED; ++access) {
+				for(const FunctionPolicy::FunctionData * function : aclass->get_data().methods[access]) { //private members
+					srcuml_operation op(function, (ClassPolicy::AccessSpecifier)access);
+
+					std::string func = op.get_string_function();
+
+					if(op.get_stereotypes().count("set") > 0){continue;}
+					if(op.get_stereotypes().count("get") > 0){continue;}
+					
+
+					label += func;
 
 
-				if(func.length() > longest_line){longest_line = func.length();}
+					label += "<svg_new_line>";
+					++num_lines;
+
+
+					if(func.length() > longest_line){longest_line = func.length();}
+				}
 			}
 		}
 		//create proper string such that SvgPrinter can parse.
 		//\n will be <svg_new_line> box divider will be <svg_box_divide>
 		return label;
 	}
-
 
 
 	//Initialization Functions
@@ -419,7 +426,6 @@ public:
 		//===============================================================================================================
 	}
 	//===============================================================================================================
-
 
 
 	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &node_edge_arrow){

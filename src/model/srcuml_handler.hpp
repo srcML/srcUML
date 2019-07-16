@@ -55,10 +55,11 @@ private:
 
 	std::vector<std::shared_ptr<srcuml_class>> classes;
 	output_type type;
+	bool methods, attributes;
 
 public:
 
-	srcuml_handler(const std::string & input_str, std::ostream & out, std::string t = "svg_sugiyama") {
+	srcuml_handler(const std::string & input_str, std::ostream & out, bool m, bool a, std::string t = "svg_sugiyama") {
 
 		if(t == "svg_sugiyama"){
 			type = svg_sugiyama;
@@ -71,12 +72,16 @@ public:
 		}else if(t == "svg_three"){
 			type = svg_three;
 		}
+
+		methods = m;
+		attributes = a;
+
 		srcSAXController controller(input_str.c_str());
 		run(controller, out);
 
 	}
 
-	srcuml_handler(const char * input_filename, std::ostream & out, std::string t = "svg_sugiyama") {
+	srcuml_handler(const char * input_filename, std::ostream & out, bool m, bool a, std::string t = "svg_sugiyama") {
 
 		if(t == "svg_sugiyama"){
 			type = svg_sugiyama;
@@ -89,6 +94,10 @@ public:
 		}else if(t == "svg_three"){
 			type = svg_three;
 		}
+		
+		methods = m;
+		attributes = a;
+
 		srcSAXController controller(input_filename);
 		run(controller, out);
 
@@ -105,7 +114,7 @@ public:
 			case svg_sugiyama:
 				{
 					std::cout << "SVG SUGIYAMA Called\n";
-					svg_sugiyama_outputter outputter;
+					svg_sugiyama_outputter outputter(methods, attributes);
 					outputter.output(out, classes);
 				}
 				break;
@@ -113,7 +122,7 @@ public:
 			case svg_multi:
 				{
 					std::cout << "SVG MULTI Called\n";
-					svg_multi_outputter outputter;
+					svg_multi_outputter outputter(methods, attributes);
 					outputter.output(out, classes);
 				}
 				break;
@@ -121,7 +130,7 @@ public:
 			case svg_three:
 				{
 					std::cout << "SVG THREE Called\n";
-					svg_three_outputter outputter;
+					svg_three_outputter outputter(methods, attributes);
 					outputter.output(out, classes);
 				}
 				break;
@@ -129,7 +138,7 @@ public:
 			case dot:
 				{
 					std::cout << "DOT Called\n";
-					dot_outputter outputter;
+					dot_outputter outputter(methods, attributes);
 					outputter.output(out, classes);
 				}
 				break;
@@ -137,7 +146,7 @@ public:
 			case yuml:
 				{
 					std::cout << "YUML Called\n";
-					yuml_outputter outputter;
+					yuml_outputter outputter(methods, attributes);
 					outputter.output(out, classes);
 				}
 				break; 

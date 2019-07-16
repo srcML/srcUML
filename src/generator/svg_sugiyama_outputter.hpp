@@ -8,8 +8,6 @@ class svg_sugiyama_outputter : public svg_outputter {
 
 public:
 
-	svg_sugiyama_outputter(){}
-
 	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
 		//transfer information from srcUML to ogdf
 		
