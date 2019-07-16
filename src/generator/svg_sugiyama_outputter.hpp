@@ -31,7 +31,7 @@ public:
 
 		GraphIO::SVGSettings * svg_settings = new ogdf::GraphIO::SVGSettings();
 		
-		if(!drawSVG(ga, out, *svg_settings, ne_arrow)){
+		if(!drawSVG(ga, out, *svg_settings, node_edge_arrow)){
 			std::cout << "Error Write" << std::endl;
 		}
 		//===============================================================================================================

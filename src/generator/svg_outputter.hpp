@@ -230,51 +230,51 @@ public:
 				std::cerr << "DEPENDENCY\n";
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case ASSOCIATION:
 				std::cerr << "ASSOCIATION\n";
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case BIDIRECTIONAL:
 				std::cerr << "BIDIRECTIONAL\n";
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_arrow"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case AGGREGATION:
 				std::cerr << "AGGREGATION\n";
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
 				std::cerr << "TACO\n";
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_diamond"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_diamond"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case COMPOSITION:
 				std::cerr << "COMPOSITION\n";
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_diamond"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_diamond"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case GENERALIZATION:
 				std::cerr << "GENERALIZATION\n";
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case REALIZATION:
 				std::cerr << "REALIZATION\n";
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			}
 		}
@@ -375,44 +375,44 @@ public:
 			case DEPENDENCY:
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case ASSOCIATION:
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case BIDIRECTIONAL:
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_arrow"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "filled_arrow"));
 				break;
 			case AGGREGATION:
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_diamond"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_diamond"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case COMPOSITION:
 				st = StrokeType::Solid;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_diamond"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "filled_diamond"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case GENERALIZATION:
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			case REALIZATION:
 				st = StrokeType::Dash;
 				ea = EdgeArrow::Both;
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
-				ne_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.first, cur_edge), "hollow_arrow"));
+				node_edge_arrow.insert(std::make_pair(std::make_pair(edge.first.second, cur_edge), "none"));
 				break;
 			}
 		}
@@ -422,23 +422,23 @@ public:
 
 
 
-	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
+	bool drawSVG(const GraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &node_edge_arrow){
 		std::ofstream os(filename);
-		return drawSVG(A, os, settings, ne_arrow);
+		return drawSVG(A, os, settings, node_edge_arrow);
 	}
 
-	bool drawSVG(const ClusterGraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
+	bool drawSVG(const ClusterGraphAttributes &A, const std::string &filename, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &node_edge_arrow){
 		std::ofstream os(filename);
-		return drawSVG(A, os, settings, ne_arrow);
+		return drawSVG(A, os, settings, node_edge_arrow);
 	}
 
-	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
-		SvgPrinter printer(attr, settings, ne_arrow);
+	bool drawSVG(const GraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &node_edge_arrow){
+		SvgPrinter printer(attr, settings, node_edge_arrow);
 		return printer.draw(os);
 	}
 
-	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &ne_arrow){
-		SvgPrinter printer(attr, settings, ne_arrow);
+	bool drawSVG(const ClusterGraphAttributes &attr, std::ostream &os, const GraphIO::SVGSettings &settings, const std::map<std::pair<node, edge>, std::string> &node_edge_arrow){
+		SvgPrinter printer(attr, settings, node_edge_arrow);
 		return printer.draw(os);
 	}
 
@@ -454,9 +454,7 @@ protected:
 	std::map<std::shared_ptr<srcuml_class>, node>           class_node_map;
 	std::map<std::string, node>                             class_name_node_map;
 	std::multimap<std::pair<node, node>, relationship_type> edge_type_map;
-
-	//change to node_edge_arrow
-	std::map<std::pair<node, edge>, std::string>            ne_arrow;
+	std::map<std::pair<node, edge>, std::string>            node_edge_arrow;
 	
 };
 

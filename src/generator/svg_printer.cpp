@@ -1,6 +1,8 @@
-//add information on origin
-//URL
-//What changes
+//Modified by P.J. Leyden from original file.
+//Original file can be found at:
+//https://github.com/ogdf/ogdf/blob/master/src/ogdf/fileformats/SvgPrinter.cpp
+
+//Changes were made in order to facilitate drawing the proper arrows for UML relationships
 
 
 

@@ -21,8 +21,8 @@
 # glob does one time thing, possibly won't find changes to certain things...** may 
 
 
-file(GLOB STRUCTURE_SOURCE *.cpp)
-file(GLOB STRUCTURE_HEADER *.hpp)
+file(GLOB MODEL_SOURCE *.cpp)
+file(GLOB MODEL_HEADER *.hpp)
 
-add_library(structure OBJECT ${STRUCTURE_HEADER} ${STRUCTURE_SOURCE})
+add_library(model OBJECT ${MODEL_HEADER} ${MODEL_SOURCE})
 

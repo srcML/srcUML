@@ -21,6 +21,6 @@
 file(GLOB CLIENT_SOURCE *.cpp)
 file(GLOB CLIENT_HEADER *.hpp)
 
-add_executable(srcuml $<TARGET_OBJECTS:generator> $<TARGET_OBJECTS:structure> ${CLIENT_SOURCE} ${CLIENT_HEADER})
+add_executable(srcuml $<TARGET_OBJECTS:generator> $<TARGET_OBJECTS:model> ${CLIENT_SOURCE} ${CLIENT_HEADER})
 link_directories(/usr/local/lib /usr/local/lib/x86_64-linux-gnu)
 target_link_libraries(srcuml srcsaxeventdispatch srcsax_static ${LIBXML2_LIBRARIES} ${Boost_LIBRARIES} OGDF COIN pthread)

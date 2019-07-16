@@ -39,7 +39,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(srcSAXEventDispatch/CMake)
 
-include_directories(${DISPATCH_INCLUDE_DIR} src/generator src/structure test/driver ogdf/include ${Boost_INCLUDE_DIR})
+include_directories(${DISPATCH_INCLUDE_DIR} src/generator src/model test/driver ogdf/include ${Boost_INCLUDE_DIR})
 
 add_subdirectory(src)
 
