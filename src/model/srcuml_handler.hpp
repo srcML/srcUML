@@ -154,7 +154,7 @@ public:
 			default:
 				{
 					std::cout << "Error: Output type not recognized, running svg_sugiyama\n";
-					svg_sugiyama_outputter outputter;
+					svg_sugiyama_outputter outputter(methods, attributes);
 					outputter.output(out, classes);
 				}
 				break;

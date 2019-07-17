@@ -9,9 +9,9 @@ class svg_multi_outputter : public svg_outputter {
 
 public:
 
-	svg_multi_outputter(){}
+	svg_multi_outputter(bool method, bool attr){show_methods = method; show_attributes = attr;}
 
-	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> & classes){
+	bool output(std::ostream& out, std::vector<std::shared_ptr<srcuml_class>> &classes){
 		//transfer information from srcUML to ogdf
 
 		init_clustered(classes);

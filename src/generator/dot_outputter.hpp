@@ -27,8 +27,9 @@
 class dot_outputter : srcuml_outputter {
 
 public:
+    dot_outputter(bool method, bool attr){show_methods = method; show_attributes = attr;}
 
-	bool output(std::ostream & out, std::vector<std::shared_ptr<srcuml_class>> & classes){
+	bool output(std::ostream & out, std::vector<std::shared_ptr<srcuml_class>> &classes){
 
 		srcuml_relationships relationships = analyze_relationships(classes);
 
@@ -126,7 +127,6 @@ public:
         }
 
         out << '}' << '\n';
-
 	}
 
 };
