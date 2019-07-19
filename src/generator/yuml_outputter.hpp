@@ -1,8 +1,9 @@
 /**
- * @file srcuml_relationship.hpp
+ * \file yuml_outputter.hpp
  *
- * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
- *
+ * \copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
+ * 
+ * \par License:
  * This file is part of srcUML.
  *
  * srcUML is free software: you can redistribute it and/or modify
@@ -23,6 +24,17 @@
 #define INCLUDED_YUML_OUTPUTTER_HPP
 
 #include <srcuml_outputter.hpp>
+
+/**
+ * \class yuml_outputter yuml_outputter.hpp
+ * \brief Module for generating yUML output. 
+ *
+ * \ingroup Outputters
+ *
+ * This class implements srcuml_outputter creating yUML output. This yUML output could then
+ * be copy and pasted into [HERE](https://yuml.me/diagram/plain/class/draw) to create a UML
+ * diagram.
+ */
 
 class yuml_outputter : srcuml_outputter {
 

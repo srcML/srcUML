@@ -1,3 +1,25 @@
+/**
+ * \file svg_three_outputter.hpp
+ *
+ * \copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
+ * 
+ * \par License:
+ * This file is part of srcUML.
+ *
+ * srcUML is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * srcUML is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef INCLUDED_SVG_THREE_OUTPUTTER_HPP
 #define INCLUDED_SVG_THREE_OUTPUTTER_HPP
 
@@ -7,9 +29,11 @@
 
 /**
  * \class svg_three_outputter svg_three_outputter.hpp
- * \brief A three cluster layout for UML diagrams.
+ * \brief Module for generating a three cluster layout for UML diagrams.
  *
- * This class implements svg_outputter and subsequently srcuml_outputter to create a layout type.
+ * \ingroup Outputters
+ *
+ * This class is a layout type.
  * The svg_three option for layout is designed around the idea of clustering the classes by their stereotype. 
  * The three clusters are Control, Boundary and Entity.
  */

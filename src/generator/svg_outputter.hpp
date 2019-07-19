@@ -1,8 +1,9 @@
 /**
- * @file ogdf_outputter.hpp
+ * \file svg_outputter.hpp
  *
- * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
- *
+ * \copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
+ * 
+ * \par License:
  * This file is part of srcUML.
  *
  * srcUML is free software: you can redistribute it and/or modify
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef INCLUDED_SVG_OUTPUTTER_HPP
 #define INCLUDED_SVG_OUTPUTTER_HPP
 
@@ -65,10 +67,16 @@
 #include <ogdf/module/HierarchyClusterLayoutModule.h>
 //===================================================================
 
-
 using namespace ogdf;
 using namespace ogdf::internal;
 
+/**
+ * \class svg_outputter svg_outputter.hpp
+ * \brief Abstract class that sets up compnents needed for an SVG layout module.
+ *
+ * This abstract class is mainly for setting up the easy implementation of UML layout 
+ * algorithms in an SVG format.
+ */
 class svg_outputter : public srcuml_outputter{
 
 public:

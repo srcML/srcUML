@@ -1,8 +1,9 @@
 /**
- * @file srcuml_operation.hpp
+ * \file srcuml_operation.hpp
  *
- * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
- *
+ * \copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
+ * 
+ * \par License:
  * This file is part of srcUML.
  *
  * srcUML is free software: you can redistribute it and/or modify

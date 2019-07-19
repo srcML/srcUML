@@ -1,8 +1,9 @@
 /**
- * @file dot_outputter.hpp
+ * \file dot_outputter.hpp
  *
- * @copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
- *
+ * \copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
+ * 
+ * \par License:
  * This file is part of srcUML.
  *
  * srcUML is free software: you can redistribute it and/or modify
@@ -23,6 +24,20 @@
 #define INCLUDED_DOT_OUTPUTTER_HPP
 
 #include <srcuml_outputter.hpp>
+
+/**
+ * \class dot_outputter dot_outputter.hpp
+ * \brief Module for generating dot output.
+ *
+ * \ingroup Outputters
+ *
+ * This class implements srcuml_outputter creating dot output. The dot output 
+ * can be used with the dot program that comes with (Grapviz)[http://www.graphviz.org/].
+ * Ex. 
+ * \code{.sh}
+ * dot -Tpdf [path_to_dot_file] -o[output_file]
+ * \endcode
+ */
 
 class dot_outputter : srcuml_outputter {
 

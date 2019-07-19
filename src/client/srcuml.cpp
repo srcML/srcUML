@@ -1,8 +1,9 @@
 /**
- * @file srcuml.hpp
+ * \file srcuml.cpp
  *
- * @copyright Copyright (C) 2015-2016 srcML, LLC. (www.srcML.org)
- *
+ * \copyright Copyright (C) 2016 srcML, LLC. (www.srcML.org)
+ * 
+ * \par License:
  * This file is part of srcUML.
  *
  * srcUML is free software: you can redistribute it and/or modify
@@ -19,14 +20,6 @@
  * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- /*
-
-  Count each the occurrences of each srcML element.
-
-  Input: input_file.xml
-  Useage: srcuml input_file.xml
-  
-  */
 
 #include <srcuml_handler.hpp>
 #include <boost/program_options.hpp>
@@ -37,10 +30,10 @@
 
 /**
  * main
- * @param argc number of arguments
- * @param argv the provided arguments (array of C strings)
+ * \param argc number of arguments
+ * \param argv the provided arguments (array of C strings)
  * 
- * Invoke srcSAX handler to generate yUML.
+ * 
  */
 int main(int argc, char * argv[]) {
 

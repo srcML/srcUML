@@ -1,40 +1,31 @@
-//Modified by P.J. Leyden from original file.
-//Original file can be found at:
-//https://github.com/ogdf/ogdf/blob/master/src/ogdf/fileformats/SvgPrinter.cpp
-
-//Changes were made in order to facilitate drawing the proper arrows for UML relationships
-
-
-
 /** \file
  * \brief Generator for visualizing graphs using the XML-based SVG format.
  *
  * \author Tilo Wiedera
+ * 
+ * \par
+ * This file was taken from the Open Graph Drawing Framework (OGDF) and modified by
+ * P.J. Leyden. The changes made were made in order to facilitate drawing the proper 
+ * arrows for UML relationships. These changes were made March 2019.
+ *
+ * \par 
+ * The original file can be found [HERE](https://github.com/ogdf/ogdf/blob/master/include/ogdf/fileformats/SvgPrinter.cpp)
  *
  * \par License:
- * This file is part of the Open Graph Drawing Framework (OGDF).
+ * This file is part of srcUML.
  *
- * \par
- * Copyright (C)<br>
- * See README.md in the OGDF root directory for details.
- *
- * \par
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * Version 2 or 3 as published by the Free Software Foundation;
- * see the file LICENSE.txt included in the packaging of this file
- * for details.
- *
- * \par
- * This program is distributed in the hope that it will be useful,
+ * srcUML is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * srcUML is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * \par
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, see
- * http://www.gnu.org/copyleft/gpl.html
+ * You should have received a copy of the GNU General Public License
+ * along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "svg_printer.hpp"
