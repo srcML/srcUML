@@ -5,6 +5,14 @@
 #include <ogdf/cluster/ClusterPlanRep.h>
 #include <svg_outputter.hpp>
 
+/**
+ * \class svg_three_outputter svg_three_outputter.hpp
+ * \brief A three cluster layout for UML diagrams.
+ *
+ * This class implements svg_outputter and subsequently srcuml_outputter to create a layout type.
+ * The svg_three option for layout is designed around the idea of clustering the classes by their stereotype. 
+ * The three clusters are Control, Boundary and Entity.
+ */
 class svg_three_outputter : public svg_outputter {
 
 public:

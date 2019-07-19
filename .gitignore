@@ -9,6 +9,8 @@ srcYUML2graphVizParser.py
 srcYUML2graphVizParser.pyc
 build/*
 research/*
+doc/doxyfiles/*
+doc/doxyfiles
 *.pyc
 *.png
 *.jpg

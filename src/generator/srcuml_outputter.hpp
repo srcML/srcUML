@@ -25,7 +25,9 @@
 #include <srcuml_class.hpp>
 #include <srcuml_relationship.hpp>
 
-
+/**
+ *
+ */
 class srcuml_outputter {
 protected:
 	bool show_attributes;
