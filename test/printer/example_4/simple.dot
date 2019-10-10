@@ -1,0 +1,9 @@
+digraph hierarchy {
+node[shape=record,style=filled,fillcolor=gray95]
+edge[dir="both", arrowtail="empty", arrowhead="empty", labeldistance="2.0"]
+class0[label = "{ «datatype»Employee}"]
+class1[label = "{ «datatype»MyAppWindow}"]
+class2[label = "{ «datatype»Register|- e: Employee\n- maw: MyAppWindow\n}"]
+class2->class0[arrowhead="vee", arrowtail="diamond"]
+class2->class1[arrowhead="vee", arrowtail="diamond"]
+}

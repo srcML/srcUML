@@ -1,0 +1,5 @@
+[«datatype»Employee]
+[«datatype»MyAppWindow]
+[«datatype»Register|- e: Employee;- maw: MyAppWindow;]
+[«datatype»Register]++-e>[«datatype»Employee]
+[«datatype»Register]++-maw>[«datatype»MyAppWindow]

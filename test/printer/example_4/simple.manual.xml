@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<unit xmlns="http://www.srcML.org/srcML/src" revision="1.0.0" language="C++" filename="test.hpp">
+<unit xmlns="http://www.srcML.org/srcML/src" revision="1.0.0" language="C++" filename="simple.hpp">
 <class stereotype="entity">class <name>Employee</name><block>{<private type="default"/>}</block>;</class>
+
+<class stereotype="boundary">class <name>MyAppWindow</name><block>{<private type="default"/>}</block>;</class>
 
 <class stereotype="control">class <name>Register</name><block>{<private type="default">
 </private><private>private:
 	<decl_stmt><decl><type><name>Employee</name></type> <name>e</name></decl>;</decl_stmt>
-</private>}</block>;</class></unit>
+	<decl_stmt><decl><type><name>MyAppWindow</name></type> <name>maw</name></decl>;</decl_stmt>
+</private>}</block>;</class>
+
+</unit>
