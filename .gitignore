@@ -10,7 +10,6 @@ srcYUML2graphVizParser.pyc
 build/*
 research/*
 *.pyc
-*.png
 *.jpg
 *.pdf
 *.sublime-project
