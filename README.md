@@ -16,17 +16,18 @@ git clone --recursive https://github.com/srcML/srcUML.git
 ### Program Flow ###
 * The full process from source code to UML diagram is detailed below.
 ![](doc/images/srcuml_tool_chain.png)
+* Commands for a simple test
 
 ### Creating a New Layout ###
 * Creating a new layout for srcUML starts by creating a new class that inherits svg_outputter. The example below shows a standard template for a new layout.
 ```cpp
 class svg_xyz_outputter : public svg_outputter {
-    svg_xyz_outputter(bool method, bool attr){
+    svg_xyz_outputter(bool method, bool attr) {
         show_methods = method;
         show_attributes = attr;
     }
 
-    bool output(…){
+    bool output(…) {
         init_standard(classes);
 
         //code for the new layout using OGDF methods
@@ -75,6 +76,7 @@ if(!drawSVG(cga, out, *svg_settings, node_edge_arrow)){
 This is an inconvience if SVG is not the best output type.
 
 ### Quirks of OGDF ###
+* A description of organization and whatnot
 
 ### Final Notes ###
 * The current build is dependent on files produced by srcML.
