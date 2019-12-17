@@ -1,5 +1,6 @@
 # srcUML #
 * A tool for efficiently reverse engineering accurate UML class diagrams.
+* More information can be read [here](https://etd.ohiolink.edu/pg_10?0::NO:10:P10_ACCESSION_NUM:ksuhonors157557386946271).
 
 ### Cloning ###
 * The project uses srcSAX and srcSAXEventDispatch as submodules.  The repo most be cloned with the `--recursive` option to clone the submodules.  The following is an example command:
