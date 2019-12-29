@@ -1,6 +1,8 @@
 # srcUML #
 * A tool for efficiently reverse engineering accurate UML class diagrams.
-* More information can be read [here](https://etd.ohiolink.edu/pg_10?0::NO:10:P10_ACCESSION_NUM:ksuhonors157557386946271).
+* More information can be read in the thesis [here](https://etd.ohiolink.edu/pg_10?0::NO:10:P10_ACCESSION_NUM:ksuhonors157557386946271).
+* GitHub [Link](https://github.com/srcML/srcUML)
+* OGDF [Link](https://ogdf.uos.de/)
 
 ### Cloning ###
 * The project uses srcSAX and srcSAXEventDispatch as submodules.  The repo most be cloned with the `--recursive` option to clone the submodules.  The following is an example command:
