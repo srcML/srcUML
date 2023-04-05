@@ -68,7 +68,7 @@ tester_t & tester_t::run() {
 
         srcuml_handler handler(srcml, output, true, true, "yuml");
 
-    } catch(...) {}
+    } catch(std::string & e) { std::cerr << "TEST ERROR: " << e << '\n'; }
 
     yuml = output.str();
 
