@@ -66,7 +66,7 @@ tester_t & tester_t::run() {
 
     try {
 
-        srcuml_handler handler(srcml, output);
+        srcuml_handler handler(srcml, output, true, true, "yuml");
 
     } catch(...) {}
 

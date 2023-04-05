@@ -25,6 +25,9 @@
 # All arguments after the file name are considered to be linker arguments.
 #
 #
+
+link_directories(/usr/local/lib)
+
 macro(add_srcuml_test TEST_FILE)
 
     get_filename_component(TEST_NAME_WITH_EXTENSION ${TEST_FILE} NAME)

@@ -42,6 +42,7 @@ add_subdirectory(srcSAXEventDispatch/CMake)
 include_directories(${DISPATCH_INCLUDE_DIR} src/generator src/model test/driver /usr/local/include ${Boost_INCLUDE_DIR})
 
 add_subdirectory(src)
+add_subdirectory(test)
 
 install(TARGETS srcuml)
 
