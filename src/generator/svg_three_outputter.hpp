@@ -69,9 +69,9 @@ public:
 		cga.fillColor(control) = Color(224, 0, 0, 50);
 		cga.fillColor(boundary) = Color(0, 224, 0, 50);
 
-		cga.setFillPattern(entity, FillPattern::Solid);
-		cga.setFillPattern(control, FillPattern::Solid);
-		cga.setFillPattern(boundary, FillPattern::Solid);
+		cga.fillPattern(entity) = FillPattern::Solid;
+		cga.fillPattern(control) = FillPattern::Solid;
+		cga.fillPattern(boundary) = FillPattern::Solid;
 		//===============================================================================================================
 
 

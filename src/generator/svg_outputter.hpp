@@ -53,7 +53,7 @@
 //Layout_Include=====================================================
 #include <ogdf/tree/TreeLayout.h>
 #include <ogdf/misclayout/CircularLayout.h>
-#include <ogdf/module/UMLLayoutModule.h>
+#include <ogdf/uml/UMLLayoutModule.h>
 //===================================================================
 
 //Layered============================================================
@@ -62,7 +62,7 @@
 #include <ogdf/layered/MedianHeuristic.h>
 #include <ogdf/layered/OptimalHierarchyLayout.h>
 #include <ogdf/layered/OptimalHierarchyClusterLayout.h>
-#include <ogdf/module/HierarchyClusterLayoutModule.h>
+#include <ogdf/layered/HierarchyClusterLayoutModule.h>
 //===================================================================
 
 
