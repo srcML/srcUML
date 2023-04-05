@@ -76,7 +76,7 @@ public:
 		methods = m;
 		attributes = a;
 
-		srcSAXController controller(input_str.c_str());
+		srcSAXController controller(input_str);
 		run(controller, out);
 
 	}
