@@ -257,8 +257,6 @@ private:
             /** @todo need to look and see if using only last is valid */
             /** @todo issue in srcML to simplify markup, should make this simpler possibly eliminate if condition */
             const NamePolicy::NameData * type_name = static_cast<const NamePolicy::NameData *>(citr->first);
-            if(type_name->names.size() >= 2)
-                type_name = type_name->names.back();
 
             std::string type_str;
 
