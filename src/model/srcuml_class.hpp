@@ -106,13 +106,13 @@ public:
     std::string get_srcuml_name() const { //shouldn't do any formatting
 
         if(is_interface)
-            return "«interface»" + name;
+            return "«interface»;" + name;
         // not sure if should be gulliments or {}
         if(is_abstract)
-            return "｛abstract｝" + name;
+            return "｛abstract｝;" + name;
 
         if(is_datatype)
-            return "«datatype»" + name;
+            return "«datatype»;" + name;
 
         return name;
 
