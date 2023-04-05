@@ -114,7 +114,7 @@ int main(int argc, char * argv[]) {
 	}
 
 	try {
-		srcuml_handler handler(input_file, *out, methods, attributes, type);
+		srcuml_handler handler(input_file.c_str(), *out, methods, attributes, type);
 	} catch(std::string& e) {
 		std::cout << e << std::endl;
 	}
