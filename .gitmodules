@@ -1,6 +1,6 @@
 [submodule "ogdf"]
 	path = ogdf
 	url = https://github.com/ogdf/ogdf.git
-[submodule "srcSAXEventDispatch"]
-	path = srcSAXEventDispatch
-	url = https://github.com/srcML/srcSAXEventDispatch.git
+[submodule "srcDispatch"]
+	path = srcDispatch
+	url = https://github.com/srcML/srcDispatch.git
