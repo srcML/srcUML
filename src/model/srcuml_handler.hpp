@@ -22,19 +22,19 @@
 #ifndef INCLUDED_SRCUML_HANDLER_HPP
 #define INCLUDED_SRCUML_HANDLER_HPP
 
-#include <srcSAXEventDispatchUtilities.hpp>
+#include <srcuml_dispatcher.hpp>
 #include <srcSAXController.hpp>
 
-#include <srcuml_dispatcher.hpp>
+#include <srcDispatcherSingleEvent.hpp>
 #include <ClassPolicySingleEvent.hpp>
 
 #include <srcuml_class.hpp>
 #include <srcuml_relationship.hpp>
 #include <dot_outputter.hpp>
 #include <yuml_outputter.hpp>
-#include <svg_sugiyama_outputter.hpp>
-#include <svg_multi_outputter.hpp>
-#include <svg_three_outputter.hpp>
+// #include <svg_sugiyama_outputter.hpp>
+// #include <svg_multi_outputter.hpp>
+// #include <svg_three_outputter.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -111,29 +111,29 @@ public:
 		controller.parse(&dispatcher);
 
 		switch(type){
-			case svg_sugiyama:
-				{
-					std::cout << "SVG SUGIYAMA Called\n";
-					svg_sugiyama_outputter outputter(methods, attributes);
-					outputter.output(out, classes);
-				}
-				break;
+			// case svg_sugiyama:
+			// 	{
+			// 		std::cout << "SVG SUGIYAMA Called\n";
+			// 		svg_sugiyama_outputter outputter(methods, attributes);
+			// 		outputter.output(out, classes);
+			// 	}
+			// 	break;
 
-			case svg_multi:
-				{
-					std::cout << "SVG MULTI Called\n";
-					svg_multi_outputter outputter(methods, attributes);
-					outputter.output(out, classes);
-				}
-				break;
+			// case svg_multi:
+			// 	{
+			// 		std::cout << "SVG MULTI Called\n";
+			// 		svg_multi_outputter outputter(methods, attributes);
+			// 		outputter.output(out, classes);
+			// 	}
+			// 	break;
 
-			case svg_three:
-				{
-					std::cout << "SVG THREE Called\n";
-					svg_three_outputter outputter(methods, attributes);
-					outputter.output(out, classes);
-				}
-				break;
+			// case svg_three:
+			// 	{
+			// 		std::cout << "SVG THREE Called\n";
+			// 		svg_three_outputter outputter(methods, attributes);
+			// 		outputter.output(out, classes);
+			// 	}
+			// 	break;
 
 			case dot:
 				{
