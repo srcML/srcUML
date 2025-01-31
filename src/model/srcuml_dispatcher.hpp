@@ -22,17 +22,20 @@
 #ifndef INCLUDED_SRCUML_DISPATCHER_HPP
 #define INCLUDED_SRCUML_DISPATCHER_HPP
 
-#include <srcSAXSingleEventDispatcher.hpp>
+// #include <srcSAXSingleEventDispatcher.hpp>
+#include <srcDispatcherSingleEvent.hpp>
 
 template <typename ...policies>
-class srcuml_dispatcher : public srcSAXEventDispatch::srcSAXSingleEventDispatcher<policies...> {
+// class srcuml_dispatcher : public srcSAXEventDispatch::srcSAXSingleEventDispatcher<policies...> {
+class srcuml_dispatcher : public srcDispatch::srcDispatchSingleEvent<policies...> {
 
 private:
     bool dispatched;
 
 public:
 
-   srcuml_dispatcher(srcSAXEventDispatch::PolicyListener * listener)
+//    srcuml_dispatcher(srcSAXEventDispatch::PolicyListener * listener)
+    srcuml_dispatcher(srcDispatchSingleEvent::PolicyListener * listener)
         : srcSAXEventDispatch::srcSAXSingleEventDispatcher<policies...>(listener) {
        srcSAXEventDispatch::srcSAXEventDispatcher<policies...>::RemoveEvents({"if", "for", "while", "typedef", "call", "macro", "init", "expr_stmt", "member_list" });
    }
