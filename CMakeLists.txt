@@ -18,19 +18,19 @@
 # You should have received a copy of the GNU General Public License
 # along with srcUML.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.21)
 project(srcUML)
 
 enable_testing()
 
 #find needed libraries
 find_package(LibXml2 REQUIRED)
-find_package(Boost COMPONENTS program_options filesystem system REQUIRED)
+find_package(Boost COMPONENTS program_options filesystem REQUIRED)
 find_package(ogdf REQUIRED)
 
 # include needed includes
 include_directories(${LIBXML2_INCLUDE_DIR})
-add_definitions("-std=c++1y")
+add_definitions("-std=c++20")
 # add_definitions("-pthread")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

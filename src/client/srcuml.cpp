@@ -71,37 +71,37 @@ int main(int argc, char * argv[]) {
 		po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
 		po::notify(vm);    
 
-		if(vm.count("help")){
+		if(vm.count("help")) {
 			std::cout << desc << "\n";
 			return 0;
 		}
 
-		if(vm.count("input")){
-			std::cout << "Input file is: " << vm["input"].as<string>() << ".\n";
+		if(vm.count("input")) {
+			std::cout << "Input file is: " << vm["input"].as<std::string>() << ".\n";
 			input_file = vm["input"].as<std::string>();
-		}else{
+		} else {
 			std::cout << "Error: Require an input file.\nUsage: srcuml input_file.xml [-flags]\n";
 			return 1;
 		}
 
-		if(vm.count("output")){
+		if(vm.count("output")) {
 			std::string temp = vm["output"].as<std::string>();
 			std::cout << "Ouput file is: " << vm["output"].as<std::string>() << ".\n";
 			out = new std::ofstream(vm["output"].as<std::string>());
-		}else{
+		} else {
 			std::cout << "Using cout as default output.\n";
 		}
 
-		if(vm.count("type")){
+		if(vm.count("type")) {
 			type = vm["type"].as<std::string>();
 			std::cout << "Type: " << type << std::endl;
 		}
 
-		if(vm.count("method")){
+		if(vm.count("method")) {
 			methods = vm["method"].as<bool>();
 		}
 
-		if(vm.count("attribute")){
+		if(vm.count("attribute")) {
 			attributes = vm["attribute"].as<bool>();
 		}
 
@@ -118,7 +118,6 @@ int main(int argc, char * argv[]) {
 	} catch(std::string& e) {
 		std::cout << e << std::endl;
 	}
-
 
 	if(out != &std::cout)
 		delete out;
